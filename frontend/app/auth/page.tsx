@@ -10,7 +10,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: 'success' });
 
-  const showMessage = (text, type = 'success') => {
+  const showMessage = (text: string, type: string = 'success') => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: '', type: 'success' }), 4000);
   };
