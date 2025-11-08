@@ -8,8 +8,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ text: '', type: 'success' as const | 'error' });
-
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' }>({ text: '', type: 'success' });
   const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
     setMessage({ text, type });
     setTimeout(() => setMessage({ text: '', type: 'success' }), 4000);
