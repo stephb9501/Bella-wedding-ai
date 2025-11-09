@@ -1,59 +1,189 @@
 'use client';
 
-import Link from 'next/link';
-
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div style={{ background: 'linear-gradient(135deg, #f5d5e3, #e8b4d3, #d896c4, #c47ab5)', opacity: 0.8 }} className="absolute inset-0" />
-      </div>
-      <div className="fixed inset-0 bg-white/72 z-[1]" />
+    <html lang="en">
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bella Wedding AI - Coming Soon</title>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Great+Vibes&display=swap" rel="stylesheet" />
+        <style>{`
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
 
-      {/* Content */}
-      <div className="relative z-10 max-w-2xl w-full mx-auto px-6 text-center">
-        <h1 className="font-serif text-5xl font-bold text-[#a4556f] mb-4">Bella Wedding AI</h1>
-        <p className="text-lg text-[#666] mb-2">Your AI-Powered Wedding Planning Assistant</p>
-        <p className="text-md text-[#999] mb-12">Plan your perfect day with intelligence, elegance, and ease</p>
+          body {
+            font-family: 'Playfair Display', serif;
+            position: relative;
+            margin: 0;
+            color: #4a4a4a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+          }
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/auth"
-            className="bg-[#a4556f] text-white px-8 py-3 rounded-lg font-bold hover:bg-[#8b4558] transition"
-          >
-            Get Started
-          </Link>
-          <button className="border-2 border-[#a4556f] text-[#a4556f] px-8 py-3 rounded-lg font-bold hover:bg-[#a4556f]/10 transition">
-            Learn More
-          </button>
+          /* Fading Background Photos */
+          .photo-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+          }
+
+          .photo-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            animation: photoFade 15s ease-in-out infinite;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+
+          .photo-item:nth-child(1) {
+            animation-delay: 0s;
+            background: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)),
+                        radial-gradient(circle at 40% 50%, #f5e6d3 0%, #e8d9c8 50%, #f0e4d4 100%);
+          }
+
+          .photo-item:nth-child(2) {
+            animation-delay: 5s;
+            background: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)),
+                        linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 50%, #e8e8e8 100%);
+          }
+
+          .photo-item:nth-child(3) {
+            animation-delay: 10s;
+            background: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)),
+                        linear-gradient(135deg, #dce8f0 0%, #f0f8ff 50%, #dce8f0 100%);
+          }
+
+          @keyframes photoFade {
+            0%, 100% { opacity: 0; }
+            8%, 92% { opacity: 0.25; }
+            50% { opacity: 0.25; }
+          }
+
+          /* White Overlay */
+          .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.72);
+            z-index: 1;
+          }
+
+          /* Main Container */
+          .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            padding: 20px;
+            max-width: 600px;
+          }
+
+          /* Title */
+          .logo {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            color: #a64c74;
+            margin-bottom: 0.5em;
+            font-weight: 400;
+            letter-spacing: 2px;
+          }
+
+          /* Tagline */
+          .tagline {
+            font-weight: 700;
+            color: #444;
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            margin-bottom: 0.8em;
+            letter-spacing: 0.5px;
+          }
+
+          /* Subtext */
+          .subtext {
+            color: #666;
+            margin-bottom: 2em;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+          }
+
+          /* CTA Button */
+          .cta-button {
+            background-color: #b84b7a;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+          }
+
+          .cta-button:hover {
+            background-color: #a64c74;
+            box-shadow: 0 6px 20px rgba(184, 75, 122, 0.3);
+            transform: translateY(-2px);
+          }
+
+          /* Footer */
+          footer {
+            margin-top: 2.5em;
+            color: #777;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+          }
+
+          @media (max-width: 600px) {
+            .logo {
+              font-size: 2rem;
+            }
+
+            .tagline {
+              font-size: 1rem;
+            }
+
+            .container {
+              padding: 20px;
+            }
+          }
+        `}</style>
+      </head>
+      <body>
+        <div className="photo-bg">
+          <div className="photo-item"></div>
+          <div className="photo-item"></div>
+          <div className="photo-item"></div>
         </div>
 
-        {/* Features Section */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 bg-white/50 rounded-lg backdrop-blur">
-            <div className="text-3xl mb-3">✨</div>
-            <h3 className="font-serif text-lg font-bold text-[#a4556f] mb-2">AI Planning</h3>
-            <p className="text-sm text-[#666]">Smart suggestions powered by AI</p>
-          </div>
-          <div className="p-6 bg-white/50 rounded-lg backdrop-blur">
-            <div className="text-3xl mb-3">💰</div>
-            <h3 className="font-serif text-lg font-bold text-[#a4556f] mb-2">Budget Tracking</h3>
-            <p className="text-sm text-[#666]">Stay on budget with real-time tracking</p>
-          </div>
-          <div className="p-6 bg-white/50 rounded-lg backdrop-blur">
-            <div className="text-3xl mb-3">👥</div>
-            <h3 className="font-serif text-lg font-bold text-[#a4556f] mb-2">Guest Management</h3>
-            <p className="text-sm text-[#666]">Effortless RSVP and guest coordination</p>
-          </div>
-        </div>
+        <div className="overlay"></div>
 
-        {/* Coming Soon Text */}
-        <div className="mt-16 text-sm text-[#999]">
-          <p>🎉 Your AI-powered wedding planning journey starts here</p>
+        <div className="container">
+          <h1 className="logo">Bella Wedding AI</h1>
+          <p className="tagline">Your AI-powered wedding planner is coming soon!</p>
+          <p className="subtext">Designed for brides, planners, and vendors – all in one elegant platform.</p>
+          
+          <a href="/auth" className="cta-button">Get Started</a>
+
+          <footer>© 2025 Bella Wedding AI • All Rights Reserved</footer>
         </div>
-      </div>
-    </div>
+      </body>
+    </html>
   );
 }
