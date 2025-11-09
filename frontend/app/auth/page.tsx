@@ -22,8 +22,9 @@ export default function AuthPage() {
       showMessage('✓ Signed in successfully!', 'success');
       setEmail('');
       setPassword('');
-    } catch (err) {
-      showMessage(err.message || 'Error signing in', 'error');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error signing in';
+      showMessage(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
@@ -41,8 +42,9 @@ export default function AuthPage() {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-    } catch (err) {
-      showMessage(err.message || 'Error signing up', 'error');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error signing up';
+      showMessage(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
