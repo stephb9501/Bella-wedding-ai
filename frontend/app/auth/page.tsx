@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { signIn, signUp } from '@/lib/supabase';
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('signin');
@@ -10,32 +11,68 @@ export default function AuthPage() {
   const [passwordSignUp, setPasswordSignUp] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState({ text: '', type: 'success', show: false });
+  const [loading, setLoading] = useState(false);
 
   const showMessage = (text: string, type: string) => {
     setMessage({ text, type, show: true });
     setTimeout(() => setMessage({ text: '', type: 'success', show: false }), 4000);
   };
 
-  const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (emailSignIn && passwordSignIn) {
-      showMessage('✓ Ready to connect to Supabase! Sign in functionality coming soon.', 'success');
+    if (!emailSignIn || !passwordSignIn) {
+      showMessage('✗ Please fill in all fields', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signIn(emailSignIn, passwordSignIn);
+      showMessage('✓ Sign in successful! Redirecting...', 'success');
       setEmailSignIn('');
       setPasswordSignIn('');
+      // Redirect to dashboard after 1 second
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1000);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Sign in failed. Please check your credentials.';
+      showMessage(`✗ ${errorMessage}`, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!emailSignUp || !passwordSignUp || !confirmPassword) {
+      showMessage('✗ Please fill in all fields', 'error');
+      return;
+    }
+
     if (passwordSignUp !== confirmPassword) {
       showMessage('✗ Passwords do not match', 'error');
       return;
     }
-    if (emailSignUp && passwordSignUp) {
-      showMessage('✓ Ready to connect to Supabase! Account creation coming soon.', 'success');
+
+    if (passwordSignUp.length < 6) {
+      showMessage('✗ Password must be at least 6 characters', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signUp(emailSignUp, passwordSignUp);
+      showMessage('✓ Account created successfully! Check your email to confirm.', 'success');
       setEmailSignUp('');
       setPasswordSignUp('');
       setConfirmPassword('');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Account creation failed. Please try again.';
+      showMessage(`✗ ${errorMessage}`, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -372,6 +409,7 @@ export default function AuthPage() {
                     placeholder="Enter your email"
                     value={emailSignIn}
                     onChange={(e) => setEmailSignIn(e.target.value)}
+                    disabled={loading}
                     required 
                   />
                 </div>
@@ -382,10 +420,13 @@ export default function AuthPage() {
                     placeholder="Enter your password"
                     value={passwordSignIn}
                     onChange={(e) => setPasswordSignIn(e.target.value)}
+                    disabled={loading}
                     required 
                   />
                 </div>
-                <button type="submit">Sign In</button>
+                <button type="submit" disabled={loading}>
+                  {loading ? 'Signing in...' : 'Sign In'}
+                </button>
                 <p className="note">(Connected to Supabase authentication)</p>
               </form>
             </div>
@@ -401,6 +442,7 @@ export default function AuthPage() {
                     placeholder="Enter your email"
                     value={emailSignUp}
                     onChange={(e) => setEmailSignUp(e.target.value)}
+                    disabled={loading}
                     required 
                   />
                 </div>
@@ -411,6 +453,7 @@ export default function AuthPage() {
                     placeholder="Create a password"
                     value={passwordSignUp}
                     onChange={(e) => setPasswordSignUp(e.target.value)}
+                    disabled={loading}
                     required 
                   />
                 </div>
@@ -421,10 +464,13 @@ export default function AuthPage() {
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={loading}
                     required 
                   />
                 </div>
-                <button type="submit">Create Account</button>
+                <button type="submit" disabled={loading}>
+                  {loading ? 'Creating account...' : 'Create Account'}
+                </button>
                 <p className="note">(Connected to Supabase authentication)</p>
               </form>
             </div>
