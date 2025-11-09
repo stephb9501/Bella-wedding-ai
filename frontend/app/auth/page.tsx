@@ -88,20 +88,17 @@ export default function AuthPage() {
 
           .photo-item:nth-child(1) {
             animation-delay: 0s;
-            background: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)),
-                        radial-gradient(circle at 40% 50%, #f5e6d3 0%, #e8d9c8 50%, #f0e4d4 100%);
+            background-image: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)), url('/images/IMG_3943__1_.JPG');
           }
 
           .photo-item:nth-child(2) {
             animation-delay: 5s;
-            background: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)),
-                        linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 50%, #e8e8e8 100%);
+            background-image: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)), url('/images/IMG_3942.JPG');
           }
 
           .photo-item:nth-child(3) {
             animation-delay: 10s;
-            background: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)),
-                        linear-gradient(135deg, #dce8f0 0%, #f0f8ff 50%, #dce8f0 100%);
+            background-image: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)), url('/images/IMG_3941.JPG');
           }
 
           @keyframes photoFade {
