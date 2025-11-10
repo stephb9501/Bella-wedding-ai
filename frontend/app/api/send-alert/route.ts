@@ -14,12 +14,11 @@ export async function POST(req: NextRequest) {
     const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf-8'));
 
     // Create JWT client for authentication
-    const jwtClient = new google.auth.JWT(
-      credentials.client_email,
-      undefined,
-      credentials.private_key,
-      ['https://www.googleapis.com/auth/gmail.send']
-    );
+    const jwtClient = new google.auth.JWT({
+  email: credentials.client_email,
+  key: credentials.private_key,
+  scopes: ['https://www.googleapis.com/auth/gmail.send'],
+});
 
     // Authorize the client
     await jwtClient.authorize();
