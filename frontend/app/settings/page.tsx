@@ -11,3 +11,8 @@ export default function Settings() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Settings</h1>
           <p className="text-xl text-gray-600 mb-8">Coming soon! We're building this amazing feature for you. 💒</p>
           <p className="text-gray-500">Expected launch: Coming soon</p>
+        </div>
+      </div>
+    </div>
+  );
+}
