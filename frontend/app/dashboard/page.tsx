@@ -275,7 +275,7 @@ const [stats, setStats] = useState<DashboardStats>({
       weddingLocation: 'Riverside Manor',
       tier: 'premium',
     });
-  }, []);
+  });
 
   const budgetPercentage = Math.round((stats.spent / stats.budget) * 100);
   const taskPercentage = Math.round((stats.tasksCompleted / stats.totalTasks) * 100);
