@@ -485,7 +485,9 @@ const [stats, setStats] = useState<DashboardStats>({
             <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
           </div>
 
-        </div>
+        {activeTab === 'website' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎨 Wedding Website Builder</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+{activeTab === 'registry' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎁 Registry Aggregator</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+{activeTab === 'gallery' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">📸 Photo Gallery</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
         {/* Action Cards Grid */}
         <div>
           <h3 className="text-2xl font-serif font-bold text-gray-900 mb-6">Your Tools</h3>
