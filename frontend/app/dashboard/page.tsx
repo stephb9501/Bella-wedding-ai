@@ -207,7 +207,8 @@ const DASHBOARD_CARDS = [
 
 export default function Dashboard() {const [activeTab, setActiveTab] = useState('website');
 {activeTab === 'website' && <div className="p-6 bg-white rounded-lg"><h3>Wedding Website Builder</h3><p>Coming soon!</p></div>}
-{activeTab === 'registry' && <div className="p-6 bg-white rounded-lg"><h3>Registry Aggregator</h3><p>Coming soon!</p>
+{activeTab === 'registry' && <div className="p-6 bg-white rounded-lg"><h3>Registry Aggregator</h3><p>Coming soon!</p></div>}
+{activeTab === 'gallery' && <div className="p-6 bg-white rounded-lg"><h3>Photo Gallery</h3><p>Coming soon!</p></div>}
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalGuests: 0,
