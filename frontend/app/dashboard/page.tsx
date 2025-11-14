@@ -485,9 +485,6 @@ const [stats, setStats] = useState<DashboardStats>({
             <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
           </div>
 
-          {activeTab === 'website' && <WebsiteBuilder weddingId={coupleData.weddingId} />}
-          {activeTab === 'registry' && <RegistryAggregator weddingId={coupleData.weddingId} />}
-          {activeTab === 'gallery' && <PhotoGallery weddingId={coupleData.weddingId} />}
         </div>
         {/* Action Cards Grid */}
         <div>
