@@ -9,10 +9,9 @@ import {
   Zap, Gift, Share2, Music, Home, BarChart3, Smile
 } from 'lucide-react';
 import Image from 'next/image';
-import { WebsiteBuilder } from '@/components/website-builder/WebsiteBuilder';
-import { RegistryAggregator } from '@/components/registry/RegistryAggregator';
-import { PhotoGallery } from '@/components/gallery/PhotoGallery';
-
+{activeTab === 'website' && <div className="p-6 bg-white rounded-lg"><h3>Wedding Website Builder</h3><p>Coming soon!</p></div>}
+{activeTab === 'registry' && <div className="p-6 bg-white rounded-lg"><h3>Registry Aggregator</h3><p>Coming soon!</p></div>}
+{activeTab === 'gallery' && <div className="p-6 bg-white rounded-lg"><h3>Photo Gallery</h3><p>Coming soon!</p></div>}
 interface DashboardStats {
   totalGuests: number;
   rsvpYes: number;
