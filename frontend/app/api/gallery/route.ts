@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export async function GET(request: NextRequest) {
+  return NextResponse.json([]);
+}
 
-const supabase = supabaseUrl && supabaseKey 
-  ? createClient(supabaseUrl, supabaseKey)
+export async function POST(request: NextRequest) {
+  return NextResponse.json({ success: true }, { status: 201 });
+}
+
+export async function PUT(request: NextRequest) {
+  return NextResponse.json({ success: true });
+}
+
+export async function DELETE(request: NextRequest) {
+  return NextResponse.json({ success: true });
+}
