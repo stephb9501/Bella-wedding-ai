@@ -9,6 +9,9 @@ import {
   Zap, Gift, Share2, Music, Home, BarChart3, Smile
 } from 'lucide-react';
 import Image from 'next/image';
+import { WebsiteBuilder } from '@/components/website-builder/WebsiteBuilder';
+import { RegistryAggregator } from '@/components/registry/RegistryAggregator';
+import { PhotoGallery } from '@/components/gallery/PhotoGallery';
 
 interface DashboardStats {
   totalGuests: number;
@@ -202,8 +205,9 @@ const DASHBOARD_CARDS = [
 ];
 
 
-export default function Dashboard() {
-  const router = useRouter();
+export default function Dashboard() {const [activeTab, setActiveTab] = useState('website');
+{activeTab === 'website' && <div className="p-6 bg-white rounded-lg"><h3>Wedding Website Builder</h3><p>Coming soon!</p></div>}
+{activeTab === 'registry' && <div className="p-6 bg-white rounded-lg"><h3>Registry Aggregator</h3><p>Coming soon!</p>
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalGuests: 0,
@@ -477,7 +481,18 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
+{/* BUILD 1 Features */}
+        <div className="mt-12">
+          <div className="flex gap-4 mb-6 border-b border-gray-200">
+            <button onClick={() => setActiveTab('website')} className={`px-4 py-2 font-medium ${activeTab === 'website' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎨 Website</button>
+            <button onClick={() => setActiveTab('registry')} className={`px-4 py-2 font-medium ${activeTab === 'registry' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎁 Registry</button>
+            <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
+          </div>
 
+          {activeTab === 'website' && <WebsiteBuilder weddingId={coupleData.weddingId} />}
+          {activeTab === 'registry' && <RegistryAggregator weddingId={coupleData.weddingId} />}
+          {activeTab === 'gallery' && <PhotoGallery weddingId={coupleData.weddingId} />}
+        </div>
         {/* Action Cards Grid */}
         <div>
           <h3 className="text-2xl font-serif font-bold text-gray-900 mb-6">Your Tools</h3>
