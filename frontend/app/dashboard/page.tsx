@@ -204,7 +204,8 @@ const DASHBOARD_CARDS = [
 
 export default function Dashboard() {const [activeTab, setActiveTab] = useState('website');
 const router = useRouter();
-  const [stats, setStats] = useState<DashboardStats>({
+const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const [stats, setStats] = useState<DashboardStats>({
     totalGuests: 0,
     rsvpYes: 0,
     rsvpNo: 0,
