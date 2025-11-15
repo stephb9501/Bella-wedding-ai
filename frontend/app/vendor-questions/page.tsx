@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Sparkles, Music, Camera, Video, Utensils, Flower2, MapPin, Scissors, Cake, Users, Car, Package, Mail, ClipboardList, Printer, Download, CheckCircle2 } from 'lucide-react';
+import { Heart, Sparkles, Music, Camera, Video, Utensils, Flower2, MapPin, Scissors, Cake, Users, Car, Package, Mail, ClipboardList, Printer, Download, CheckCircle2, Lightbulb, Guitar, ImagePlus, Shirt, Wine, Hotel } from 'lucide-react';
 
 interface VendorQuestion {
   id: string;
@@ -43,6 +43,9 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'dj-10', question: 'How do you handle song requests from guests?', category: 'services', priority: 'important' },
       { id: 'dj-11', question: 'What time do you arrive for setup?', category: 'logistics', priority: 'important' },
       { id: 'dj-12', question: 'Do you provide uplighting or other lighting effects?', category: 'equipment', priority: 'nice-to-know' },
+      { id: 'dj-13', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'dj-14', question: 'What is your payment schedule (deposit, installments, final payment)?', category: 'pricing', priority: 'critical' },
+      { id: 'dj-15', question: 'What are your overtime charges if we run late?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -65,6 +68,11 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'photo-10', question: 'How do you handle extreme weather or low-light situations?', category: 'experience', priority: 'important' },
       { id: 'photo-11', question: 'What is your editing style?', category: 'experience', priority: 'important' },
       { id: 'photo-12', question: 'Do you travel? What are travel fees?', category: 'pricing', priority: 'important' },
+      { id: 'photo-13', question: 'Can we purchase the copyright/usage rights to our photos?', category: 'contract', priority: 'important' },
+      { id: 'photo-14', question: 'How long do you keep our photos on file?', category: 'contract', priority: 'important' },
+      { id: 'photo-15', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'photo-16', question: 'What is your payment schedule (deposit, installments, final payment)?', category: 'pricing', priority: 'critical' },
+      { id: 'photo-17', question: 'What are your overtime charges if we run late?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -85,6 +93,10 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'video-8', question: 'Can we choose the music for our highlight reel?', category: 'services', priority: 'important' },
       { id: 'video-9', question: 'How many videographers will be present?', category: 'logistics', priority: 'important' },
       { id: 'video-10', question: 'Do you coordinate with our photographer?', category: 'logistics', priority: 'important' },
+      { id: 'video-11', question: 'How long do you keep our raw footage on file?', category: 'contract', priority: 'important' },
+      { id: 'video-12', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'video-13', question: 'What is your payment schedule (deposit, installments, final payment)?', category: 'pricing', priority: 'critical' },
+      { id: 'video-14', question: 'What are your overtime charges if we run late?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -107,6 +119,10 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'cater-10', question: 'Do you provide vendor meals? What is the cost?', category: 'pricing', priority: 'important' },
       { id: 'cater-11', question: 'Can we provide our own alcohol? Is there a corkage fee?', category: 'pricing', priority: 'important' },
       { id: 'cater-12', question: 'What happens to leftover food?', category: 'services', priority: 'nice-to-know' },
+      { id: 'cater-13', question: 'What is your health department rating?', category: 'contract', priority: 'critical' },
+      { id: 'cater-14', question: 'Is the tasting included in the price or an extra charge?', category: 'pricing', priority: 'important' },
+      { id: 'cater-15', question: 'When is the final headcount deadline?', category: 'logistics', priority: 'critical' },
+      { id: 'cater-16', question: 'What is your payment schedule and overtime charges?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -128,6 +144,9 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'florist-9', question: 'Do you offer teardown service after the reception?', category: 'services', priority: 'important' },
       { id: 'florist-10', question: 'Can guests take centerpieces home?', category: 'services', priority: 'nice-to-know' },
       { id: 'florist-11', question: 'Do you offer bouquet preservation services?', category: 'services', priority: 'nice-to-know' },
+      { id: 'florist-12', question: 'Will you be there during the ceremony setup?', category: 'logistics', priority: 'important' },
+      { id: 'florist-13', question: 'Do you carry liability insurance in case flowers damage the venue?', category: 'contract', priority: 'critical' },
+      { id: 'florist-14', question: 'What is your payment schedule and cancellation policy?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -150,6 +169,9 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'venue-c-10', question: 'Do you provide sound system for ceremony music?', category: 'equipment', priority: 'important' },
       { id: 'venue-c-11', question: 'Are there parking accommodations for guests?', category: 'logistics', priority: 'important' },
       { id: 'venue-c-12', question: 'What is your cancellation/postponement policy?', category: 'contract', priority: 'critical' },
+      { id: 'venue-c-13', question: 'Is there a security deposit? What could cause us to lose it?', category: 'pricing', priority: 'critical' },
+      { id: 'venue-c-14', question: 'Are there noise restrictions or curfews?', category: 'contract', priority: 'important' },
+      { id: 'venue-c-15', question: 'What is your payment schedule?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -172,6 +194,9 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'venue-r-10', question: 'Can we bring our own alcohol? Is there a corkage fee?', category: 'pricing', priority: 'important' },
       { id: 'venue-r-11', question: 'Are there getting-ready spaces for bride and groom?', category: 'services', priority: 'important' },
       { id: 'venue-r-12', question: 'What is your cancellation/postponement policy?', category: 'contract', priority: 'critical' },
+      { id: 'venue-r-13', question: 'Is there a security deposit? What could cause us to lose it?', category: 'pricing', priority: 'critical' },
+      { id: 'venue-r-14', question: 'What is your inclement weather policy?', category: 'contract', priority: 'important' },
+      { id: 'venue-r-15', question: 'What is your payment schedule?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -192,6 +217,8 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'hmu-8', question: 'Do you use long-lasting/waterproof products?', category: 'experience', priority: 'important' },
       { id: 'hmu-9', question: 'Do you bring a makeup kit for touch-ups?', category: 'services', priority: 'nice-to-know' },
       { id: 'hmu-10', question: 'Do you have photos of your work on different hair types and skin tones?', category: 'experience', priority: 'important' },
+      { id: 'hmu-11', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'hmu-12', question: 'What is your payment schedule and cancellation policy?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -212,6 +239,8 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'cake-8', question: 'What is your pricing (per slice, by tier, by design complexity)?', category: 'pricing', priority: 'critical' },
       { id: 'cake-9', question: 'Do you make groom\'s cakes or dessert tables?', category: 'services', priority: 'nice-to-know' },
       { id: 'cake-10', question: 'What happens if the cake is damaged during delivery?', category: 'contract', priority: 'important' },
+      { id: 'cake-11', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'cake-12', question: 'What is your payment schedule and cancellation policy?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -232,6 +261,8 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'off-8', question: 'Do you have experience with interfaith or multicultural ceremonies?', category: 'experience', priority: 'important' },
       { id: 'off-9', question: 'What is your backup plan if you are sick or unable to perform?', category: 'contract', priority: 'critical' },
       { id: 'off-10', question: 'What is your attire for the ceremony?', category: 'experience', priority: 'nice-to-know' },
+      { id: 'off-11', question: 'Do you carry liability insurance?', category: 'contract', priority: 'important' },
+      { id: 'off-12', question: 'What is your payment schedule?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -252,6 +283,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'trans-8', question: 'Do you have backup vehicles in case of breakdown?', category: 'equipment', priority: 'critical' },
       { id: 'trans-9', question: 'Are your drivers licensed and insured?', category: 'contract', priority: 'critical' },
       { id: 'trans-10', question: 'Can we decorate the vehicle (just married sign, cans)?', category: 'services', priority: 'nice-to-know' },
+      { id: 'trans-11', question: 'What is your payment schedule and overtime charges?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -272,6 +304,8 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'rent-8', question: 'What is your cancellation/change policy?', category: 'contract', priority: 'important' },
       { id: 'rent-9', question: 'Do you provide weather protection for outdoor events?', category: 'equipment', priority: 'important' },
       { id: 'rent-10', question: 'Is there a minimum order amount?', category: 'pricing', priority: 'important' },
+      { id: 'rent-11', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'rent-12', question: 'What is your payment schedule?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -292,6 +326,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'stat-8', question: 'Do you offer day-of stationery (menus, programs, place cards, signage)?', category: 'services', priority: 'important' },
       { id: 'stat-9', question: 'How many rounds of revisions are included?', category: 'contract', priority: 'important' },
       { id: 'stat-10', question: 'Do you offer envelope liners or wax seals?', category: 'services', priority: 'nice-to-know' },
+      { id: 'stat-11', question: 'What is your payment schedule and cancellation policy?', category: 'pricing', priority: 'critical' },
     ]
   },
   {
@@ -314,6 +349,135 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'coord-10', question: 'Do you provide setup and teardown services?', category: 'services', priority: 'important' },
       { id: 'coord-11', question: 'Can we see testimonials or references from past couples?', category: 'experience', priority: 'important' },
       { id: 'coord-12', question: 'What is your cancellation/postponement policy?', category: 'contract', priority: 'critical' },
+      { id: 'coord-13', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'coord-14', question: 'What is your payment schedule (deposit, installments, final payment)?', category: 'pricing', priority: 'critical' },
+      { id: 'coord-15', question: 'What are your overtime charges if we run late?', category: 'pricing', priority: 'important' },
+    ]
+  },
+  {
+    id: 'decor-styling',
+    name: 'Décor & Event Styling',
+    icon: Lightbulb,
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-50',
+    borderColor: 'border-yellow-200',
+    questions: [
+      { id: 'decor-1', question: 'Do you provide fairy lights? Are they indoor/outdoor rated?', category: 'equipment', priority: 'critical' },
+      { id: 'decor-2', question: 'Do you have lanterns available? Battery-powered or candle-powered?', category: 'equipment', priority: 'critical' },
+      { id: 'decor-3', question: 'How do you ensure battery-powered items are fully charged on wedding day?', category: 'logistics', priority: 'critical' },
+      { id: 'decor-4', question: 'Do you weatherproof outdoor décor items?', category: 'services', priority: 'important' },
+      { id: 'decor-5', question: 'What is included in setup and teardown services?', category: 'services', priority: 'critical' },
+      { id: 'decor-6', question: 'Do you offer design consultations to match our theme?', category: 'services', priority: 'important' },
+      { id: 'decor-7', question: 'Can you source specialty items (vintage, cultural, themed décor)?', category: 'services', priority: 'important' },
+      { id: 'decor-8', question: 'What is your policy on damaged or lost rental décor?', category: 'contract', priority: 'important' },
+      { id: 'decor-9', question: 'What time will you arrive for setup? How long does it take?', category: 'logistics', priority: 'critical' },
+      { id: 'decor-10', question: 'Do you provide candles? Are they flame or LED?', category: 'equipment', priority: 'important' },
+      { id: 'decor-11', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'decor-12', question: 'What is your payment schedule and cancellation policy?', category: 'pricing', priority: 'critical' },
+    ]
+  },
+  {
+    id: 'live-music',
+    name: 'Live Music / Band',
+    icon: Guitar,
+    color: 'text-red-600',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+    questions: [
+      { id: 'music-1', question: 'Do you provide ceremony AND cocktail hour AND reception music?', category: 'services', priority: 'critical' },
+      { id: 'music-2', question: 'How many band members will perform?', category: 'logistics', priority: 'critical' },
+      { id: 'music-3', question: 'How many breaks do you take? Who provides music during breaks?', category: 'services', priority: 'critical' },
+      { id: 'music-4', question: 'Do you take requests from guests?', category: 'services', priority: 'important' },
+      { id: 'music-5', question: 'What is your repertoire? Can we hear samples or see setlists?', category: 'experience', priority: 'critical' },
+      { id: 'music-6', question: 'Do you provide sound amplification and microphones?', category: 'equipment', priority: 'critical' },
+      { id: 'music-7', question: 'What time do you arrive for setup? How much space do you need?', category: 'logistics', priority: 'critical' },
+      { id: 'music-8', question: 'Do you have backup musicians if someone is sick?', category: 'contract', priority: 'critical' },
+      { id: 'music-9', question: 'What is your attire? Can you match our wedding style?', category: 'experience', priority: 'important' },
+      { id: 'music-10', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'music-11', question: 'What is your payment schedule and overtime charges?', category: 'pricing', priority: 'critical' },
+    ]
+  },
+  {
+    id: 'photo-booth',
+    name: 'Photo Booth',
+    icon: ImagePlus,
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50',
+    borderColor: 'border-purple-200',
+    questions: [
+      { id: 'booth-1', question: 'What is included (props, backdrops, attendant, prints)?', category: 'services', priority: 'critical' },
+      { id: 'booth-2', question: 'Are digital copies provided? How are they delivered?', category: 'services', priority: 'critical' },
+      { id: 'booth-3', question: 'Are prints unlimited or capped?', category: 'services', priority: 'critical' },
+      { id: 'booth-4', question: 'Do you offer social media sharing capability?', category: 'services', priority: 'important' },
+      { id: 'booth-5', question: 'Can we customize photo templates with our names/wedding date?', category: 'services', priority: 'important' },
+      { id: 'booth-6', question: 'What time do you need for setup and teardown?', category: 'logistics', priority: 'critical' },
+      { id: 'booth-7', question: 'How much space is required for the booth?', category: 'logistics', priority: 'critical' },
+      { id: 'booth-8', question: 'Will an attendant be present the entire time?', category: 'services', priority: 'important' },
+      { id: 'booth-9', question: 'Do you provide a guestbook or scrapbook option?', category: 'services', priority: 'nice-to-know' },
+      { id: 'booth-10', question: 'Do you carry liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'booth-11', question: 'What is your cancellation policy and payment schedule?', category: 'pricing', priority: 'critical' },
+    ]
+  },
+  {
+    id: 'bridal-shop',
+    name: 'Bridal Shop / Alterations',
+    icon: Shirt,
+    color: 'text-pink-600',
+    bgColor: 'bg-pink-50',
+    borderColor: 'border-pink-200',
+    questions: [
+      { id: 'bridal-1', question: 'How many fittings are included in the alteration cost?', category: 'pricing', priority: 'critical' },
+      { id: 'bridal-2', question: 'What is the alteration timeline? When should I schedule fittings?', category: 'logistics', priority: 'critical' },
+      { id: 'bridal-3', question: 'What if I gain or lose weight before the wedding?', category: 'services', priority: 'important' },
+      { id: 'bridal-4', question: 'Do you steam or press the dress before final pickup?', category: 'services', priority: 'important' },
+      { id: 'bridal-5', question: 'What is your dress preservation/cleaning policy after the wedding?', category: 'services', priority: 'important' },
+      { id: 'bridal-6', question: 'Do you offer emergency alterations the day before or day of?', category: 'services', priority: 'critical' },
+      { id: 'bridal-7', question: 'Can I store my dress at the shop until closer to the wedding?', category: 'services', priority: 'nice-to-know' },
+      { id: 'bridal-8', question: 'What accessories do you recommend (veil, belt, jewelry)?', category: 'experience', priority: 'nice-to-know' },
+      { id: 'bridal-9', question: 'Do you offer bustle services? What style?', category: 'services', priority: 'important' },
+      { id: 'bridal-10', question: 'What is your payment schedule for the dress and alterations?', category: 'pricing', priority: 'critical' },
+    ]
+  },
+  {
+    id: 'bar-service',
+    name: 'Bar Service',
+    icon: Wine,
+    color: 'text-red-600',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+    questions: [
+      { id: 'bar-1', question: 'What is included (bartenders, mixers, garnishes, ice, cups)?', category: 'services', priority: 'critical' },
+      { id: 'bar-2', question: 'Do you provide alcohol or just bartending service?', category: 'services', priority: 'critical' },
+      { id: 'bar-3', question: 'Do you carry liquor liability insurance?', category: 'contract', priority: 'critical' },
+      { id: 'bar-4', question: 'Do you create signature cocktails for our wedding?', category: 'services', priority: 'important' },
+      { id: 'bar-5', question: 'What is your pricing (cash bar, open bar, consumption-based)?', category: 'pricing', priority: 'critical' },
+      { id: 'bar-6', question: 'How do you handle intoxicated or underage guests?', category: 'experience', priority: 'critical' },
+      { id: 'bar-7', question: 'How many bartenders will be present? What is your guest-to-bartender ratio?', category: 'logistics', priority: 'critical' },
+      { id: 'bar-8', question: 'Can we provide our own alcohol? Is there a corkage fee?', category: 'pricing', priority: 'important' },
+      { id: 'bar-9', question: 'Do you offer non-alcoholic options (mocktails, specialty sodas)?', category: 'services', priority: 'important' },
+      { id: 'bar-10', question: 'What time do you arrive for setup? How much bar space is needed?', category: 'logistics', priority: 'critical' },
+      { id: 'bar-11', question: 'What is your payment schedule and overtime charges?', category: 'pricing', priority: 'critical' },
+    ]
+  },
+  {
+    id: 'hotel',
+    name: 'Hotel / Accommodations',
+    icon: Hotel,
+    color: 'text-indigo-600',
+    bgColor: 'bg-indigo-50',
+    borderColor: 'border-indigo-200',
+    questions: [
+      { id: 'hotel-1', question: 'What group rate discount can you offer?', category: 'pricing', priority: 'critical' },
+      { id: 'hotel-2', question: 'How many rooms are in the block? Can we add more later?', category: 'logistics', priority: 'critical' },
+      { id: 'hotel-3', question: 'What is the cutoff date for guests to book at the group rate?', category: 'contract', priority: 'critical' },
+      { id: 'hotel-4', question: 'Is a complimentary suite provided for the couple?', category: 'pricing', priority: 'important' },
+      { id: 'hotel-5', question: 'Do you offer shuttle service to/from the venue?', category: 'services', priority: 'important' },
+      { id: 'hotel-6', question: 'Can we provide welcome bags or have a hospitality suite?', category: 'services', priority: 'important' },
+      { id: 'hotel-7', question: 'What amenities are included (breakfast, parking, Wi-Fi, pool)?', category: 'services', priority: 'important' },
+      { id: 'hotel-8', question: 'Are there getting-ready spaces available for the bridal party?', category: 'services', priority: 'important' },
+      { id: 'hotel-9', question: 'What is your cancellation policy for room blocks and individual rooms?', category: 'contract', priority: 'critical' },
+      { id: 'hotel-10', question: 'How do guests book? Do you provide a booking link or code?', category: 'logistics', priority: 'critical' },
+      { id: 'hotel-11', question: 'Are there group dining options or room service available?', category: 'services', priority: 'nice-to-know' },
     ]
   },
 ];
