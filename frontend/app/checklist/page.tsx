@@ -97,7 +97,7 @@ const CHECKLIST_TASKS: ChecklistTask[] = [
   { id: '41', phase: '2-3 Months Out', category: 'Reception', priority: 'high', title: 'Create detailed timeline with coordinator/planner', notes: 'Share with all vendors', completed: false },
   { id: '42', phase: '2-3 Months Out', category: 'Reception', priority: 'medium', title: 'Finalize music playlist with DJ/band', notes: 'Include must-play and do-not-play songs', completed: false },
   { id: '43', phase: '2-3 Months Out', category: 'Ceremony', priority: 'medium', title: 'Write personal vows (if applicable)', completed: false },
-  { id: '43a', phase: '2-3 Months Out', category: 'Vendors', priority: 'high', title: 'Verify liability insurance for all vendors', notes: 'Request certificates from venue, caterer, florist, décor, DJ, photographer, videographer, transportation, bar service, rentals', completed: false },
+  { id: '43a', phase: '2-3 Months Out', category: 'Vendors', priority: 'medium', title: 'Ask vendors about liability insurance (optional)', notes: 'Recommended for: venue, caterer, florist, décor, DJ, photographer, videographer, transportation, bar service, rentals. REQUIRED: liquor liability for caterer/bar service.', completed: false },
   { id: '44', phase: '2-3 Months Out', category: 'Guest Experience', priority: 'medium', title: 'Plan rehearsal dinner', completed: false },
 
   // 1 MONTH OUT
