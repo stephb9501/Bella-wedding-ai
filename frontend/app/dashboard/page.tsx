@@ -6,7 +6,7 @@ import {
   Calendar, Users, DollarSign, Heart, MapPin, Camera,
   Sparkles, MessageCircle, Settings, LogOut, Menu, X,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
-  Zap, Gift, Share2, Music, Home, BarChart3, Smile
+  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList
 } from 'lucide-react';
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
@@ -89,6 +89,16 @@ const DASHBOARD_CARDS = [
     color: 'bg-rose-50',
     iconColor: 'text-rose-600',
     href: '/vendors',
+    status: 'core'
+  },
+  {
+    id: 'vendor-questions',
+    title: 'Vendor Questions',
+    description: 'Critical questions to ask',
+    icon: ClipboardList,
+    color: 'bg-purple-50',
+    iconColor: 'text-purple-600',
+    href: '/vendor-questions',
     status: 'core'
   },
   {
