@@ -1,16 +1,274 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail } from 'lucide-react';
+import Image from 'next/image';
+
+interface Vendor {
+  id: string;
+  business_name: string;
+  category: string;
+  city: string;
+  state: string;
+  description: string;
+  tier: 'free' | 'premium' | 'featured' | 'elite';
+  photo_count: number;
+  profile_views: number;
+  is_featured: boolean;
+  email: string;
+  phone: string;
+}
+
+const CATEGORIES = [
+  'All', 'Venue', 'Catering', 'Photography', 'Videography', 'Florist',
+  'DJ/Music', 'Hair & Makeup', 'Wedding Planner', 'Cake', 'Transportation',
+  'Officiant', 'Invitations', 'Dress & Attire', 'Rentals', 'Other'
+];
+
+const TIER_INFO = {
+  free: { name: 'Free', icon: Star, color: 'text-gray-600', bg: 'bg-gray-100' },
+  premium: { name: 'Premium', icon: Star, color: 'text-blue-600', bg: 'bg-blue-100' },
+  featured: { name: 'Featured', icon: Crown, color: 'text-purple-600', bg: 'bg-purple-100' },
+  elite: { name: 'Elite', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-100' },
+};
+
 export default function Vendors() {
+  const router = useRouter();
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    fetchVendors();
+  }, []);
+
+  useEffect(() => {
+    filterVendors();
+  }, [selectedCategory, searchQuery, vendors]);
+
+  const fetchVendors = async () => {
+    try {
+      const response = await fetch('/api/vendors');
+      if (!response.ok) throw new Error('Failed to fetch vendors');
+      const data = await response.json();
+      setVendors(data || []);
+    } catch (error) {
+      console.error('Error fetching vendors:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterVendors = () => {
+    let filtered = vendors;
+
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(v => v.category === selectedCategory);
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter(v =>
+        v.business_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Sort by tier: elite > featured > premium > free
+    const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
+    filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
+
+    setFilteredVendors(filtered);
+  };
+
+  const featuredVendors = filteredVendors.filter(v => v.is_featured).slice(0, 3);
+  const regularVendors = filteredVendors.filter(v => !v.is_featured);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-white">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <a href="/dashboard" className="text-champagne-600 hover:text-champagne-700 mb-8 inline-flex items-center gap-2">
-          ← Back to Dashboard
-        </a>
-        <div className="text-center py-20">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Vendor Marketplace</h1>
-          <p className="text-xl text-gray-600 mb-8">Coming soon! We're building this amazing feature for you. 💒</p>
-          <p className="text-gray-500">Expected launch: Coming soon</p>
+    <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
+      {/* Header */}
+      <header className="bg-white border-b border-champagne-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
+              <Heart className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-xl font-serif font-bold text-gray-900">Bella Wedding</h1>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => router.push('/vendor-register')}
+              className="px-4 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-medium rounded-lg transition"
+            >
+              I'm a Vendor
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Hero */}
+        <div className="text-center mb-12">
+          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+            Find Your Perfect Vendors
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            Browse verified wedding professionals in your area
+          </p>
+
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by business name, city, or service..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-champagne-500 text-lg"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Category Filter */}
+        <div className="mb-8">
+          <div className="flex overflow-x-auto gap-2 pb-2">
+            {CATEGORIES.map(category => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
+                  selectedCategory === category
+                    ? 'bg-champagne-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-20">
+            <Heart className="w-12 h-12 text-champagne-600 animate-pulse mx-auto mb-4" />
+            <p className="text-gray-600">Loading vendors...</p>
+          </div>
+        ) : (
+          <>
+            {/* Featured Vendors */}
+            {featuredVendors.length > 0 && (
+              <div className="mb-12">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                  <Crown className="w-6 h-6 text-purple-600" />
+                  Featured Vendors
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {featuredVendors.map(vendor => (
+                    <VendorCard key={vendor.id} vendor={vendor} featured />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* All Vendors */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                All Vendors ({filteredVendors.length})
+              </h3>
+              {filteredVendors.length === 0 ? (
+                <div className="text-center py-20 bg-white rounded-2xl">
+                  <p className="text-gray-500 text-lg">No vendors found. Try adjusting your filters.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {regularVendors.map(vendor => (
+                    <VendorCard key={vendor.id} vendor={vendor} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function VendorCard({ vendor, featured = false }: { vendor: Vendor; featured?: boolean }) {
+  const tierInfo = TIER_INFO[vendor.tier];
+  const TierIcon = tierInfo.icon;
+
+  return (
+    <div className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden ${featured ? 'ring-2 ring-purple-300' : ''}`}>
+      {/* Photo Placeholder */}
+      <div className="h-48 bg-gradient-to-br from-champagne-200 to-rose-200 relative">
+        {vendor.photo_count > 0 ? (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+            {/* TODO: Show actual first photo */}
+            <p className="text-sm">{vendor.photo_count} photos</p>
+          </div>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+            <p className="text-sm">No photos yet</p>
+          </div>
+        )}
+        {featured && (
+          <div className="absolute top-3 right-3">
+            <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+              <Crown className="w-3 h-3" />
+              FEATURED
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="p-6">
+        <div className="flex items-start justify-between mb-3">
+          <h4 className="text-xl font-bold text-gray-900">{vendor.business_name}</h4>
+          <div className={`flex items-center gap-1 px-2 py-1 ${tierInfo.bg} rounded`}>
+            <TierIcon className={`w-4 h-4 ${tierInfo.color}`} />
+          </div>
+        </div>
+
+        <p className="text-sm text-gray-600 mb-2">{vendor.category}</p>
+
+        <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
+          <MapPin className="w-4 h-4" />
+          <span>{vendor.city}, {vendor.state}</span>
+        </div>
+
+        <p className="text-gray-700 text-sm mb-4 line-clamp-2">
+          {vendor.description || 'Professional wedding vendor'}
+        </p>
+
+        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <span>4.9</span>
+          </div>
+          <span>{vendor.profile_views || 0} views</span>
+        </div>
+
+        <div className="flex gap-2">
+          <button className="flex-1 px-4 py-2 bg-champagne-600 hover:bg-champagne-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2">
+            <MessageCircle className="w-4 h-4" />
+            Message
+          </button>
+          <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
+            <Heart className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>
