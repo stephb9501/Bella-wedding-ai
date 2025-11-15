@@ -23,10 +23,16 @@ interface Photo {
   created_at: string;
 }
 
-export function PhotoGallery({ weddingId }: { weddingId: string }) {
+const TIER_LIMITS = {
+  standard: { photos: 30 },
+  premium: { photos: 150 },
+};
+
+export function PhotoGallery({ weddingId, tier = 'standard' }: { weddingId: string; tier?: 'standard' | 'premium' }) {
   const [galleries, setGalleries] = useState<Gallery[]>([]);
   const [selectedGallery, setSelectedGallery] = useState<Gallery | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [allPhotos, setAllPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -37,8 +43,11 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
     gallery_description: '',
   });
 
+  const tierLimit = TIER_LIMITS[tier];
+
   useEffect(() => {
     fetchGalleries();
+    fetchAllPhotos();
   }, [weddingId]);
 
   useEffect(() => {
@@ -55,6 +64,17 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
       setGalleries(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  };
+
+  const fetchAllPhotos = async () => {
+    try {
+      const response = await fetch(`/api/gallery/upload?wedding_id=${weddingId}`);
+      if (!response.ok) throw new Error('Failed to fetch photos');
+      const data = await response.json();
+      setAllPhotos(data || []);
+    } catch (err) {
+      console.error('Error fetching all photos:', err);
     }
   };
 
@@ -129,6 +149,19 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0 || !selectedGallery) return;
 
+    // Check tier limit
+    const currentPhotoCount = allPhotos.length;
+    const newPhotoCount = currentPhotoCount + files.length;
+
+    if (newPhotoCount > tierLimit.photos) {
+      setError(
+        `Your ${tier} plan allows only ${tierLimit.photos} photos. ` +
+        `You have ${currentPhotoCount} photos and are trying to upload ${files.length} more. ` +
+        `Upgrade to Premium for ${tier === 'standard' ? '150 photos' : 'more photos'}!`
+      );
+      return;
+    }
+
     setUploading(true);
     setError('');
 
@@ -149,6 +182,7 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
       }
 
       await fetchPhotos(selectedGallery.id);
+      await fetchAllPhotos();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -168,6 +202,7 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
       if (selectedGallery) {
         await fetchPhotos(selectedGallery.id);
       }
+      await fetchAllPhotos();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     }

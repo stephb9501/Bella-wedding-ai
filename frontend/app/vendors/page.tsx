@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail } from 'lucide-react';
+import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X } from 'lucide-react';
 import Image from 'next/image';
 
 interface Vendor {
@@ -40,6 +40,8 @@ export default function Vendors() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     fetchVendors();
@@ -176,7 +178,10 @@ export default function Vendors() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {featuredVendors.map(vendor => (
-                    <VendorCard key={vendor.id} vendor={vendor} featured />
+                    <VendorCard key={vendor.id} vendor={vendor} featured onMessage={(v) => {
+                      setSelectedVendor(v);
+                      setShowBookingModal(true);
+                    }} />
                   ))}
                 </div>
               </div>
@@ -194,7 +199,10 @@ export default function Vendors() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {regularVendors.map(vendor => (
-                    <VendorCard key={vendor.id} vendor={vendor} />
+                    <VendorCard key={vendor.id} vendor={vendor} onMessage={(v) => {
+                      setSelectedVendor(v);
+                      setShowBookingModal(true);
+                    }} />
                   ))}
                 </div>
               )}
@@ -202,11 +210,22 @@ export default function Vendors() {
           </>
         )}
       </div>
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedVendor && (
+        <BookingModal
+          vendor={selectedVendor}
+          onClose={() => {
+            setShowBookingModal(false);
+            setSelectedVendor(null);
+          }}
+        />
+      )}
     </div>
   );
 }
 
-function VendorCard({ vendor, featured = false }: { vendor: Vendor; featured?: boolean }) {
+function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; featured?: boolean; onMessage: (vendor: Vendor) => void }) {
   const tierInfo = TIER_INFO[vendor.tier];
   const TierIcon = tierInfo.icon;
 
@@ -262,7 +281,10 @@ function VendorCard({ vendor, featured = false }: { vendor: Vendor; featured?: b
         </div>
 
         <div className="flex gap-2">
-          <button className="flex-1 px-4 py-2 bg-champagne-600 hover:bg-champagne-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2">
+          <button
+            onClick={() => onMessage(vendor)}
+            className="flex-1 px-4 py-2 bg-champagne-600 hover:bg-champagne-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
+          >
             <MessageCircle className="w-4 h-4" />
             Message
           </button>
@@ -270,6 +292,170 @@ function VendorCard({ vendor, featured = false }: { vendor: Vendor; featured?: b
             <Heart className="w-5 h-5" />
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void }) {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [formData, setFormData] = useState({
+    wedding_date: '',
+    venue_location: '',
+    message: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // TODO: Get bride_id from session/auth
+      const brideId = 'demo-bride-123';
+
+      const response = await fetch('/api/vendor-bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bride_id: brideId,
+          vendor_id: vendor.id,
+          wedding_date: formData.wedding_date,
+          venue_location: formData.venue_location,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to send booking request');
+      }
+
+      setSuccess(true);
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    } catch (error: any) {
+      alert(error.message || 'Failed to send booking request');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="sticky top-0 bg-gradient-to-r from-champagne-500 to-rose-500 px-8 py-6 flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-1">Connect with {vendor.business_name}</h3>
+            <p className="text-champagne-50 text-sm">{vendor.category} • {vendor.city}, {vendor.state}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+        </div>
+
+        {success ? (
+          <div className="p-12 text-center">
+            <div className="w-20 h-20 bg-green-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <MessageCircle className="w-10 h-10 text-green-600" />
+            </div>
+            <h4 className="text-2xl font-bold text-gray-900 mb-2">Request Sent!</h4>
+            <p className="text-gray-600">
+              {vendor.business_name} will receive your message and get back to you soon.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-8">
+            <p className="text-gray-600 mb-6">
+              Tell {vendor.business_name} about your wedding and they'll reach out to discuss how they can make your day perfect.
+            </p>
+
+            <div className="space-y-5">
+              {/* Wedding Date */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Wedding Date
+                </label>
+                <input
+                  type="date"
+                  value={formData.wedding_date}
+                  onChange={(e) => setFormData({ ...formData, wedding_date: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                />
+              </div>
+
+              {/* Venue Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Venue/Location
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., The Grand Ballroom, Chicago, IL"
+                  value={formData.venue_location}
+                  onChange={(e) => setFormData({ ...formData, venue_location: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                />
+              </div>
+
+              {/* Message */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Message
+                </label>
+                <textarea
+                  placeholder="Tell them about your vision, guest count, budget range, or any specific requests..."
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  rows={5}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500 resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Vendor Info */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h5 className="font-semibold text-gray-900 mb-2">Vendor Contact</h5>
+              <div className="space-y-1 text-sm text-gray-600">
+                {vendor.email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    <span>{vendor.email}</span>
+                  </div>
+                )}
+                {vendor.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    <span>{vendor.phone}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3 mt-8">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-6 py-3 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-lg transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
+              >
+                {loading ? 'Sending...' : 'Send Request'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
