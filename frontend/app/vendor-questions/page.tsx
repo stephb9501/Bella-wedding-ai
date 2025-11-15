@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Heart, Sparkles, Music, Camera, Video, Utensils, Flower2, MapPin, Scissors, Cake, Users, Car, Package, Mail, ClipboardList, Printer, Download, CheckCircle2, Lightbulb, Guitar, ImagePlus, Shirt, Wine, Hotel } from 'lucide-react';
 
 interface VendorQuestion {
@@ -46,6 +46,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'dj-13', question: 'Do you carry liability insurance?', category: 'contract', priority: 'important' },
       { id: 'dj-14', question: 'What is your payment schedule (deposit, installments, final payment)?', category: 'pricing', priority: 'critical' },
       { id: 'dj-15', question: 'What are your overtime charges if we run late?', category: 'pricing', priority: 'important' },
+      { id: 'dj-16', question: 'Do you charge travel fees for venues outside your area?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -97,6 +98,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'video-12', question: 'Do you carry liability insurance?', category: 'contract', priority: 'important' },
       { id: 'video-13', question: 'What is your payment schedule (deposit, installments, final payment)?', category: 'pricing', priority: 'critical' },
       { id: 'video-14', question: 'What are your overtime charges if we run late?', category: 'pricing', priority: 'important' },
+      { id: 'video-15', question: 'Do you travel? What are travel fees?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -139,6 +141,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'florist-4', question: 'Do you have photos of full weddings you\'ve done?', category: 'experience', priority: 'important' },
       { id: 'florist-5', question: 'How do you weatherproof outdoor arrangements?', category: 'logistics', priority: 'important' },
       { id: 'florist-6', question: 'What time will you deliver and set up on the wedding day?', category: 'logistics', priority: 'critical' },
+      { id: 'florist-6a', question: 'Is there a delivery/setup fee? Does it vary by location?', category: 'pricing', priority: 'important' },
       { id: 'florist-7', question: 'Do you provide vases, containers, or stands?', category: 'equipment', priority: 'important' },
       { id: 'florist-8', question: 'What is your policy on flower substitutions if something is unavailable?', category: 'contract', priority: 'important' },
       { id: 'florist-9', question: 'Do you offer teardown service after the reception?', category: 'services', priority: 'important' },
@@ -234,6 +237,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'cake-3', question: 'What flavors and fillings do you offer?', category: 'services', priority: 'critical' },
       { id: 'cake-4', question: 'Do you offer gluten-free, vegan, or allergen-free options?', category: 'services', priority: 'important' },
       { id: 'cake-5', question: 'What time will the cake be delivered?', category: 'logistics', priority: 'critical' },
+      { id: 'cake-5a', question: 'Is there a delivery fee? Does it vary by distance?', category: 'pricing', priority: 'important' },
       { id: 'cake-6', question: 'Do you provide setup and a cake stand?', category: 'services', priority: 'important' },
       { id: 'cake-7', question: 'How far in advance should we order?', category: 'logistics', priority: 'important' },
       { id: 'cake-8', question: 'What is your pricing (per slice, by tier, by design complexity)?', category: 'pricing', priority: 'critical' },
@@ -263,6 +267,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'off-10', question: 'What is your attire for the ceremony?', category: 'experience', priority: 'nice-to-know' },
       { id: 'off-11', question: 'Do you carry liability insurance?', category: 'contract', priority: 'important' },
       { id: 'off-12', question: 'What is your payment schedule?', category: 'pricing', priority: 'critical' },
+      { id: 'off-13', question: 'Do you charge travel fees for venues outside your area?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -456,6 +461,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'music-9', question: 'What is your attire? Can you match our wedding style?', category: 'experience', priority: 'important' },
       { id: 'music-10', question: 'Do you carry liability insurance?', category: 'contract', priority: 'important' },
       { id: 'music-11', question: 'What is your payment schedule and overtime charges?', category: 'pricing', priority: 'critical' },
+      { id: 'music-12', question: 'Do you charge travel fees for venues outside your area?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -477,6 +483,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'booth-9', question: 'Do you provide a guestbook or scrapbook option?', category: 'services', priority: 'nice-to-know' },
       { id: 'booth-10', question: 'Do you carry liability insurance?', category: 'contract', priority: 'important' },
       { id: 'booth-11', question: 'What is your cancellation policy and payment schedule?', category: 'pricing', priority: 'critical' },
+      { id: 'booth-12', question: 'Do you charge delivery/travel fees for venues outside your area?', category: 'pricing', priority: 'important' },
     ]
   },
   {
@@ -543,12 +550,42 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
   },
 ];
 
-export default function VendorQuestions() {
+function VendorQuestionsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedVendor, setSelectedVendor] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [askedQuestions, setAskedQuestions] = useState<Set<string>>(new Set());
+
+  // Auto-select vendor from URL parameter
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam && VENDOR_QUESTIONS.find(v => v.id === categoryParam)) {
+      setSelectedVendor(categoryParam);
+    }
+  }, [searchParams]);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleDownload = () => {
+    if (!currentVendor) return;
+
+    const content = `${currentVendor.name} - Vendor Questions\n\n` +
+      filteredQuestions.map((q, idx) => `${idx + 1}. [${q.priority.toUpperCase()}] ${q.question}`).join('\n\n');
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentVendor.name.replace(/\s+/g, '_')}_Questions.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   const toggleAsked = (questionId: string) => {
     const newAsked = new Set(askedQuestions);
@@ -670,11 +707,17 @@ export default function VendorQuestions() {
                   </div>
 
                   <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2 font-medium">
+                    <button
+                      onClick={handlePrint}
+                      className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2 font-medium"
+                    >
                       <Printer className="w-4 h-4" />
                       Print
                     </button>
-                    <button className="px-4 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 text-white rounded-lg hover:from-champagne-600 hover:to-rose-600 flex items-center gap-2 font-medium">
+                    <button
+                      onClick={handleDownload}
+                      className="px-4 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 text-white rounded-lg hover:from-champagne-600 hover:to-rose-600 flex items-center gap-2 font-medium"
+                    >
                       <Download className="w-4 h-4" />
                       Download
                     </button>
@@ -807,5 +850,20 @@ export default function VendorQuestions() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function VendorQuestions() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 via-rose-50 to-champagne-50 flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-12 h-12 text-champagne-600 animate-pulse mx-auto mb-4" />
+          <p className="text-gray-600">Loading vendor questions...</p>
+        </div>
+      </div>
+    }>
+      <VendorQuestionsContent />
+    </Suspense>
   );
 }

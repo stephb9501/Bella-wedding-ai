@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X } from 'lucide-react';
+import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X, ClipboardList } from 'lucide-react';
 import Image from 'next/image';
 
 interface Vendor {
@@ -226,8 +226,31 @@ export default function Vendors() {
 }
 
 function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; featured?: boolean; onMessage: (vendor: Vendor) => void }) {
+  const router = useRouter();
   const tierInfo = TIER_INFO[vendor.tier];
   const TierIcon = tierInfo.icon;
+
+  // Map vendor category to vendor questions page category
+  const getCategoryLink = (category: string) => {
+    const categoryMap: Record<string, string> = {
+      'Venue': 'venue-ceremony',
+      'Catering': 'caterer',
+      'Photography': 'photographer',
+      'Videography': 'videographer',
+      'Florist': 'florist',
+      'DJ/Music': 'dj',
+      'Hair & Makeup': 'hair-makeup',
+      'Wedding Planner': 'coordinator',
+      'Cake': 'cake',
+      'Transportation': 'transportation',
+      'Officiant': 'officiant',
+      'Invitations': 'stationer',
+      'Rentals': 'rentals-general',
+    };
+    return categoryMap[category] || null;
+  };
+
+  const categoryId = getCategoryLink(vendor.category);
 
   return (
     <div className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden ${featured ? 'ring-2 ring-purple-300' : ''}`}>
@@ -280,17 +303,28 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
           <span>{vendor.profile_views || 0} views</span>
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={() => onMessage(vendor)}
-            className="flex-1 px-4 py-2 bg-champagne-600 hover:bg-champagne-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
-          >
-            <MessageCircle className="w-4 h-4" />
-            Message
-          </button>
-          <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
-            <Heart className="w-5 h-5" />
-          </button>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => onMessage(vendor)}
+              className="flex-1 px-4 py-2 bg-champagne-600 hover:bg-champagne-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Message
+            </button>
+            <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
+              <Heart className="w-5 h-5" />
+            </button>
+          </div>
+          {categoryId && (
+            <button
+              onClick={() => router.push(`/vendor-questions?category=${categoryId}`)}
+              className="w-full px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium rounded-lg transition flex items-center justify-center gap-2 border border-purple-200"
+            >
+              <ClipboardList className="w-4 h-4" />
+              View Questions to Ask
+            </button>
+          )}
         </div>
       </div>
     </div>
