@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Calendar, Users, DollarSign, Heart, MapPin, Camera, 
+import {
+  Calendar, Users, DollarSign, Heart, MapPin, Camera,
   Sparkles, MessageCircle, Settings, LogOut, Menu, X,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
   Zap, Gift, Share2, Music, Home, BarChart3, Smile
 } from 'lucide-react';
 import Image from 'next/image';
+import { RegistryAggregator } from '@/components/RegistryAggregator';
 
 interface DashboardStats {
   totalGuests: number;
@@ -486,9 +487,23 @@ export default function Dashboard() {
             <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
           </div>
 
-          {activeTab === 'website' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎨 Wedding Website Builder</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
-          {activeTab === 'registry' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎁 Registry Aggregator</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
-          {activeTab === 'gallery' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">📸 Photo Gallery</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+          {activeTab === 'website' && (
+            <div className="p-6 bg-white rounded-lg mt-4">
+              <h3 className="text-xl font-bold">🎨 Wedding Website Builder</h3>
+              <p className="text-gray-600 mt-2">Coming soon!</p>
+            </div>
+          )}
+          {activeTab === 'registry' && (
+            <div className="mt-4">
+              <RegistryAggregator weddingId="demo-wedding-123" />
+            </div>
+          )}
+          {activeTab === 'gallery' && (
+            <div className="p-6 bg-white rounded-lg mt-4">
+              <h3 className="text-xl font-bold">📸 Photo Gallery</h3>
+              <p className="text-gray-600 mt-2">Coming soon!</p>
+            </div>
+          )}
         </div>
 
         {/* Action Cards Grid */}
