@@ -202,10 +202,11 @@ const DASHBOARD_CARDS = [
 ];
 
 
-export default function Dashboard() {const [activeTab, setActiveTab] = useState('website');
-const router = useRouter();
-const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-const [stats, setStats] = useState<DashboardStats>({
+export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState('website');
+  const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [stats, setStats] = useState<DashboardStats>({
     totalGuests: 0,
     rsvpYes: 0,
     rsvpNo: 0,
@@ -275,7 +276,7 @@ const [stats, setStats] = useState<DashboardStats>({
       weddingLocation: 'Riverside Manor',
       tier: 'premium',
     });
-  });
+  }, []);
 
   const budgetPercentage = Math.round((stats.spent / stats.budget) * 100);
   const taskPercentage = Math.round((stats.tasksCompleted / stats.totalTasks) * 100);
@@ -485,9 +486,11 @@ const [stats, setStats] = useState<DashboardStats>({
             <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
           </div>
 
-        {activeTab === 'website' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎨 Wedding Website Builder</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
-{activeTab === 'registry' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎁 Registry Aggregator</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
-{activeTab === 'gallery' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">📸 Photo Gallery</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+          {activeTab === 'website' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎨 Wedding Website Builder</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+          {activeTab === 'registry' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">🎁 Registry Aggregator</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+          {activeTab === 'gallery' && <div className="p-6 bg-white rounded-lg mt-4"><h3 className="text-xl font-bold">📸 Photo Gallery</h3><p className="text-gray-600 mt-2">Coming soon!</p></div>}
+        </div>
+
         {/* Action Cards Grid */}
         <div>
           <h3 className="text-2xl font-serif font-bold text-gray-900 mb-6">Your Tools</h3>
