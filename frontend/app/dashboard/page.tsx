@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
+import { PhotoGallery } from '@/components/PhotoGallery';
 
 interface DashboardStats {
   totalGuests: number;
@@ -499,9 +500,8 @@ export default function Dashboard() {
             </div>
           )}
           {activeTab === 'gallery' && (
-            <div className="p-6 bg-white rounded-lg mt-4">
-              <h3 className="text-xl font-bold">📸 Photo Gallery</h3>
-              <p className="text-gray-600 mt-2">Coming soon!</p>
+            <div className="mt-4">
+              <PhotoGallery weddingId="demo-wedding-123" />
             </div>
           )}
         </div>
