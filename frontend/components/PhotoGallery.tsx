@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 interface Gallery {
   id: string;
@@ -13,11 +15,23 @@ interface Gallery {
   created_at: string;
 }
 
+interface Photo {
+  id: string;
+  gallery_id: string;
+  photo_url: string;
+  file_name: string;
+  created_at: string;
+}
+
 export function PhotoGallery({ weddingId }: { weddingId: string }) {
   const [galleries, setGalleries] = useState<Gallery[]>([]);
   const [selectedGallery, setSelectedGallery] = useState<Gallery | null>(null);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     gallery_name: '',
     gallery_description: '',
@@ -27,12 +41,29 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
     fetchGalleries();
   }, [weddingId]);
 
+  useEffect(() => {
+    if (selectedGallery) {
+      fetchPhotos(selectedGallery.id);
+    }
+  }, [selectedGallery]);
+
   const fetchGalleries = async () => {
     try {
       const response = await fetch(`/api/gallery?weddingId=${weddingId}`);
       if (!response.ok) throw new Error('Failed to fetch galleries');
       const data = await response.json();
       setGalleries(data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  };
+
+  const fetchPhotos = async (galleryId: string) => {
+    try {
+      const response = await fetch(`/api/gallery/upload?gallery_id=${galleryId}`);
+      if (!response.ok) throw new Error('Failed to fetch photos');
+      const data = await response.json();
+      setPhotos(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     }
@@ -92,6 +123,73 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
       setSelectedGallery(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  };
+
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0 || !selectedGallery) return;
+
+    setUploading(true);
+    setError('');
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('gallery_id', selectedGallery.id);
+        formData.append('wedding_id', weddingId);
+
+        const response = await fetch('/api/gallery/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) throw new Error(`Failed to upload ${file.name}`);
+      }
+
+      await fetchPhotos(selectedGallery.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeletePhoto = async (photoId: string) => {
+    if (!confirm('Delete this photo?')) return;
+
+    try {
+      const response = await fetch(`/api/gallery/upload?id=${photoId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete photo');
+      if (selectedGallery) {
+        await fetchPhotos(selectedGallery.id);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files);
     }
   };
 
@@ -192,14 +290,77 @@ export function PhotoGallery({ weddingId }: { weddingId: string }) {
                 </label>
               </div>
 
-              <div className="p-4 bg-gray-100 border-2 border-dashed border-gray-300 rounded text-center py-8 mb-4">
-                <p className="text-gray-600">📸 Upload feature coming soon</p>
-                <p className="text-sm text-gray-500">Drag & drop photos here</p>
+              {/* Upload Area */}
+              <div
+                className={`p-8 border-2 border-dashed rounded-lg text-center transition ${
+                  dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
+                }`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e.target.files)}
+                  className="hidden"
+                />
+                <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-700 font-medium mb-1">
+                  {uploading ? 'Uploading...' : 'Drag & drop photos here'}
+                </p>
+                <p className="text-sm text-gray-500 mb-3">or</p>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition"
+                >
+                  Choose Files
+                </button>
+                <p className="text-xs text-gray-500 mt-2">Max 10MB per photo</p>
               </div>
+
+              {/* Photo Grid */}
+              {photos.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="font-semibold text-gray-900 mb-3">Photos ({photos.length})</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {photos.map(photo => (
+                      <div key={photo.id} className="relative group">
+                        <div className="aspect-square relative rounded-lg overflow-hidden bg-gray-100">
+                          <Image
+                            src={photo.photo_url}
+                            alt={photo.file_name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleDeletePhoto(photo.id)}
+                          className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {photos.length === 0 && !uploading && (
+                <div className="mt-6 text-center py-8 text-gray-500">
+                  <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>No photos yet. Upload your first photo!</p>
+                </div>
+              )}
 
               <button
                 onClick={() => handleDeleteGallery(selectedGallery.id)}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition"
+                className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition"
               >
                 Delete Gallery
               </button>
