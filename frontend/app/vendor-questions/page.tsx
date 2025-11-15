@@ -300,6 +300,7 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
       { id: 'rent-4', question: 'What time will items be delivered and picked up?', category: 'logistics', priority: 'critical' },
       { id: 'rent-5', question: 'What is your policy on damaged or lost items?', category: 'contract', priority: 'important' },
       { id: 'rent-6', question: 'Do linens need to be laundered before return?', category: 'contract', priority: 'important' },
+      { id: 'rent-6a', question: 'How should items be packed/prepared for pickup? Any special requirements?', category: 'contract', priority: 'important' },
       { id: 'rent-7', question: 'Do you have photos or samples we can see?', category: 'experience', priority: 'important' },
       { id: 'rent-8', question: 'What is your cancellation/change policy?', category: 'contract', priority: 'important' },
       { id: 'rent-9', question: 'Do you provide weather protection for outdoor events?', category: 'equipment', priority: 'important' },
