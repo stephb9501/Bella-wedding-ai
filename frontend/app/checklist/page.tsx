@@ -179,33 +179,84 @@ export default function Checklist() {
     );
   }
 
-  // Preview mode for unauthenticated users - show first 5 tasks only
-  const previewTasks = CHECKLIST_TASKS.slice(0, 5);
+  // Preview mode for unauthenticated users - show first 10 tasks only
+  const previewTasks = CHECKLIST_TASKS.slice(0, 10);
   const previewContent = (
-    <div className="space-y-4">
-      {previewTasks.map(task => (
-        <div key={task.id} className="bg-white rounded-xl p-4 border border-gray-200">
-          <div className="flex items-start gap-4">
-            <div className="w-5 h-5 mt-0.5 rounded border-2 border-gray-300 flex-shrink-0" />
-            <div className="flex-1">
-              <p className="font-medium text-gray-900">{task.title}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-xs px-2 py-1 rounded bg-red-100 text-red-700">
-                  {task.priority}
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                  {task.category}
-                </span>
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="mb-6">
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <Sparkles className="w-5 h-5 text-champagne-600" />
+          <span className="font-medium">90+ Professional Wedding Tasks Organized by Timeline</span>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {previewTasks.map(task => (
+          <div key={task.id} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="w-5 h-5 mt-0.5 rounded border-2 border-gray-300 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">{task.title}</p>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <span className={`text-xs px-2 py-1 rounded ${
+                    task.priority === 'high' ? 'bg-red-100 text-red-700' :
+                    task.priority === 'medium' ? 'bg-amber-100 text-amber-700' :
+                    'bg-gray-100 text-gray-600'
+                  }`}>
+                    {task.priority}
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                    {task.phase}
+                  </span>
+                  <span className="text-xs bg-champagne-100 text-champagne-700 px-2 py-1 rounded">
+                    {task.category}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+        ))}
+        <div className="text-center py-4 text-gray-500 italic">
+          + 80 more tasks across all wedding phases...
         </div>
-      ))}
+      </div>
     </div>
   );
 
   if (!isAuthenticated) {
-    return <AuthWall featureName="Checklist" previewContent={previewContent} fullLock={false} />;
+    return (
+      <div>
+        {/* Hero Banner with Photo */}
+        <div className="relative overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/wedding-photos/deltalow-512.jpg')",
+              backgroundPosition: 'center center'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-4 py-24 text-center">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="h-px w-12 bg-champagne-400/60"></div>
+              <CheckCircle className="w-8 h-8 text-champagne-400" />
+              <div className="h-px w-12 bg-champagne-400/60"></div>
+            </div>
+
+            <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">
+              Professional Wedding Checklist
+            </h2>
+            <p className="text-2xl text-white/95 font-light max-w-3xl mx-auto">
+              Stay organized with 90+ tasks across 11 timeline phases
+            </p>
+          </div>
+        </div>
+
+        <AuthWall featureName="Wedding Checklist" previewContent={previewContent} fullLock={false} />
+      </div>
+    );
   }
 
   const togglePhase = (phase: string) => {

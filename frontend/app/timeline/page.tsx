@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Calendar, Clock, Users, Camera, Music, Utensils, Truck, Sparkles, CheckCircle, AlertCircle, MapPin, Plus, ChevronUp, ChevronDown, Trash2, Edit } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
 
 type TimelineView = 'master' | 'bride' | 'groom' | 'vendors' | 'coordinator' | 'ceremony';
 
@@ -117,9 +119,103 @@ const MASTER_TIMELINE: TimelineItem[] = [
 
 export default function Timeline() {
   const router = useRouter();
+  const { isAuthenticated, loading } = useAuth();
   const [activeView, setActiveView] = useState<TimelineView>('master');
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [ceremonyEvents, setCeremonyEvents] = useState<CeremonyEvent[]>(INITIAL_CEREMONY_EVENTS);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  // Preview content - show sample timeline events
+  const previewTimeline = MASTER_TIMELINE.slice(0, 10);
+  const previewContent = (
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="mb-6">
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <Calendar className="w-5 h-5 text-champagne-600" />
+          <span className="font-medium">Complete wedding day timeline from 8 AM - 11 PM</span>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {previewTimeline.map((item, index) => (
+          <div key={index} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                <div className="w-16 text-sm font-bold text-champagne-600">{item.time}</div>
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 mb-1">{item.title}</h4>
+                <p className="text-sm text-gray-600 mb-2">{item.description}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`text-xs px-2 py-1 rounded ${
+                    item.category === 'ceremony' ? 'bg-purple-100 text-purple-700' :
+                    item.category === 'reception' ? 'bg-rose-100 text-rose-700' :
+                    item.category === 'prep' ? 'bg-blue-100 text-blue-700' :
+                    item.category === 'vendor' ? 'bg-green-100 text-green-700' :
+                    'bg-amber-100 text-amber-700'
+                  }`}>
+                    {item.category}
+                  </span>
+                  {item.assignedTo && (
+                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                      {item.assignedTo.join(', ')}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="text-center py-4 text-gray-500 italic">
+          + 30 more timeline events covering the entire wedding day...
+        </div>
+      </div>
+    </div>
+  );
+
+  if (!isAuthenticated) {
+    return (
+      <div>
+        {/* Hero Banner with Photo */}
+        <div className="relative overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/wedding-photos/deltalow-130.jpg')",
+              backgroundPosition: 'center center'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-4 py-24 text-center">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="h-px w-12 bg-champagne-400/60"></div>
+              <Calendar className="w-8 h-8 text-champagne-400" />
+              <div className="h-px w-12 bg-champagne-400/60"></div>
+            </div>
+
+            <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">
+              Wedding Day Timeline
+            </h2>
+            <p className="text-2xl text-white/95 font-light max-w-3xl mx-auto">
+              Professional minute-by-minute timeline with ceremony order planner
+            </p>
+          </div>
+        </div>
+
+        <AuthWall featureName="Wedding Timeline" previewContent={previewContent} fullLock={false} />
+      </div>
+    );
+  }
 
   const toggleComplete = (time: string) => {
     setCompletedItems(prev => {

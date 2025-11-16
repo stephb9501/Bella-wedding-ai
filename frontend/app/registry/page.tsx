@@ -19,8 +19,47 @@ export default function Registry() {
     );
   }
 
+  // Preview content - show sample registries
+  const sampleRegistries = [
+    { name: 'Amazon', url: 'amazon.com/registry', icon: '🛍️', color: 'bg-orange-50 border-orange-200' },
+    { name: 'Target', url: 'target.com/registry', icon: '🎯', color: 'bg-red-50 border-red-200' },
+    { name: 'Zola', url: 'zola.com/registry', icon: '💍', color: 'bg-purple-50 border-purple-200' },
+  ];
+
+  const previewContent = (
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Registry Aggregator Preview</h3>
+        <p className="text-gray-600">Combine all your wedding registries in one beautiful place</p>
+      </div>
+
+      <div className="space-y-4">
+        {sampleRegistries.map((registry, index) => (
+          <div key={index} className={`bg-white rounded-xl p-6 border-2 ${registry.color} shadow-sm`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">{registry.icon}</div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-lg">{registry.name}</h4>
+                  <p className="text-gray-600 text-sm">{registry.url}</p>
+                </div>
+              </div>
+              <button className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 text-white font-semibold rounded-lg shadow-md hover:from-champagne-600 hover:to-rose-600 transition">
+                View Registry
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center py-6 text-gray-500 italic">
+        + Add unlimited registries, customize display, share single link with guests...
+      </div>
+    </div>
+  );
+
   if (!isAuthenticated) {
-    return <AuthWall featureName="Registry" fullLock={true} />;
+    return <AuthWall featureName="Registry Aggregator" previewContent={previewContent} fullLock={false} />;
   }
 
   // TODO: Get actual wedding ID from user session

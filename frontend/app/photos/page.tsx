@@ -19,8 +19,44 @@ export default function Photos() {
     );
   }
 
+  // Preview content - show sample photo gallery
+  const samplePhotos = [
+    '/wedding-photos/deltalow-130.jpg',
+    '/wedding-photos/deltalow-447.jpg',
+    '/wedding-photos/deltalow-512.jpg',
+    '/wedding-photos/deltalow-119.jpg',
+    '/wedding-photos/deltalow-445.jpg',
+    '/wedding-photos/deltalow-108.jpg',
+  ];
+
+  const previewContent = (
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Photo Gallery Preview</h3>
+        <p className="text-gray-600">Create albums, upload unlimited photos, and share with guests</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {samplePhotos.map((photo, index) => (
+          <div key={index} className="relative aspect-square rounded-xl overflow-hidden shadow-lg group">
+            <img
+              src={photo}
+              alt={`Wedding photo ${index + 1}`}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </div>
+        ))}
+      </div>
+
+      <div className="text-center py-6 text-gray-500 italic">
+        + Create unlimited albums, organize by event, share with guests...
+      </div>
+    </div>
+  );
+
   if (!isAuthenticated) {
-    return <AuthWall featureName="Gallery" fullLock={true} />;
+    return <AuthWall featureName="Photo Gallery" previewContent={previewContent} fullLock={false} />;
   }
 
   // TODO: Get actual wedding ID from user session

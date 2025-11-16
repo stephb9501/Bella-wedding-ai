@@ -19,8 +19,65 @@ export default function Guests() {
     );
   }
 
+  // Preview content - show sample guests
+  const sampleGuests = [
+    { name: 'Emily & James Anderson', email: 'emily.anderson@email.com', rsvp: 'Yes', count: 2 },
+    { name: 'Sarah Martinez', email: 'sarah.m@email.com', rsvp: 'Yes', count: 1 },
+    { name: 'Michael & Rachel Chen', email: 'mchen@email.com', rsvp: 'Pending', count: 2 },
+    { name: 'David Thompson', email: 'dthompson@email.com', rsvp: 'Yes', count: 1 },
+    { name: 'Jessica & Tom Wilson', email: 'jwilson@email.com', rsvp: 'No', count: 2 },
+  ];
+
+  const previewContent = (
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-gray-900">Guest List Preview</h3>
+          <div className="flex gap-4 text-sm">
+            <span className="text-gray-600">Total Guests: <span className="font-bold text-champagne-600">8</span></span>
+            <span className="text-gray-600">Confirmed: <span className="font-bold text-green-600">6</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">RSVP</th>
+              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Count</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {sampleGuests.map((guest, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-6 py-4 font-medium text-gray-900">{guest.name}</td>
+                <td className="px-6 py-4 text-gray-600">{guest.email}</td>
+                <td className="px-6 py-4 text-center">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                    guest.rsvp === 'Yes' ? 'bg-green-100 text-green-800' :
+                    guest.rsvp === 'No' ? 'bg-red-100 text-red-800' :
+                    'bg-amber-100 text-amber-800'
+                  }`}>
+                    {guest.rsvp}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-center text-gray-900">{guest.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="text-center py-6 text-gray-500 italic">
+        + Manage unlimited guests, send RSVP links, track responses...
+      </div>
+    </div>
+  );
+
   if (!isAuthenticated) {
-    return <AuthWall featureName="Guest List" fullLock={true} />;
+    return <AuthWall featureName="Guest List Manager" previewContent={previewContent} fullLock={false} />;
   }
 
   // TODO: Get actual wedding ID from user session

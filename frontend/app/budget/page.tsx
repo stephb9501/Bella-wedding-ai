@@ -40,7 +40,117 @@ export default function Budget() {
   const [budget, setBudget] = useState<BudgetItem[]>(INITIAL_BUDGET);
   const [totalBudget, setTotalBudget] = useState(40000);
 
-  // FREE TO EXPLORE - No auth required
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  // Preview content - show sample budget stats
+  const previewStats = {
+    estimated: 35100,
+    actual: 14700,
+    remaining: 25300,
+    paid: 12550
+  };
+
+  const previewContent = (
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      {/* Preview Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-600">Total Budget</span>
+            <DollarSign className="w-5 h-5 text-gray-400" />
+          </div>
+          <div className="text-3xl font-bold text-gray-900">$40,000</div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-600">Actual Spent</span>
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+          </div>
+          <div className="text-3xl font-bold text-blue-600">$14,700</div>
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+            <div className="h-2 rounded-full bg-blue-600" style={{ width: '37%' }}></div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">37% of budget</p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-600">Remaining</span>
+            <TrendingDown className="w-5 h-5 text-emerald-600" />
+          </div>
+          <div className="text-3xl font-bold text-emerald-600">$25,300</div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-gray-600">Paid</span>
+            <DollarSign className="w-5 h-5 text-purple-600" />
+          </div>
+          <div className="text-3xl font-bold text-purple-600">$12,550</div>
+        </div>
+      </div>
+
+      {/* Preview categories list */}
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Track 17 Budget Categories</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {INITIAL_BUDGET.slice(0, 12).map(item => (
+            <div key={item.id} className="flex items-center gap-2 text-gray-700">
+              <DollarSign className="w-4 h-4 text-green-600" />
+              <span className="text-sm">{item.category}</span>
+            </div>
+          ))}
+          <div className="flex items-center gap-2 text-gray-500 italic">
+            <span className="text-sm">+ 5 more categories...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (!isAuthenticated) {
+    return (
+      <div>
+        {/* Hero Banner with Photo */}
+        <div className="relative overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/wedding-photos/deltalow-447.jpg')",
+              backgroundPosition: 'center center'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-4 py-24 text-center">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="h-px w-12 bg-green-400/60"></div>
+              <DollarSign className="w-8 h-8 text-green-400" />
+              <div className="h-px w-12 bg-green-400/60"></div>
+            </div>
+
+            <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">
+              Wedding Budget Tracker
+            </h2>
+            <p className="text-2xl text-white/95 font-light max-w-3xl mx-auto">
+              Track your spending across all categories and stay on budget for your perfect day
+            </p>
+          </div>
+        </div>
+
+        <AuthWall featureName="Budget Tracker" previewContent={previewContent} fullLock={false} />
+      </div>
+    );
+  }
 
   const stats = {
     estimated: budget.reduce((sum, item) => sum + item.estimated, 0),
