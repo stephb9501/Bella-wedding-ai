@@ -43,50 +43,7 @@ interface UpcomingTask {
 }
 
 const DASHBOARD_CARDS = [
-  {
-    id: 'timeline',
-    title: 'Wedding Timeline',
-    description: 'Organize tasks by timeframe',
-    icon: Calendar,
-    color: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    href: '/timeline',
-    status: 'free',
-    tier: 'Free Preview'
-  },
-  {
-    id: 'checklist',
-    title: 'Checklist',
-    description: '90+ professional tasks',
-    icon: CheckCircle,
-    color: 'bg-green-50',
-    iconColor: 'text-green-600',
-    href: '/checklist',
-    status: 'free',
-    tier: 'Free Preview'
-  },
-  {
-    id: 'guests',
-    title: 'Guest List',
-    description: 'Manage RSVPs and meals',
-    icon: Users,
-    color: 'bg-purple-50',
-    iconColor: 'text-purple-600',
-    href: '/guests',
-    status: 'premium',
-    tier: 'Premium'
-  },
-  {
-    id: 'budget',
-    title: 'Budget Planner',
-    description: 'Track spending by category',
-    icon: DollarSign,
-    color: 'bg-emerald-50',
-    iconColor: 'text-emerald-600',
-    href: '/budget',
-    status: 'free',
-    tier: 'Free Preview'
-  },
+  // FREE PREVIEW FEATURES (No login required - public/preview access)
   {
     id: 'vendors',
     title: 'Browse Vendors',
@@ -98,6 +55,52 @@ const DASHBOARD_CARDS = [
     status: 'free',
     tier: 'Free'
   },
+
+  // STANDARD PLAN FEATURES ($19.99/mo)
+  {
+    id: 'checklist',
+    title: 'Checklist',
+    description: '90+ professional tasks',
+    icon: CheckCircle,
+    color: 'bg-green-50',
+    iconColor: 'text-green-600',
+    href: '/checklist',
+    status: 'standard',
+    tier: 'Standard'
+  },
+  {
+    id: 'budget',
+    title: 'Budget Planner',
+    description: 'Track spending by category',
+    icon: DollarSign,
+    color: 'bg-emerald-50',
+    iconColor: 'text-emerald-600',
+    href: '/budget',
+    status: 'standard',
+    tier: 'Standard'
+  },
+  {
+    id: 'timeline',
+    title: 'Wedding Timeline',
+    description: 'Organize tasks by timeframe',
+    icon: Calendar,
+    color: 'bg-blue-50',
+    iconColor: 'text-blue-600',
+    href: '/timeline',
+    status: 'standard',
+    tier: 'Standard'
+  },
+  {
+    id: 'website-builder',
+    title: 'Wedding Website',
+    description: 'Create your wedding site (3 sections)',
+    icon: Home,
+    color: 'bg-indigo-50',
+    iconColor: 'text-indigo-600',
+    href: '/website',
+    status: 'standard',
+    tier: 'Standard'
+  },
   {
     id: 'vendor-questions',
     title: 'Vendor Questions',
@@ -106,19 +109,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-purple-50',
     iconColor: 'text-purple-600',
     href: '/vendor-questions',
-    status: 'free',
-    tier: 'Free Preview'
-  },
-  {
-    id: 'ai-assistant',
-    title: 'AI Assistant',
-    description: 'Get expert planning advice',
-    icon: Sparkles,
-    color: 'bg-amber-50',
-    iconColor: 'text-amber-600',
-    href: '/ai',
-    status: 'free',
-    tier: 'Free'
+    status: 'standard',
+    tier: 'Standard'
   },
   {
     id: 'rsvp-invites',
@@ -128,28 +120,30 @@ const DASHBOARD_CARDS = [
     color: 'bg-pink-50',
     iconColor: 'text-pink-600',
     href: '/rsvp',
-    status: 'free',
-    tier: 'Free'
+    status: 'standard',
+    tier: 'Standard'
   },
   {
-    id: 'website-builder',
-    title: 'Wedding Website',
-    description: 'Create your wedding site',
-    icon: Home,
-    color: 'bg-indigo-50',
-    iconColor: 'text-indigo-600',
-    href: '/website',
-    status: 'free',
-    tier: 'Free'
+    id: 'ai-assistant',
+    title: 'AI Assistant',
+    description: 'Basic AI planning advice',
+    icon: Sparkles,
+    color: 'bg-amber-50',
+    iconColor: 'text-amber-600',
+    href: '/ai',
+    status: 'standard',
+    tier: 'Standard'
   },
+
+  // PREMIUM PLAN FEATURES ($29.99/mo) - Everything in Standard PLUS:
   {
-    id: 'photo-gallery',
-    title: 'Photo Gallery',
-    description: 'Share & organize photos',
-    icon: Camera,
-    color: 'bg-cyan-50',
-    iconColor: 'text-cyan-600',
-    href: '/photos',
+    id: 'guests',
+    title: 'Guest List',
+    description: 'Unlimited guests & RSVPs',
+    icon: Users,
+    color: 'bg-purple-50',
+    iconColor: 'text-purple-600',
+    href: '/guests',
     status: 'premium',
     tier: 'Premium'
   },
@@ -165,6 +159,17 @@ const DASHBOARD_CARDS = [
     tier: 'Premium'
   },
   {
+    id: 'photo-gallery',
+    title: 'Photo Gallery',
+    description: 'Share & organize 150 photos',
+    icon: Camera,
+    color: 'bg-cyan-50',
+    iconColor: 'text-cyan-600',
+    href: '/photos',
+    status: 'premium',
+    tier: 'Premium'
+  },
+  {
     id: 'seating',
     title: 'Seating Chart',
     description: 'Plan table layouts',
@@ -175,6 +180,8 @@ const DASHBOARD_CARDS = [
     status: 'premium',
     tier: 'Premium'
   },
+
+  // FUTURE FEATURES
   {
     id: 'honeymoon',
     title: 'Honeymoon Planning',
@@ -568,9 +575,14 @@ export default function Dashboard() {
 
           {/* Free Features */}
           <div className="mb-12">
-            <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
-              Free Features
-            </h4>
+            <div className="flex items-center gap-3 mb-4">
+              <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                Free Features
+              </h4>
+              <span className="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-semibold">
+                Public Access
+              </span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {DASHBOARD_CARDS.filter((card) => card.status === 'free').map((card) => {
                 const IconComponent = card.icon;
@@ -594,11 +606,54 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Premium Features */}
+          {/* Standard Plan Features */}
           <div className="mb-12">
-            <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
-              Premium Features
-            </h4>
+            <div className="flex items-center gap-3 mb-4">
+              <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                Standard Plan Features
+              </h4>
+              <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-semibold">
+                $19.99/month
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {DASHBOARD_CARDS.filter((card) => card.status === 'standard').map((card) => {
+                const IconComponent = card.icon;
+                return (
+                  <button
+                    key={card.id}
+                    onClick={() => router.push(card.href)}
+                    className={`${card.color} border-2 border-blue-300 rounded-xl p-6 hover:shadow-md transition text-left group relative`}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded font-medium">
+                        {card.tier}
+                      </span>
+                    </div>
+                    <IconComponent className={`${card.iconColor} w-8 h-8 mb-3 group-hover:scale-110 transition`} />
+                    <h4 className="font-semibold text-gray-900 mb-1">{card.title}</h4>
+                    <p className="text-sm text-gray-600">{card.description}</p>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <p className="text-sm text-blue-900">
+                <span className="font-semibold">Standard Plan includes:</span> 75 guests, 30 photos, 3 website sections, 5 saved vendors, basic AI assistant
+              </p>
+            </div>
+          </div>
+
+          {/* Premium Plan Features */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-4">
+              <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                Premium Plan Features
+              </h4>
+              <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                $29.99/month
+              </span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {DASHBOARD_CARDS.filter((card) => card.status === 'premium').map((card) => {
                 const IconComponent = card.icon;
@@ -619,6 +674,11 @@ export default function Dashboard() {
                   </button>
                 );
               })}
+            </div>
+            <div className="mt-4 bg-gradient-to-r from-champagne-50 to-rose-50 border-2 border-champagne-300 rounded-xl p-4">
+              <p className="text-sm text-gray-900">
+                <span className="font-semibold">Premium Plan includes:</span> Everything in Standard PLUS unlimited guests, 150 photos, 8 website sections, 50 saved vendors, full AI suite, advanced analytics
+              </p>
             </div>
           </div>
 
