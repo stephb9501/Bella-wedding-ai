@@ -388,8 +388,8 @@ export default function Dashboard() {
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: "url('/wedding-photos/deltalow-130.jpg')",
-              backgroundPosition: 'center center'
+              backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
+              backgroundPosition: 'center 35%'
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
