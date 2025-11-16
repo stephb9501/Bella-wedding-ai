@@ -444,7 +444,7 @@ export default function HomePage() {
               </div>
             </div>
             <p className="text-center text-xs text-gray-500 italic">
-              Wedding photography by Deltalow Photography • Ft. Walton Beach, Florida
+              Wedding photography by Deltalow Photography • Eglin AFB, Ft. Walton Beach, Florida
             </p>
           </div>
         </div>
