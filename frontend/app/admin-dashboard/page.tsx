@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       icon: Users,
       href: '/admin/users',
       color: 'blue',
-      status: 'coming',
+      status: 'active',
     },
     {
       title: 'Bookings & Commission',
@@ -59,15 +59,7 @@ export default function AdminDashboard() {
       icon: DollarSign,
       href: '/admin/bookings',
       color: 'green',
-      status: 'coming',
-    },
-    {
-      title: '1-on-1 Sessions',
-      description: '$199/hr planning sessions. Set availability (6-9pm Central). Limit 10/month.',
-      icon: Calendar,
-      href: '/admin/planning-sessions',
-      color: 'orange',
-      status: 'coming',
+      status: 'active',
     },
     {
       title: 'Analytics & Reports',
@@ -75,6 +67,38 @@ export default function AdminDashboard() {
       icon: BarChart3,
       href: '/admin/analytics',
       color: 'indigo',
+      status: 'active',
+    },
+    {
+      title: 'Tax Reports',
+      description: 'Income tracking, tax documentation, export to CSV. Perfect for IRS filing.',
+      icon: FileText,
+      href: '/admin/tax-reports',
+      color: 'yellow',
+      status: 'active',
+    },
+    {
+      title: 'Team Access',
+      description: 'Give family & team members role-based access. Marketing, support, admin roles.',
+      icon: Shield,
+      href: '/admin/team-access',
+      color: 'red',
+      status: 'active',
+    },
+    {
+      title: 'Platform Updates',
+      description: 'Check for updates, install with one click. Auto-update security patches.',
+      icon: Settings,
+      href: '/admin/updates',
+      color: 'gray',
+      status: 'active',
+    },
+    {
+      title: '1-on-1 Sessions',
+      description: '$199/hr planning sessions. Set availability (6-9pm Central). Limit 10/month.',
+      icon: Calendar,
+      href: '/admin/planning-sessions',
+      color: 'orange',
       status: 'coming',
     },
     {
@@ -91,22 +115,6 @@ export default function AdminDashboard() {
       icon: FileText,
       href: '/admin/content-editor',
       color: 'yellow',
-      status: 'coming',
-    },
-    {
-      title: 'Support Team',
-      description: 'Add customer support team members. Manage email assignments.',
-      icon: Shield,
-      href: '/admin/support-team',
-      color: 'red',
-      status: 'coming',
-    },
-    {
-      title: 'Platform Settings',
-      description: 'Email templates, commission rates, feature flags, site-wide settings.',
-      icon: Settings,
-      href: '/admin/settings',
-      color: 'gray',
       status: 'coming',
     },
   ];
@@ -164,7 +172,7 @@ export default function AdminDashboard() {
             </div>
             <div className="text-right">
               <div className="text-sm opacity-90 mb-1">Quick Access</div>
-              <div className="text-lg font-semibold">10 Active Tools</div>
+              <div className="text-lg font-semibold">8 Active Tools</div>
             </div>
           </div>
         </div>
