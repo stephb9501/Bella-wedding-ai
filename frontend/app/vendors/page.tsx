@@ -11,13 +11,17 @@ interface Vendor {
   category: string;
   city: string;
   state: string;
+  zip_code?: string;
   description: string;
   tier: 'free' | 'premium' | 'featured' | 'elite';
+  price_tier?: 'Affordable' | 'Moderate' | 'Premium' | 'Luxury';
+  starting_price?: number;
   photo_count: number;
   profile_views: number;
   is_featured: boolean;
   email: string;
   phone: string;
+  distance?: number;
 }
 
 const CATEGORIES = [
@@ -25,6 +29,8 @@ const CATEGORIES = [
   'DJ/Music', 'Hair & Makeup', 'Wedding Planner', 'Cake', 'Transportation',
   'Officiant', 'Invitations', 'Dress & Attire', 'Rentals', 'Other'
 ];
+
+const PRICE_TIERS = ['All', 'Affordable', 'Moderate', 'Premium', 'Luxury'];
 
 const TIER_INFO = {
   free: { name: 'Free', icon: Star, color: 'text-gray-600', bg: 'bg-gray-100' },
@@ -36,24 +42,29 @@ const TIER_INFO = {
 export default function Vendors() {
   const router = useRouter();
   const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedPriceTier, setSelectedPriceTier] = useState('All');
+  const [zipCode, setZipCode] = useState('');
+  const [radius, setRadius] = useState('50');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     fetchVendors();
-  }, []);
-
-  useEffect(() => {
-    filterVendors();
-  }, [selectedCategory, searchQuery, vendors]);
+  }, [selectedCategory, selectedPriceTier, zipCode, radius]);
 
   const fetchVendors = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('/api/vendors');
+      const params = new URLSearchParams();
+      if (selectedCategory !== 'All') params.append('category', selectedCategory);
+      if (selectedPriceTier !== 'All') params.append('priceTier', selectedPriceTier);
+      if (zipCode) params.append('zipCode', zipCode);
+      if (radius) params.append('radius', radius);
+
+      const response = await fetch(`/api/vendors?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch vendors');
       const data = await response.json();
       setVendors(data || []);
@@ -64,27 +75,16 @@ export default function Vendors() {
     }
   };
 
-  const filterVendors = () => {
-    let filtered = vendors;
-
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(v => v.category === selectedCategory);
-    }
-
+  const filteredVendors = vendors.filter(v => {
     if (searchQuery) {
-      filtered = filtered.filter(v =>
+      return (
         v.business_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        v.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        v.description.toLowerCase().includes(searchQuery.toLowerCase())
+        v.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
-    // Sort by tier: elite > featured > premium > free
-    const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
-    filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
-
-    setFilteredVendors(filtered);
-  };
+    return true;
+  });
 
   const featuredVendors = filteredVendors.filter(v => v.is_featured).slice(0, 3);
   const regularVendors = filteredVendors.filter(v => !v.is_featured);
@@ -148,10 +148,45 @@ export default function Vendors() {
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* Search and Filters */}
-        <div className="text-center mb-12">
+        <div className="mb-8">
+          {/* Location Search */}
+          <div className="max-w-4xl mx-auto mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <MapPin className="w-4 h-4 inline mr-1" />
+                  ZIP Code
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your ZIP code..."
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                  maxLength={5}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Radius (miles)
+                </label>
+                <select
+                  value={radius}
+                  onChange={(e) => setRadius(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                >
+                  <option value="10">10 miles</option>
+                  <option value="25">25 miles</option>
+                  <option value="50">50 miles</option>
+                  <option value="100">100 miles</option>
+                  <option value="200">200+ miles</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto mb-6">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -166,7 +201,8 @@ export default function Vendors() {
         </div>
 
         {/* Category Filter */}
-        <div className="mb-8">
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">Category</h3>
           <div className="flex overflow-x-auto gap-2 pb-2">
             {CATEGORIES.map(category => (
               <button
@@ -179,6 +215,26 @@ export default function Vendors() {
                 }`}
               >
                 {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Price Filter */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">Price Range</h3>
+          <div className="flex overflow-x-auto gap-2 pb-2">
+            {PRICE_TIERS.map(tier => (
+              <button
+                key={tier}
+                onClick={() => setSelectedPriceTier(tier)}
+                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
+                  selectedPriceTier === tier
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {tier === 'All' ? 'All Prices' : tier}
               </button>
             ))}
           </div>
