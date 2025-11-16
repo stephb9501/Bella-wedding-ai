@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, Heart, Star, Crown, Zap, TrendingUp, Users, MessageCircle, BarChart3 } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import { Check, Heart, Star, Crown, Zap, TrendingUp, Users, MessageCircle, BarChart3, Loader2 } from 'lucide-react';
+import { VENDOR_PRICE_IDS } from '@/lib/stripe';
 
 export default function VendorPricingPage() {
   const router = useRouter();
+  const { isAuthenticated, user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   const plans = [
     {
@@ -137,6 +141,63 @@ export default function VendorPricingPage() {
     return colors[color as keyof typeof colors];
   };
 
+  const handleSubscribe = async (planName: string, tier: string) => {
+    // Check if user is authenticated
+    if (!isAuthenticated || !user) {
+      router.push('/auth?redirect=/vendor-pricing');
+      return;
+    }
+
+    // Basic plan - just redirect to vendor dashboard
+    if (planName === 'Basic') {
+      router.push('/vendor-dashboard');
+      return;
+    }
+
+    setLoadingPlan(planName);
+
+    try {
+      // Determine price ID based on plan and billing cycle
+      let priceId = '';
+      if (tier === 'silver') {
+        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.silver_monthly : VENDOR_PRICE_IDS.silver_yearly;
+      } else if (tier === 'gold') {
+        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.gold_monthly : VENDOR_PRICE_IDS.gold_yearly;
+      } else if (tier === 'platinum') {
+        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.platinum_monthly : VENDOR_PRICE_IDS.platinum_yearly;
+      }
+
+      // Call API to create Stripe checkout session
+      const response = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId,
+          userId: user.id.toString(),
+          userEmail: user.email,
+          customerType: 'vendor',
+          plan: tier,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { url } = await response.json();
+
+      // Redirect to Stripe checkout
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 via-blue-50 to-purple-50">
       {/* Hero Section */}
@@ -259,10 +320,18 @@ export default function VendorPricingPage() {
                   </ul>
 
                   <button
-                    onClick={() => router.push('/auth')}
-                    className={`w-full py-2 px-4 rounded-lg font-semibold text-white text-sm transition-colors ${colors.accent} hover:opacity-90`}
+                    onClick={() => handleSubscribe(plan.name, plan.tier)}
+                    disabled={loadingPlan === plan.name}
+                    className={`w-full py-2 px-4 rounded-lg font-semibold text-white text-sm transition-colors ${colors.accent} hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
                   >
-                    {plan.cta}
+                    {loadingPlan === plan.name ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      plan.cta
+                    )}
                   </button>
                 </div>
               </div>
