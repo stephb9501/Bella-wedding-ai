@@ -118,24 +118,30 @@ export default function Vendors() {
         </div>
       </header>
 
-      {/* Hero Section with Photo Background */}
+      {/* Hero Banner with Photo */}
       <div className="relative overflow-hidden mb-8">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/wedding-photos/deltalow-131.jpg')",
-            backgroundPosition: 'center'
+            backgroundImage: "url('/wedding-photos/deltalow-119.jpg')",
+            backgroundPosition: 'center center'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/85 to-white/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-16 text-center">
-          <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
+        <div className="relative max-w-7xl mx-auto px-4 py-24 text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-12 bg-purple-400/60"></div>
+            <MapPin className="w-8 h-8 text-purple-400" />
+            <div className="h-px w-12 bg-purple-400/60"></div>
+          </div>
+
+          <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">
             Find Your Perfect Vendors
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Browse verified wedding professionals in your area
+          <p className="text-2xl text-white/95 font-light max-w-3xl mx-auto">
+            Browse verified wedding professionals, compare pricing, and book with confidence
           </p>
         </div>
       </div>

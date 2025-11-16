@@ -236,16 +236,35 @@ export default function Timeline() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Hero */}
-        <div className="text-center mb-8">
-          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+      {/* Hero Banner with Photo */}
+      <div className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/wedding-photos/deltalow-130.jpg')",
+            backgroundPosition: 'center center'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 py-24 text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-12 bg-amber-400/60"></div>
+            <Calendar className="w-8 h-8 text-amber-400" />
+            <div className="h-px w-12 bg-amber-400/60"></div>
+          </div>
+
+          <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">
             Professional Day-Of Timeline
           </h2>
-          <p className="text-xl text-gray-600">
-            Minute-by-minute coordinator-grade schedule
+          <p className="text-2xl text-white/95 font-light max-w-3xl mx-auto">
+            Minute-by-minute coordinator-grade schedule to keep your wedding day running smoothly
           </p>
         </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-12">
 
         {/* Progress */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">

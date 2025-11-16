@@ -113,16 +113,35 @@ export default function Budget() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Hero */}
-        <div className="text-center mb-8">
-          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+      {/* Hero Banner with Photo */}
+      <div className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/wedding-photos/deltalow-447.jpg')",
+            backgroundPosition: 'center center'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 py-24 text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="h-px w-12 bg-green-400/60"></div>
+            <DollarSign className="w-8 h-8 text-green-400" />
+            <div className="h-px w-12 bg-green-400/60"></div>
+          </div>
+
+          <h2 className="text-5xl md:text-6xl font-serif font-bold text-white mb-6">
             Wedding Budget
           </h2>
-          <p className="text-xl text-gray-600">
-            Track your spending and stay on budget
+          <p className="text-2xl text-white/95 font-light max-w-3xl mx-auto">
+            Track your spending across all categories and stay on budget for your perfect day
           </p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-12">
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
