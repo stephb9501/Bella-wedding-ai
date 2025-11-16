@@ -125,17 +125,17 @@ export default function AuthPage() {
 
           .photo-item:nth-child(1) {
             animation-delay: 0s;
-            background-image: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)), url('/images/IMG_3942.JPG');
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 247, 250, 0.75)), url('/wedding-photos/deltalow-445.jpg');
           }
 
           .photo-item:nth-child(2) {
             animation-delay: 5s;
-            background-image: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)), url('/images/IMG_3941.JPG');
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 247, 250, 0.75)), url('/wedding-photos/deltalow-447.jpg');
           }
 
           .photo-item:nth-child(3) {
             animation-delay: 10s;
-            background-image: linear-gradient(135deg, rgba(255, 247, 250, 0.4), rgba(249, 241, 247, 0.4)), url('/images/IMG_3943%20(1).JPG');
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 247, 250, 0.75)), url('/wedding-photos/deltalow-512.jpg');
           }
 
           @keyframes photoFade {

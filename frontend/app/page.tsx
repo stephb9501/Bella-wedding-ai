@@ -83,48 +83,61 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <div className="mb-8">
-          <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
-            Your Dream Wedding,
-            <br />
-            <span className="bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
-              Perfectly Planned
-            </span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
-          </p>
+      <section className="relative overflow-hidden">
+        {/* Hero Image Background */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
+            backgroundPosition: 'center 30%'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/75"></div>
         </div>
 
-        <div className="flex gap-4 justify-center mb-12">
-          <button
-            onClick={() => router.push('/auth')}
-            className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
-          >
-            Get Started Free
-          </button>
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-200"
-          >
-            View Dashboard
-          </button>
-        </div>
+        <div className="relative max-w-7xl mx-auto px-4 py-32 text-center">
+          <div className="mb-8 max-w-3xl mx-auto">
+            <h2 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-6">
+              Your Dream Wedding,
+              <br />
+              <span className="bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
+                Perfectly Planned
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+              Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
+            </p>
+          </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mb-20">
-          <div>
-            <div className="text-4xl font-bold text-champagne-600 mb-2">12+</div>
-            <div className="text-gray-600">Features</div>
+          <div className="flex gap-4 justify-center mb-12">
+            <button
+              onClick={() => router.push('/auth')}
+              className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+            >
+              Get Started Free
+            </button>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-200"
+            >
+              View Dashboard
+            </button>
           </div>
-          <div>
-            <div className="text-4xl font-bold text-rose-600 mb-2">1000+</div>
-            <div className="text-gray-600">Brides</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-purple-600 mb-2">500+</div>
-            <div className="text-gray-600">Vendors</div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div>
+              <div className="text-4xl font-bold text-champagne-600 mb-2">12+</div>
+              <div className="text-gray-600">Features</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-rose-600 mb-2">1000+</div>
+              <div className="text-gray-600">Brides</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">500+</div>
+              <div className="text-gray-600">Vendors</div>
+            </div>
           </div>
         </div>
       </section>
