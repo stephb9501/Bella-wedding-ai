@@ -125,23 +125,23 @@ export default function AuthPage() {
 
           .photo-item:nth-child(1) {
             animation-delay: 0s;
-            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 247, 250, 0.75)), url('/wedding-photos/deltalow-445.jpg');
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 247, 250, 0.6)), url('/wedding-photos/deltalow-445.jpg');
           }
 
           .photo-item:nth-child(2) {
             animation-delay: 5s;
-            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 247, 250, 0.75)), url('/wedding-photos/deltalow-447.jpg');
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 247, 250, 0.6)), url('/wedding-photos/deltalow-447.jpg');
           }
 
           .photo-item:nth-child(3) {
             animation-delay: 10s;
-            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 247, 250, 0.75)), url('/wedding-photos/deltalow-512.jpg');
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 247, 250, 0.6)), url('/wedding-photos/deltalow-512.jpg');
           }
 
           @keyframes photoFade {
             0%, 100% { opacity: 0; }
-            8%, 92% { opacity: 0.25; }
-            50% { opacity: 0.25; }
+            8%, 92% { opacity: 0.6; }
+            50% { opacity: 0.6; }
           }
 
           /* White Overlay */
@@ -151,7 +151,7 @@ export default function AuthPage() {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.72);
+            background: rgba(255, 255, 255, 0.5);
             z-index: 1;
           }
 

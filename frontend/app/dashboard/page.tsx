@@ -51,17 +51,19 @@ const DASHBOARD_CARDS = [
     color: 'bg-blue-50',
     iconColor: 'text-blue-600',
     href: '/timeline',
-    status: 'core'
+    status: 'free',
+    tier: 'Free Preview'
   },
   {
     id: 'checklist',
     title: 'Checklist',
-    description: '60+ pre-loaded tasks',
+    description: '90+ professional tasks',
     icon: CheckCircle,
     color: 'bg-green-50',
     iconColor: 'text-green-600',
     href: '/checklist',
-    status: 'core'
+    status: 'free',
+    tier: 'Free Preview'
   },
   {
     id: 'guests',
@@ -71,7 +73,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-purple-50',
     iconColor: 'text-purple-600',
     href: '/guests',
-    status: 'core'
+    status: 'premium',
+    tier: 'Premium'
   },
   {
     id: 'budget',
@@ -81,7 +84,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-emerald-50',
     iconColor: 'text-emerald-600',
     href: '/budget',
-    status: 'core'
+    status: 'free',
+    tier: 'Free Preview'
   },
   {
     id: 'vendors',
@@ -91,7 +95,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-rose-50',
     iconColor: 'text-rose-600',
     href: '/vendors',
-    status: 'core'
+    status: 'free',
+    tier: 'Free'
   },
   {
     id: 'vendor-questions',
@@ -101,7 +106,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-purple-50',
     iconColor: 'text-purple-600',
     href: '/vendor-questions',
-    status: 'core'
+    status: 'free',
+    tier: 'Free'
   },
   {
     id: 'ai-assistant',
@@ -111,7 +117,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-amber-50',
     iconColor: 'text-amber-600',
     href: '/ai',
-    status: 'core'
+    status: 'free',
+    tier: 'Free'
   },
   {
     id: 'rsvp-invites',
@@ -121,7 +128,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-pink-50',
     iconColor: 'text-pink-600',
     href: '/rsvp',
-    status: 'core'
+    status: 'free',
+    tier: 'Free'
   },
   {
     id: 'website-builder',
@@ -131,7 +139,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-indigo-50',
     iconColor: 'text-indigo-600',
     href: '/website',
-    status: 'core'
+    status: 'free',
+    tier: 'Free'
   },
   {
     id: 'photo-gallery',
@@ -141,7 +150,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-cyan-50',
     iconColor: 'text-cyan-600',
     href: '/photos',
-    status: 'core'
+    status: 'premium',
+    tier: 'Premium'
   },
   {
     id: 'registry',
@@ -151,7 +161,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-red-50',
     iconColor: 'text-red-600',
     href: '/registry',
-    status: 'core'
+    status: 'premium',
+    tier: 'Premium'
   },
   {
     id: 'seating',
@@ -161,7 +172,8 @@ const DASHBOARD_CARDS = [
     color: 'bg-teal-50',
     iconColor: 'text-teal-600',
     href: '/seating',
-    status: 'core'
+    status: 'premium',
+    tier: 'Premium'
   },
   {
     id: 'honeymoon',
@@ -536,20 +548,53 @@ export default function Dashboard() {
         <div>
           <h3 className="text-2xl font-serif font-bold text-gray-900 mb-6">Your Tools</h3>
 
-          {/* Core Features */}
+          {/* Free Features */}
           <div className="mb-12">
             <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
-              Active Features
+              Free Features
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {DASHBOARD_CARDS.filter((card) => card.status === 'core').map((card) => {
+              {DASHBOARD_CARDS.filter((card) => card.status === 'free').map((card) => {
                 const IconComponent = card.icon;
                 return (
                   <button
                     key={card.id}
                     onClick={() => router.push(card.href)}
-                    className={`${card.color} border border-gray-200 rounded-xl p-6 hover:shadow-md transition text-left group`}
+                    className={`${card.color} border border-gray-200 rounded-xl p-6 hover:shadow-md transition text-left group relative`}
                   >
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-medium">
+                        {card.tier}
+                      </span>
+                    </div>
+                    <IconComponent className={`${card.iconColor} w-8 h-8 mb-3 group-hover:scale-110 transition`} />
+                    <h4 className="font-semibold text-gray-900 mb-1">{card.title}</h4>
+                    <p className="text-sm text-gray-600">{card.description}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Premium Features */}
+          <div className="mb-12">
+            <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-4">
+              Premium Features
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {DASHBOARD_CARDS.filter((card) => card.status === 'premium').map((card) => {
+                const IconComponent = card.icon;
+                return (
+                  <button
+                    key={card.id}
+                    onClick={() => router.push(card.href)}
+                    className={`${card.color} border-2 border-champagne-300 rounded-xl p-6 hover:shadow-md transition text-left group relative`}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs px-2 py-1 rounded font-medium">
+                        {card.tier}
+                      </span>
+                    </div>
                     <IconComponent className={`${card.iconColor} w-8 h-8 mb-3 group-hover:scale-110 transition`} />
                     <h4 className="font-semibold text-gray-900 mb-1">{card.title}</h4>
                     <p className="text-sm text-gray-600">{card.description}</p>

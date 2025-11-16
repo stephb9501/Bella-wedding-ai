@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, CheckCircle, Filter, Plus, X, ChevronDown, ChevronUp, AlertCircle, Sparkles } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
 
 interface ChecklistTask {
   id: string;
@@ -161,11 +163,50 @@ const CHECKLIST_TASKS: ChecklistTask[] = [
 
 export default function Checklist() {
   const router = useRouter();
+  const { isAuthenticated, loading } = useAuth();
   const [tasks, setTasks] = useState<ChecklistTask[]>(CHECKLIST_TASKS);
   const [selectedPhase, setSelectedPhase] = useState<string>('All Phases');
   const [selectedCategory, setSelectedCategory] = useState<string>('All Categories');
   const [showCompleted, setShowCompleted] = useState(true);
   const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set(['12+ Months Out', '9-11 Months Out']));
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  // Preview mode for unauthenticated users - show first 5 tasks only
+  const previewTasks = CHECKLIST_TASKS.slice(0, 5);
+  const previewContent = (
+    <div className="space-y-4">
+      {previewTasks.map(task => (
+        <div key={task.id} className="bg-white rounded-xl p-4 border border-gray-200">
+          <div className="flex items-start gap-4">
+            <div className="w-5 h-5 mt-0.5 rounded border-2 border-gray-300 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="font-medium text-gray-900">{task.title}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-xs px-2 py-1 rounded bg-red-100 text-red-700">
+                  {task.priority}
+                </span>
+                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                  {task.category}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (!isAuthenticated) {
+    return <AuthWall featureName="Checklist" previewContent={previewContent} fullLock={false} />;
+  }
 
   const togglePhase = (phase: string) => {
     setExpandedPhases(prev => {
