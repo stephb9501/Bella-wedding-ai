@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase-server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { randomBytes } from 'crypto';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
-
 export async function POST(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -51,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     // Save to database
     const photoUrl = `/uploads/gallery/${weddingId}/${fileName}`;
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('gallery_photos')
       .insert({
         gallery_id: galleryId,
@@ -73,15 +64,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { searchParams } = new URL(request.url);
     const photoId = searchParams.get('id');
 
     if (!photoId) return NextResponse.json({ error: 'Missing photo id' }, { status: 400 });
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('gallery_photos')
       .delete()
       .eq('id', photoId);
@@ -96,15 +85,13 @@ export async function DELETE(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { searchParams } = new URL(request.url);
     const galleryId = searchParams.get('gallery_id');
 
     if (!galleryId) return NextResponse.json({ error: 'Missing gallery_id' }, { status: 400 });
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('gallery_photos')
       .select('*')
       .eq('gallery_id', galleryId)

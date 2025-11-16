@@ -1,15 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase-server';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-    );
-
-    // Test database connection
-    const { data, error } = await supabase
+    // Test database connection using the shared server client
+    const { data, error } = await supabaseServer
       .from('couples')
       .select('count')
       .limit(1);

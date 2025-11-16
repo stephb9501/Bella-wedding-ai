@@ -1,20 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+import { supabaseServer } from '@/lib/supabase-server';
 
 export async function GET(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
   try {
     const { searchParams } = new URL(request.url);
     const weddingId = searchParams.get('weddingId');
     if (!weddingId) return NextResponse.json({ error: 'Missing weddingId' }, { status: 400 });
-    const { data, error } = await supabase.from('registry_links').select('*').eq('wedding_id', weddingId).eq('is_active', true);
+    const { data, error } = await supabaseServer.from('registry_links').select('*').eq('wedding_id', weddingId).eq('is_active', true);
     if (error) throw error;
     return NextResponse.json(data || []);
   } catch (error) {
@@ -23,7 +15,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
   try {
     const { wedding_id, platform, url, link_title } = await request.json();
 
@@ -31,7 +22,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const { data, error } = await supabase.from('registry_links').insert({
+    const { data, error } = await supabaseServer.from('registry_links').insert({
       wedding_id,
       platform,
       url,
@@ -48,14 +39,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) return NextResponse.json({ error: 'Missing registry id' }, { status: 400 });
 
-    const { error } = await supabase.from('registry_links').delete().eq('id', id);
+    const { error } = await supabaseServer.from('registry_links').delete().eq('id', id);
     if (error) throw error;
 
     return NextResponse.json({ success: true });
