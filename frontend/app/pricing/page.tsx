@@ -1,0 +1,376 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Check, Heart, Sparkles, Crown, Zap } from 'lucide-react';
+
+export default function PricingPage() {
+  const router = useRouter();
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+
+  const plans = [
+    {
+      name: 'Free',
+      price: { monthly: 0, annual: 0 },
+      description: 'Perfect for browsing and exploring',
+      icon: Heart,
+      color: 'rose',
+      features: [
+        'Browse vendor directory',
+        'View sample checklists',
+        'Explore planning tools',
+        'Limited vendor contacts (3/month)',
+        'Basic wedding inspiration',
+        'Community forums access'
+      ],
+      limitations: [
+        'No custom checklists',
+        'No budget tracking',
+        'No timeline builder',
+        'No décor planner',
+        'Limited AI assistance'
+      ],
+      cta: 'Get Started Free',
+      popular: false
+    },
+    {
+      name: 'Standard',
+      price: { monthly: 19.99, annual: 199 },
+      description: 'Everything you need to plan your wedding',
+      icon: Sparkles,
+      color: 'champagne',
+      features: [
+        '90+ Task Checklist with deadlines',
+        'Complete Budget Planner',
+        'Wedding Timeline Builder',
+        'Décor Zone Planner with packing lists',
+        'Unlimited vendor contacts',
+        'Guest list management (up to 200)',
+        'Vendor discovery & messaging',
+        'AI-powered suggestions',
+        'Email notifications',
+        'Mobile-friendly access',
+        'Export to PDF',
+        'Priority email support'
+      ],
+      limitations: [],
+      cta: 'Start Planning',
+      popular: true,
+      savings: billingCycle === 'annual' ? '$40/year' : null
+    },
+    {
+      name: 'Premium',
+      price: { monthly: 39.99, annual: 399 },
+      description: 'Advanced features for sophisticated planning',
+      icon: Crown,
+      color: 'purple',
+      features: [
+        'Everything in Standard, plus:',
+        'Wedding Website Builder',
+        'Custom domain for wedding site',
+        'Advanced AI Planning Assistant',
+        'Unlimited guests',
+        'Seating chart designer',
+        'RSVP management & tracking',
+        'Registry integration',
+        'Photo gallery hosting',
+        'Vendor collaboration tools',
+        'Detailed analytics & insights',
+        'Printable planning binder',
+        'Priority phone support',
+        'Dedicated planning consultant (1 hr/month)',
+        'Post-wedding planning tools'
+      ],
+      limitations: [],
+      cta: 'Go Premium',
+      popular: false,
+      savings: billingCycle === 'annual' ? '$80/year' : null
+    }
+  ];
+
+  const getColorClasses = (color: string, type: 'bg' | 'text' | 'border' | 'hover') => {
+    const colors = {
+      rose: {
+        bg: 'bg-rose-50',
+        text: 'text-rose-600',
+        border: 'border-rose-600',
+        hover: 'hover:bg-rose-700'
+      },
+      champagne: {
+        bg: 'bg-champagne-50',
+        text: 'text-champagne-600',
+        border: 'border-champagne-600',
+        hover: 'hover:bg-champagne-700'
+      },
+      purple: {
+        bg: 'bg-purple-50',
+        text: 'text-purple-600',
+        border: 'border-purple-600',
+        hover: 'hover:bg-purple-700'
+      }
+    };
+    return colors[color as keyof typeof colors][type];
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-champagne-50 via-rose-50 to-purple-50">
+      {/* Hero Section */}
+      <div className="text-center py-16 px-4">
+        <h1 className="text-5xl md:text-6xl font-serif text-champagne-900 mb-4">
+          Choose Your Perfect Plan
+        </h1>
+        <p className="text-xl text-champagne-700 mb-8 max-w-2xl mx-auto">
+          From free exploration to premium planning, we have the right tools for your dream wedding
+        </p>
+
+        {/* Billing Toggle */}
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <span className={`font-medium ${billingCycle === 'monthly' ? 'text-champagne-900' : 'text-champagne-600'}`}>
+            Monthly
+          </span>
+          <button
+            onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+            className="relative inline-flex h-8 w-14 items-center rounded-full bg-champagne-200 transition-colors focus:outline-none focus:ring-2 focus:ring-champagne-500 focus:ring-offset-2"
+          >
+            <span
+              className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
+                billingCycle === 'annual' ? 'translate-x-7' : 'translate-x-1'
+              }`}
+            />
+          </button>
+          <span className={`font-medium ${billingCycle === 'annual' ? 'text-champagne-900' : 'text-champagne-600'}`}>
+            Annual
+          </span>
+          {billingCycle === 'annual' && (
+            <span className="ml-2 px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
+              Save up to $80/year
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-champagne-600">
+          Get 2 months free with annual billing
+        </p>
+      </div>
+
+      {/* Pricing Cards */}
+      <div className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {plans.map((plan) => {
+            const Icon = plan.icon;
+            return (
+              <div
+                key={plan.name}
+                className={`relative bg-white rounded-2xl shadow-xl overflow-hidden transition-transform hover:scale-105 ${
+                  plan.popular ? 'ring-4 ring-champagne-600' : ''
+                }`}
+              >
+                {/* Popular Badge */}
+                {plan.popular && (
+                  <div className="absolute top-0 right-0 bg-champagne-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg flex items-center gap-1">
+                    <Zap className="w-4 h-4" />
+                    Most Popular
+                  </div>
+                )}
+
+                {/* Header */}
+                <div className={`${getColorClasses(plan.color, 'bg')} px-8 py-8 text-center`}>
+                  <Icon className={`w-12 h-12 ${getColorClasses(plan.color, 'text')} mx-auto mb-4`} />
+                  <h3 className="text-2xl font-serif text-champagne-900 mb-2">{plan.name}</h3>
+                  <p className="text-champagne-600 text-sm mb-6">{plan.description}</p>
+                  <div className="mb-2">
+                    <span className="text-5xl font-bold text-champagne-900">
+                      ${plan.price[billingCycle]}
+                    </span>
+                    {plan.price.monthly > 0 && (
+                      <span className="text-champagne-600 text-lg">
+                        /{billingCycle === 'monthly' ? 'mo' : 'yr'}
+                      </span>
+                    )}
+                  </div>
+                  {plan.savings && (
+                    <p className="text-green-600 font-semibold text-sm">{plan.savings} savings</p>
+                  )}
+                </div>
+
+                {/* Features */}
+                <div className="px-8 py-8">
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <Check className={`w-5 h-5 ${getColorClasses(plan.color, 'text')} flex-shrink-0 mt-0.5`} />
+                        <span className="text-champagne-700 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA Button */}
+                  <button
+                    onClick={() => router.push('/auth')}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors ${
+                      plan.popular
+                        ? 'bg-champagne-600 hover:bg-champagne-700'
+                        : 'bg-gray-800 hover:bg-gray-900'
+                    }`}
+                  >
+                    {plan.cta}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Feature Comparison */}
+      <div className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="bg-white rounded-2xl shadow-lg p-8">
+          <h2 className="text-3xl font-serif text-champagne-900 mb-8 text-center">
+            Feature Comparison
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-champagne-200">
+                  <th className="text-left py-4 px-4 text-champagne-900 font-semibold">Feature</th>
+                  <th className="text-center py-4 px-4 text-champagne-900 font-semibold">Free</th>
+                  <th className="text-center py-4 px-4 text-champagne-900 font-semibold">Standard</th>
+                  <th className="text-center py-4 px-4 text-champagne-900 font-semibold">Premium</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Vendor Directory Access</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Vendor Contacts/Month</td>
+                  <td className="text-center py-3 px-4 text-champagne-600">3</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Unlimited</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Unlimited</td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Checklist Tasks</td>
+                  <td className="text-center py-3 px-4 text-champagne-600">View Only</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">90+</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">90+</td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Budget Planner</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Timeline Builder</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Décor Planner</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">AI Planning Assistant</td>
+                  <td className="text-center py-3 px-4 text-champagne-600">Basic</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Standard</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Advanced</td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Guest List Capacity</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">200</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Unlimited</td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Wedding Website Builder</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">RSVP Management</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Seating Chart Designer</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                </tr>
+                <tr className="border-b border-champagne-100">
+                  <td className="py-3 px-4 text-champagne-700">Planning Consultant</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4 text-champagne-400">-</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">1 hr/mo</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 text-champagne-700">Support Level</td>
+                  <td className="text-center py-3 px-4 text-champagne-600">Email</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Priority Email</td>
+                  <td className="text-center py-3 px-4 text-champagne-900 font-semibold">Phone + Email</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="max-w-4xl mx-auto px-4 pb-16">
+        <h2 className="text-3xl font-serif text-champagne-900 mb-8 text-center">
+          Frequently Asked Questions
+        </h2>
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="font-semibold text-champagne-900 mb-2">Can I switch plans later?</h3>
+            <p className="text-champagne-700 text-sm">
+              Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any differences.
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="font-semibold text-champagne-900 mb-2">What payment methods do you accept?</h3>
+            <p className="text-champagne-700 text-sm">
+              We accept all major credit cards (Visa, Mastercard, American Express, Discover) and PayPal.
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="font-semibold text-champagne-900 mb-2">Is there a refund policy?</h3>
+            <p className="text-champagne-700 text-sm">
+              Yes, we offer a 30-day money-back guarantee. If you're not satisfied, contact us within 30 days for a full refund.
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="font-semibold text-champagne-900 mb-2">Do annual plans auto-renew?</h3>
+            <p className="text-champagne-700 text-sm">
+              Yes, but we'll send you a reminder email 30 days before renewal. You can cancel anytime from your account settings.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-champagne-900 text-white py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-serif mb-4">Ready to Start Planning?</h2>
+          <p className="text-champagne-200 mb-8 text-lg">
+            Join thousands of couples who have planned their perfect wedding with Bella Wedding AI
+          </p>
+          <button
+            onClick={() => router.push('/auth')}
+            className="px-8 py-4 bg-white text-champagne-900 rounded-lg font-semibold text-lg hover:bg-champagne-50 transition-colors inline-flex items-center gap-2"
+          >
+            <Heart className="w-5 h-5" />
+            Get Started Today
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
