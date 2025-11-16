@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Calendar, Clock, Users, Camera, Music, Utensils, Truck, Sparkles, CheckCircle, AlertCircle, MapPin } from 'lucide-react';
+import { Heart, Calendar, Clock, Users, Camera, Music, Utensils, Truck, Sparkles, CheckCircle, AlertCircle, MapPin, Plus, ChevronUp, ChevronDown, Trash2, Edit } from 'lucide-react';
 
-type TimelineView = 'master' | 'bride' | 'groom' | 'vendors' | 'coordinator';
+type TimelineView = 'master' | 'bride' | 'groom' | 'vendors' | 'coordinator' | 'ceremony';
 
 interface TimelineItem {
   time: string;
@@ -16,6 +16,38 @@ interface TimelineItem {
   musicCue?: string;
   completed?: boolean;
 }
+
+interface CeremonyEvent {
+  id: string;
+  order: number;
+  title: string;
+  description?: string;
+  musicCue?: string;
+  notes?: string;
+}
+
+const INITIAL_CEREMONY_EVENTS: CeremonyEvent[] = [
+  { id: '1', order: 1, title: 'Officiant and Groom Take Position', description: 'Officiant and groom walk to altar', musicCue: 'Prelude music fades' },
+  { id: '2', order: 2, title: 'Processional Music Begins', musicCue: 'Your chosen processional song' },
+  { id: '3', order: 3, title: 'Grandparents Seated', description: 'Ushers escort grandparents down aisle', notes: '30 second spacing between each pair' },
+  { id: '4', order: 4, title: "Groom's Parents Seated", description: "Groom's mother escorted down aisle" },
+  { id: '5', order: 5, title: "Bride's Mother Seated", description: 'Last person seated before bridal party', notes: 'Signals ceremony about to begin' },
+  { id: '6', order: 6, title: 'Guests Asked to Stand', description: 'Officiant signals start' },
+  { id: '7', order: 7, title: 'Groomsmen Enter', description: 'Walk down aisle (solo or paired)', notes: 'Spacing: 15 seconds apart' },
+  { id: '8', order: 8, title: 'Bridesmaids Enter', description: 'Walk down aisle', notes: 'Spacing: 15 seconds apart, bouquets in left hand' },
+  { id: '9', order: 9, title: 'Maid/Matron of Honor Enters', description: 'MOH walks down aisle' },
+  { id: '10', order: 10, title: 'Ring Bearer & Flower Girl', description: 'Children walk down aisle', notes: 'Parents nearby to redirect if needed' },
+  { id: '11', order: 11, title: "Bride's Entrance Music Change", musicCue: 'Your bridal entrance song - fade in smoothly' },
+  { id: '12', order: 12, title: "Bride's Entrance", description: 'Bride walks down aisle with father/escort', notes: 'Slow, steady pace - enjoy the moment' },
+  { id: '13', order: 13, title: 'Welcome & Opening Remarks', description: 'Officiant welcomes guests and begins ceremony' },
+  { id: '14', order: 14, title: 'Readings', description: 'Selected readings (optional)' },
+  { id: '15', order: 15, title: 'Vows', description: 'Exchange of wedding vows' },
+  { id: '16', order: 16, title: 'Ring Exchange', description: 'Exchange of wedding rings' },
+  { id: '17', order: 17, title: 'Unity Ceremony (Optional)', description: 'Candle lighting, sand ceremony, etc.', notes: 'Coordinator has lighter ready' },
+  { id: '18', order: 18, title: 'Pronouncement', description: 'Officiant declares couple married' },
+  { id: '19', order: 19, title: 'First Kiss', description: 'You may kiss!' },
+  { id: '20', order: 20, title: 'Recessional', description: 'Couple exits down aisle', musicCue: 'Your recessional song - upbeat, celebratory' },
+];
 
 const MASTER_TIMELINE: TimelineItem[] = [
   // PRE-CEREMONY - MORNING
@@ -41,30 +73,12 @@ const MASTER_TIMELINE: TimelineItem[] = [
   { time: '3:00 PM', title: 'Light Fairy Lights & Candles', description: 'Turn on all ambient lighting, light candles', category: 'coordinator', assignedTo: ['Coordinator'], notes: 'Check batteries, flame safety with venue' },
 
   // CEREMONY SETUP
-  { time: '3:15 PM', title: 'Guest Arrival Begins', description: 'Ushers guide guests to seats', category: 'ceremony', assignedTo: ['Ushers'], notes: 'Bride side left, groom side right (or mixed)' },
+  { time: '3:15 PM', title: 'Guest Arrival Begins', description: 'Ushers guide guests to seats', category: 'prep', assignedTo: ['Ushers'], notes: 'Bride side left, groom side right (or mixed)' },
   { time: '3:30 PM', title: 'Bridal Party Lineup', description: 'Coordinator organizes processional order backstage', category: 'coordinator', assignedTo: ['Coordinator'], notes: 'Bouquets distributed, boutonnieres checked, spacing rehearsed' },
-  { time: '3:45 PM', title: 'Reserved Seating for Family', description: 'Ushers seat immediate family in front rows', category: 'ceremony', assignedTo: ['Ushers'], notes: 'Confirm who sits where, save seats' },
+  { time: '3:45 PM', title: 'Reserved Seating for Family', description: 'Ushers seat immediate family in front rows', category: 'prep', assignedTo: ['Ushers'], notes: 'Confirm who sits where, save seats' },
 
-  // CEREMONY PROCESSIONAL (4:00 PM START)
-  { time: '3:58 PM', title: 'Officiant Takes Position', description: 'Officiant and groom walk to altar', category: 'ceremony', assignedTo: ['Officiant', 'Groom'], musicCue: 'Prelude music fades' },
-  { time: '4:00 PM', title: 'Processional Music Begins', description: 'DJ cues processional song', category: 'ceremony', assignedTo: ['DJ'], musicCue: 'PROCESSIONAL SONG - confirmed with couple' },
-  { time: '4:01 PM', title: 'Grandparents Seated', description: 'Ushers escort grandparents down aisle', category: 'ceremony', assignedTo: ['Ushers'], notes: '30 second spacing between each pair' },
-  { time: '4:03 PM', title: "Groom's Parents Seated", description: "Groom's mother escorted down aisle", category: 'ceremony', assignedTo: ['Ushers'] },
-  { time: '4:04 PM', title: "Bride's Mother Seated", description: 'Last person seated before bridal party', category: 'ceremony', assignedTo: ['Usher'], notes: 'Signals ceremony about to begin' },
-  { time: '4:05 PM', title: 'Officiant Signals Start', description: 'Guests asked to stand', category: 'ceremony', assignedTo: ['Officiant'] },
-  { time: '4:06 PM', title: 'Groomsmen Enter', description: 'Groomsmen walk down aisle (solo or paired)', category: 'ceremony', assignedTo: ['Groomsmen'], notes: 'Spacing: 15 seconds apart' },
-  { time: '4:08 PM', title: 'Bridesmaids Enter', description: 'Bridesmaids walk down aisle', category: 'ceremony', assignedTo: ['Bridesmaids'], notes: 'Spacing: 15 seconds apart, bouquets in left hand' },
-  { time: '4:10 PM', title: 'Maid/Matron of Honor', description: 'MOH walks down aisle', category: 'ceremony', assignedTo: ['Maid of Honor'] },
-  { time: '4:11 PM', title: 'Ring Bearer & Flower Girl', description: 'Children walk down aisle', category: 'ceremony', assignedTo: ['Ring Bearer', 'Flower Girl'], notes: 'Parents nearby to redirect if needed' },
-  { time: '4:12 PM', title: "Bride's Entrance Music Change", description: 'DJ switches to bridal entrance song', category: 'ceremony', assignedTo: ['DJ'], musicCue: 'BRIDAL ENTRANCE SONG - fade in smoothly' },
-  { time: '4:13 PM', title: "Bride's Entrance", description: 'Bride walks down aisle with father/escort', category: 'ceremony', assignedTo: ['Bride', 'Father'], notes: 'Slow, steady pace - enjoy the moment' },
-
-  // CEREMONY (30 min)
-  { time: '4:15 PM', title: 'Ceremony Begins', description: 'Welcome, readings, vows, ring exchange', category: 'ceremony', assignedTo: ['Officiant', 'Bride', 'Groom'], notes: 'Photographer/videographer capture close-ups' },
-  { time: '4:20 PM', title: 'Unity Ceremony (Optional)', description: 'Candle lighting, sand ceremony, etc.', category: 'ceremony', assignedTo: ['Bride', 'Groom'], notes: 'Coordinator has lighter ready' },
-  { time: '4:30 PM', title: 'Ring Exchange', description: 'Exchange of wedding rings and vows', category: 'ceremony', assignedTo: ['Bride', 'Groom', 'Ring Bearer'] },
-  { time: '4:44 PM', title: 'Pronouncement', description: 'Officiant declares couple married', category: 'ceremony', assignedTo: ['Officiant'] },
-  { time: '4:45 PM', title: 'First Kiss & Recessional', description: 'Couple kisses, recessional music begins', category: 'ceremony', assignedTo: ['Bride', 'Groom', 'DJ'], musicCue: 'RECESSIONAL SONG - upbeat, celebratory' },
+  // CEREMONY (See Ceremony Order tab for detailed event sequence)
+  { time: '4:00 PM', title: 'Ceremony Begins', description: 'Processional through recessional (see Ceremony Order tab)', category: 'ceremony', assignedTo: ['All'], notes: 'Use Ceremony Order tab to customize event sequence' },
 
   // POST-CEREMONY
   { time: '4:50 PM', title: 'Receiving Line (Optional)', description: 'Couple greets guests after ceremony', category: 'ceremony', assignedTo: ['Bride', 'Groom'], notes: 'Keep it moving - 10-15 min max' },
@@ -105,6 +119,7 @@ export default function Timeline() {
   const router = useRouter();
   const [activeView, setActiveView] = useState<TimelineView>('master');
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
+  const [ceremonyEvents, setCeremonyEvents] = useState<CeremonyEvent[]>(INITIAL_CEREMONY_EVENTS);
 
   const toggleComplete = (time: string) => {
     setCompletedItems(prev => {
@@ -116,6 +131,42 @@ export default function Timeline() {
       }
       return newSet;
     });
+  };
+
+  // Ceremony event management functions
+  const moveCeremonyEvent = (index: number, direction: 'up' | 'down') => {
+    const newEvents = [...ceremonyEvents];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+    if (targetIndex < 0 || targetIndex >= newEvents.length) return;
+
+    [newEvents[index], newEvents[targetIndex]] = [newEvents[targetIndex], newEvents[index]];
+
+    // Update order numbers
+    newEvents.forEach((event, idx) => {
+      event.order = idx + 1;
+    });
+
+    setCeremonyEvents(newEvents);
+  };
+
+  const deleteCeremonyEvent = (id: string) => {
+    const newEvents = ceremonyEvents.filter(e => e.id !== id);
+    // Update order numbers
+    newEvents.forEach((event, idx) => {
+      event.order = idx + 1;
+    });
+    setCeremonyEvents(newEvents);
+  };
+
+  const addCeremonyEvent = () => {
+    const newEvent: CeremonyEvent = {
+      id: Date.now().toString(),
+      order: ceremonyEvents.length + 1,
+      title: 'New Event',
+      description: '',
+    };
+    setCeremonyEvents([...ceremonyEvents, newEvent]);
   };
 
   const filterByView = (timeline: TimelineItem[]) => {
@@ -218,6 +269,7 @@ export default function Timeline() {
           <div className="flex overflow-x-auto">
             {[
               { id: 'master', label: 'Master Timeline', icon: Calendar },
+              { id: 'ceremony', label: 'Ceremony Order', icon: Heart },
               { id: 'bride', label: 'Bride View', icon: Heart },
               { id: 'groom', label: 'Groom View', icon: Users },
               { id: 'vendors', label: 'Vendor Schedule', icon: Truck },
@@ -244,9 +296,121 @@ export default function Timeline() {
           </div>
         </div>
 
+        {/* Ceremony Order View */}
+        {activeView === 'ceremony' && (
+          <div className="space-y-3">
+            <div className="bg-gradient-to-r from-purple-50 to-rose-50 border-2 border-purple-200 rounded-xl p-6 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Ceremony Event Order</h3>
+              <p className="text-gray-700 mb-4">
+                Customize the order of events for your ceremony. Add, remove, or reorder events as needed. No specific times required - just the sequence!
+              </p>
+              <button
+                onClick={addCeremonyEvent}
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Add Event
+              </button>
+            </div>
+
+            {ceremonyEvents.map((event, index) => (
+              <div
+                key={event.id}
+                className="bg-white rounded-xl shadow-sm border-2 border-purple-200 overflow-hidden hover:shadow-md transition"
+              >
+                <div className="flex items-start gap-4 p-4">
+                  {/* Order Number */}
+                  <div className="flex-shrink-0 w-16 text-center">
+                    <div className="bg-purple-100 text-purple-700 rounded-full w-12 h-12 flex items-center justify-center font-bold text-xl">
+                      {event.order}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      {event.title}
+                    </h3>
+
+                    {event.description && (
+                      <p className="text-sm text-gray-700 mb-2">
+                        {event.description}
+                      </p>
+                    )}
+
+                    {event.musicCue && (
+                      <div className="flex items-center gap-2 text-xs bg-purple-50 text-purple-700 px-3 py-1 rounded-lg mb-2 inline-flex">
+                        <Music className="w-4 h-4" />
+                        <span className="font-medium">{event.musicCue}</span>
+                      </div>
+                    )}
+
+                    {event.notes && (
+                      <div className="flex items-start gap-2 text-xs bg-amber-50 text-amber-800 px-3 py-2 rounded-lg mt-2">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                        <span>{event.notes}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex-shrink-0 flex flex-col gap-2">
+                    <button
+                      onClick={() => moveCeremonyEvent(index, 'up')}
+                      disabled={index === 0}
+                      className={`p-2 rounded-lg transition ${
+                        index === 0
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                      }`}
+                      title="Move up"
+                    >
+                      <ChevronUp className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => moveCeremonyEvent(index, 'down')}
+                      disabled={index === ceremonyEvents.length - 1}
+                      className={`p-2 rounded-lg transition ${
+                        index === ceremonyEvents.length - 1
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                      }`}
+                      title="Move down"
+                    >
+                      <ChevronDown className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => deleteCeremonyEvent(event.id)}
+                      className="p-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition"
+                      title="Delete event"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {ceremonyEvents.length === 0 && (
+              <div className="bg-white rounded-2xl p-12 text-center">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg mb-4">No ceremony events yet</p>
+                <button
+                  onClick={addCeremonyEvent}
+                  className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition inline-flex items-center gap-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Your First Event
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Timeline Items */}
-        <div className="space-y-3">
-          {filteredTimeline.map((item, index) => {
+        {activeView !== 'ceremony' && (
+          <div className="space-y-3">
+            {filteredTimeline.map((item, index) => {
             const isCompleted = completedItems.has(item.time);
             const Icon = categoryIcons[item.category];
             const colorClass = categoryColors[item.category];
@@ -319,13 +483,14 @@ export default function Timeline() {
               </div>
             );
           })}
-        </div>
 
-        {filteredTimeline.length === 0 && (
-          <div className="bg-white rounded-2xl p-12 text-center">
-            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No items for this view</p>
-          </div>
+          {filteredTimeline.length === 0 && (
+            <div className="bg-white rounded-2xl p-12 text-center">
+              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg">No items for this view</p>
+            </div>
+          )}
+        </div>
         )}
       </div>
     </div>
