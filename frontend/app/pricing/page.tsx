@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, Heart, Sparkles, Crown, Zap } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import { Check, Heart, Sparkles, Crown, Zap, Loader2 } from 'lucide-react';
+import { BRIDE_PRICE_IDS } from '@/lib/stripe';
 
 export default function PricingPage() {
   const router = useRouter();
+  const { isAuthenticated, user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   const plans = [
     {
@@ -112,6 +116,61 @@ export default function PricingPage() {
     return colors[color as keyof typeof colors][type];
   };
 
+  const handleSubscribe = async (planName: string) => {
+    // Check if user is authenticated
+    if (!isAuthenticated || !user) {
+      router.push('/auth?redirect=/pricing');
+      return;
+    }
+
+    // Free plan - just redirect to dashboard
+    if (planName === 'Free') {
+      router.push('/dashboard');
+      return;
+    }
+
+    setLoadingPlan(planName);
+
+    try {
+      // Determine price ID based on plan and billing cycle
+      let priceId = '';
+      if (planName === 'Standard') {
+        priceId = billingCycle === 'monthly' ? BRIDE_PRICE_IDS.standard_monthly : BRIDE_PRICE_IDS.standard_yearly;
+      } else if (planName === 'Premium') {
+        priceId = billingCycle === 'monthly' ? BRIDE_PRICE_IDS.premium_monthly : BRIDE_PRICE_IDS.premium_yearly;
+      }
+
+      // Call API to create Stripe checkout session
+      const response = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId,
+          userId: user.id.toString(),
+          userEmail: user.email,
+          customerType: 'bride',
+          plan: planName.toLowerCase(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { url } = await response.json();
+
+      // Redirect to Stripe checkout
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 via-rose-50 to-purple-50">
       {/* Hero Section */}
@@ -205,14 +264,22 @@ export default function PricingPage() {
 
                   {/* CTA Button */}
                   <button
-                    onClick={() => router.push('/auth')}
-                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors ${
+                    onClick={() => handleSubscribe(plan.name)}
+                    disabled={loadingPlan === plan.name}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
                       plan.popular
                         ? 'bg-champagne-600 hover:bg-champagne-700'
                         : 'bg-gray-800 hover:bg-gray-900'
-                    }`}
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
-                    {plan.cta}
+                    {loadingPlan === plan.name ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      plan.cta
+                    )}
                   </button>
                 </div>
               </div>
