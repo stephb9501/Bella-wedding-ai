@@ -111,6 +111,24 @@ export const LAUNCH_DISCOUNTS = {
     durationInMonths: 3,
     maxRedemptions: 50,
   },
+
+  // First 50 brides - FREE for 3 months (100% off)
+  EARLYACCESS: {
+    code: 'EARLYACCESS',
+    percentOff: 100,
+    duration: 'repeating' as const,
+    durationInMonths: 3,
+    maxRedemptions: 50,
+  },
+
+  // Next 50 brides - 50% off for 3 months
+  DISCOUNTED50: {
+    code: 'DISCOUNTED50',
+    percentOff: 50,
+    duration: 'repeating' as const,
+    durationInMonths: 3,
+    maxRedemptions: 50,
+  },
 };
 
 /**

@@ -14,120 +14,111 @@ export default function VendorPricingPage() {
 
   const plans = [
     {
-      name: 'Basic',
-      tier: 'basic',
+      name: 'Free',
+      tier: 'free',
       price: { monthly: 0, annual: 0 },
       description: 'Start your presence on Bella Wedding AI',
       icon: Heart,
       color: 'gray',
-      leads: '10 leads/month',
+      commission: '10% commission per booking',
       features: [
-        'Basic vendor profile',
-        'Up to 10 leads per month',
-        'Business name & contact info',
-        'Service category listing',
-        'Location & service area',
-        'Basic search visibility',
+        '1 photo only',
+        'Basic profile',
+        'Shows at bottom of search results',
+        '5 replies per month limit',
+        '10% commission per booked job',
+        'No analytics',
+        'Not eligible for AI matching',
         'Email notifications',
         'Standard support'
       ],
-      limitations: [
-        'No photos/videos',
-        'No reviews display',
-        'Limited search ranking',
-        'No featured placement',
-        'No analytics'
-      ],
+      limitations: [],
       cta: 'Get Started Free',
       popular: false
     },
     {
-      name: 'Silver',
-      tier: 'silver',
-      price: { monthly: 49, annual: 490 },
-      description: 'Stand out with enhanced visibility',
+      name: 'Premium',
+      tier: 'premium',
+      price: { monthly: 34.99, annual: 349.90 },
+      description: 'Perfect for small solo vendors',
       icon: Star,
       color: 'blue',
-      leads: '50 leads/month',
+      commission: '5% commission per booking',
       features: [
-        'Everything in Basic, plus:',
-        'Up to 50 leads per month',
-        'Premium profile badge',
-        'Photo gallery (20 photos)',
-        'Business description (500 words)',
-        'Pricing & packages display',
-        'Client reviews & ratings',
-        'Boosted search ranking',
-        'Business hours display',
-        'Social media links',
-        'Basic analytics dashboard',
+        'Up to 25 photos',
+        'Full profile',
+        'Website & social links',
+        'Medium search visibility',
+        'Unlimited inbound messages',
+        'Unlimited outbound replies',
+        'Basic analytics',
+        '5% commission per booked job',
+        '1 region',
+        '1 category',
+        '1 staff login',
         'Priority email support'
       ],
       limitations: [],
-      cta: 'Upgrade to Silver',
+      cta: 'Upgrade to Premium',
       popular: false,
-      savings: billingCycle === 'annual' ? '$98/year' : null
+      savings: billingCycle === 'annual' ? '$70/year' : null
     },
     {
-      name: 'Gold',
-      tier: 'gold',
-      price: { monthly: 99, annual: 990 },
-      description: 'Maximum exposure and leads',
+      name: 'Featured',
+      tier: 'featured',
+      price: { monthly: 49.99, annual: 499.90 },
+      description: 'Best value for most professionals',
       icon: Crown,
       color: 'yellow',
-      leads: '150 leads/month',
+      commission: '2% commission per booking',
       features: [
-        'Everything in Silver, plus:',
-        'Up to 150 leads per month',
-        'Featured listing badge',
-        'Unlimited photo gallery',
-        'Profile video showcase',
-        'Extended description (1500 words)',
-        'Featured in category searches',
-        'Priority placement in results',
-        'Verified business badge',
-        'Awards & certifications section',
-        'Advanced analytics & insights',
-        'Lead conversion tracking',
-        'Competitor analysis',
-        'Priority phone support',
-        'Dedicated account manager'
+        'Everything in Premium, plus:',
+        'Up to 50 photos',
+        'Priority search placement',
+        'Featured badge',
+        'Homepage rotation',
+        'Full analytics (views, clicks, saves, CTR)',
+        'AI profile optimizer',
+        '2% commission per booked job',
+        '2 categories',
+        '2 regions',
+        '2 staff accounts',
+        'Unlimited messaging',
+        'Priority support'
       ],
       limitations: [],
-      cta: 'Go Gold',
+      cta: 'Go Featured',
       popular: true,
-      savings: billingCycle === 'annual' ? '$198/year' : null
+      savings: billingCycle === 'annual' ? '$100/year' : null
     },
     {
-      name: 'Platinum',
-      tier: 'platinum',
-      price: { monthly: 199, annual: 1990 },
-      description: 'Ultimate visibility and premium placement',
+      name: 'Elite',
+      tier: 'elite',
+      price: { monthly: 79.99, annual: 799.90 },
+      description: 'For large vendors, venues, multi-location businesses',
       icon: Zap,
       color: 'purple',
-      leads: 'Unlimited leads',
+      commission: '0% commission - NO booking fees ever!',
       features: [
-        'Everything in Gold, plus:',
-        'Unlimited monthly leads',
-        'Top featured placement (guaranteed)',
-        'Homepage featured vendor',
-        'Category page top banner',
-        'Social media promotion',
-        'Exclusive email campaigns to brides',
-        'Advanced SEO optimization',
-        'Custom branded landing page',
-        'Priority messaging badge',
-        'Instant notification alerts',
+        'Everything in Featured, plus:',
+        'Unlimited photos',
+        'Top search placement',
+        '"Recommended Vendor" section',
+        'Multi-city visibility (up to 3 cities)',
+        'Up to 3 categories',
+        'Up to 5 staff accounts',
+        'AI automation tools',
+        'Custom support',
+        '0% commission - no booking fees ever',
+        'Unlimited messaging',
         'White-glove onboarding',
         'Monthly strategy consultation',
-        'Promotional materials & templates',
-        '24/7 priority support',
-        'Quarterly business review'
+        '24/7 priority support'
       ],
       limitations: [],
-      cta: 'Go Platinum',
+      cta: 'Go Elite',
       popular: false,
-      savings: billingCycle === 'annual' ? '$398/year' : null
+      savings: billingCycle === 'annual' ? '$160/year' : null
     }
   ];
 
@@ -148,8 +139,8 @@ export default function VendorPricingPage() {
       return;
     }
 
-    // Basic plan - just redirect to vendor dashboard
-    if (planName === 'Basic') {
+    // Free plan - just redirect to vendor dashboard
+    if (planName === 'Free') {
       router.push('/vendor-dashboard');
       return;
     }
@@ -159,12 +150,12 @@ export default function VendorPricingPage() {
     try {
       // Determine price ID based on plan and billing cycle
       let priceId = '';
-      if (tier === 'silver') {
-        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.silver_monthly : VENDOR_PRICE_IDS.silver_yearly;
-      } else if (tier === 'gold') {
-        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.gold_monthly : VENDOR_PRICE_IDS.gold_yearly;
-      } else if (tier === 'platinum') {
-        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.platinum_monthly : VENDOR_PRICE_IDS.platinum_yearly;
+      if (tier === 'premium') {
+        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.premium_monthly : VENDOR_PRICE_IDS.premium_yearly;
+      } else if (tier === 'featured') {
+        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.featured_monthly : VENDOR_PRICE_IDS.featured_yearly;
+      } else if (tier === 'elite') {
+        priceId = billingCycle === 'monthly' ? VENDOR_PRICE_IDS.elite_monthly : VENDOR_PRICE_IDS.elite_yearly;
       }
 
       // Call API to create Stripe checkout session

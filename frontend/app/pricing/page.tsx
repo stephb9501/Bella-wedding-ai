@@ -44,18 +44,20 @@ export default function PricingPage() {
       icon: Sparkles,
       color: 'champagne',
       features: [
+        '1 active wedding + 1 archived',
+        'Up to 75 guests',
         '90+ Task Checklist with deadlines',
         'Complete Budget Planner',
         'Wedding Timeline Builder',
-        'Décor Zone Planner with packing lists',
-        'Unlimited vendor contacts',
-        'Guest list management (up to 200)',
-        'Vendor discovery & messaging',
-        'AI-powered suggestions',
-        'Email notifications',
-        'Mobile-friendly access',
-        'Export to PDF',
-        'Priority email support'
+        'Décor Zone Planner',
+        'Up to 30 photos',
+        '3 website sections (Home, Schedule, RSVP)',
+        'Save up to 5 vendors',
+        '5 vendor messages per month',
+        'Basic AI (checklist, timeline, budget, sorting)',
+        '1 binder export',
+        'Basic vendor search',
+        'Email notifications'
       ],
       limitations: [],
       cta: 'Start Planning',
@@ -64,26 +66,29 @@ export default function PricingPage() {
     },
     {
       name: 'Premium',
-      price: { monthly: 39.99, annual: 399 },
+      price: { monthly: 29.99, annual: 299 },
       description: 'Advanced features for sophisticated planning',
       icon: Crown,
       color: 'purple',
       features: [
         'Everything in Standard, plus:',
-        'Wedding Website Builder',
-        'Custom domain for wedding site',
-        'Advanced AI Planning Assistant',
-        'Unlimited guests',
+        '1 active wedding + 1 archived',
+        'UNLIMITED guests',
+        'Up to 150 photos',
+        'Video support (30-sec, coming in Phase 2)',
+        '8 website sections',
+        'Save up to 50 vendors',
+        'Vendor messages: 30/mo (first 3 months), then 50/mo',
+        'Full AI Suite:',
+        '• AI vendor matching',
+        '• AI décor mockups',
+        '• AI floor plans',
+        '• AI palette builder',
+        '• AI writing assistant',
+        '• AI binder generator',
+        'Unlimited binder exports',
         'Seating chart designer',
-        'RSVP management & tracking',
-        'Registry integration',
-        'Photo gallery hosting',
-        'Vendor collaboration tools',
-        'Detailed analytics & insights',
-        'Printable planning binder',
-        'Priority phone support',
-        'Dedicated planning consultant (1 hr/month)',
-        'Post-wedding planning tools'
+        'Priority support'
       ],
       limitations: [],
       cta: 'Go Premium',
@@ -181,6 +186,44 @@ export default function PricingPage() {
         <p className="text-xl text-champagne-700 mb-8 max-w-2xl mx-auto">
           From free exploration to premium planning, we have the right tools for your dream wedding
         </p>
+
+        {/* Early Access Banner */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl shadow-2xl p-8 border-4 border-purple-300">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Zap className="w-8 h-8" />
+              <h2 className="text-3xl font-serif">Early Access Special Offers!</h2>
+              <Zap className="w-8 h-8" />
+            </div>
+            <div className="grid md:grid-cols-2 gap-6 mt-6">
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6 border-2 border-white/30">
+                <div className="text-2xl font-bold mb-2">🎁 First 50 Brides</div>
+                <div className="text-xl mb-3">FREE for 3 Months!</div>
+                <ul className="text-sm text-left space-y-1">
+                  <li>✓ Premium features included</li>
+                  <li>✓ Up to 30 photos</li>
+                  <li>✓ Full AI Suite access</li>
+                  <li>✓ Choose plan after 3 months</li>
+                </ul>
+                <div className="mt-4 text-xs opacity-90">Limited to first 50 signups only</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6 border-2 border-white/30">
+                <div className="text-2xl font-bold mb-2">⭐ Next 50 Brides</div>
+                <div className="text-xl mb-3">50% OFF for 3 Months!</div>
+                <ul className="text-sm text-left space-y-1">
+                  <li>✓ Standard: $9.99/mo (reg. $19.99)</li>
+                  <li>✓ Premium: $14.99/mo (reg. $29.99)</li>
+                  <li>✓ Full feature access</li>
+                  <li>✓ No commitment required</li>
+                </ul>
+                <div className="mt-4 text-xs opacity-90">Available for signups 51-100</div>
+              </div>
+            </div>
+            <div className="mt-6 text-sm">
+              <strong>Use code:</strong> EARLYACCESS or DISCOUNTED50 at checkout
+            </div>
+          </div>
+        </div>
 
         {/* Billing Toggle */}
         <div className="flex items-center justify-center gap-4 mb-4">

@@ -16,12 +16,12 @@ export const BRIDE_PRICE_IDS = {
 
 // Vendor subscription price IDs
 export const VENDOR_PRICE_IDS = {
-  silver_monthly: process.env.NEXT_PUBLIC_STRIPE_SILVER_MONTHLY_PRICE_ID || 'price_silver_monthly',
-  silver_yearly: process.env.NEXT_PUBLIC_STRIPE_SILVER_YEARLY_PRICE_ID || 'price_silver_yearly',
-  gold_monthly: process.env.NEXT_PUBLIC_STRIPE_GOLD_MONTHLY_PRICE_ID || 'price_gold_monthly',
-  gold_yearly: process.env.NEXT_PUBLIC_STRIPE_GOLD_YEARLY_PRICE_ID || 'price_gold_yearly',
-  platinum_monthly: process.env.NEXT_PUBLIC_STRIPE_PLATINUM_MONTHLY_PRICE_ID || 'price_platinum_monthly',
-  platinum_yearly: process.env.NEXT_PUBLIC_STRIPE_PLATINUM_YEARLY_PRICE_ID || 'price_platinum_yearly',
+  premium_monthly: process.env.NEXT_PUBLIC_STRIPE_VENDOR_PREMIUM_MONTHLY_PRICE_ID || 'price_vendor_premium_monthly',
+  premium_yearly: process.env.NEXT_PUBLIC_STRIPE_VENDOR_PREMIUM_YEARLY_PRICE_ID || 'price_vendor_premium_yearly',
+  featured_monthly: process.env.NEXT_PUBLIC_STRIPE_VENDOR_FEATURED_MONTHLY_PRICE_ID || 'price_vendor_featured_monthly',
+  featured_yearly: process.env.NEXT_PUBLIC_STRIPE_VENDOR_FEATURED_YEARLY_PRICE_ID || 'price_vendor_featured_yearly',
+  elite_monthly: process.env.NEXT_PUBLIC_STRIPE_VENDOR_ELITE_MONTHLY_PRICE_ID || 'price_vendor_elite_monthly',
+  elite_yearly: process.env.NEXT_PUBLIC_STRIPE_VENDOR_ELITE_YEARLY_PRICE_ID || 'price_vendor_elite_yearly',
 };
 
 export interface CreateCheckoutSessionParams {
