@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
+import { Heart } from 'lucide-react';
 
 interface DecorStyle {
   id: string;
@@ -61,6 +64,7 @@ interface PackingBox {
 
 export default function DecorPage() {
   const router = useRouter();
+  const { isAuthenticated, loading, user } = useAuth();
   const [brideId, setBrideId] = useState<string | null>(null);
 
   // State
@@ -79,20 +83,17 @@ export default function DecorPage() {
   const [newZoneName, setNewZoneName] = useState('');
   const [newBoxName, setNewBoxName] = useState('');
 
-  // Load data on mount
+  // Load data on mount when authenticated
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!user.id) {
-      router.push('/auth');
-      return;
+    if (isAuthenticated && user?.id) {
+      setBrideId(user.id.toString());
+      fetchStyles();
+      fetchZones(user.id.toString());
+      fetchItems(user.id.toString());
+      fetchEmergencyItems(user.id.toString());
+      fetchPackingBoxes(user.id.toString());
     }
-    setBrideId(user.id);
-    fetchStyles();
-    fetchZones(user.id);
-    fetchItems(user.id);
-    fetchEmergencyItems(user.id);
-    fetchPackingBoxes(user.id);
-  }, [router]);
+  }, [isAuthenticated, user]);
 
   // Fetch functions
   const fetchStyles = async () => {
@@ -264,6 +265,48 @@ export default function DecorPage() {
   const completedItems = items.filter((i) => i.is_completed).length;
   const packedItems = items.filter((i) => i.is_packed).length;
   const emergencyPacked = emergencyItems.filter((i) => i.is_packed).length;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  // Show AuthWall if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <AuthWall
+        featureName="Décor & Setup Planner"
+        previewContent={
+          <div className="max-w-7xl mx-auto px-4 py-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-serif text-champagne-900 mb-4">Organize Every Detail</h2>
+              <p className="text-champagne-700 max-w-2xl mx-auto">
+                Plan event zones, manage packing lists, track setup assignments, and never forget essential items with our comprehensive décor management system.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h3 className="font-semibold text-champagne-900 mb-2">9 Wedding Styles</h3>
+                <p className="text-sm text-champagne-600">Choose from Modern, Rustic, Boho, Glamorous, Garden, Vintage, Industrial, Beach, or Fairytale themes</p>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h3 className="font-semibold text-champagne-900 mb-2">Event Zone Planning</h3>
+                <p className="text-sm text-champagne-600">Manage 10 default zones plus add custom areas. Mark zones as applicable or N/A for your event</p>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h3 className="font-semibold text-champagne-900 mb-2">Packing & Setup Tracking</h3>
+                <p className="text-sm text-champagne-600">Organize items by boxes, assign setup responsibilities, and track emergency items</p>
+              </div>
+            </div>
+          </div>
+        }
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-champagne-50 to-rose-50 py-8">
