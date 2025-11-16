@@ -384,18 +384,18 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome Banner with Photo */}
-        <div className="relative mb-8 rounded-2xl overflow-hidden shadow-lg">
+        <div className="relative mb-8 rounded-2xl overflow-hidden shadow-lg" style={{ minHeight: '300px' }}>
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
-              backgroundPosition: 'center 40%'
+              backgroundImage: "url('/wedding-photos/deltalow-130.jpg')",
+              backgroundPosition: 'center center'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
           </div>
 
-          <div className="relative px-8 py-12 text-center">
+          <div className="relative px-8 py-16 text-center">
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2">
               {coupleData.partnerOne} & {coupleData.partnerTwo}
             </h2>
