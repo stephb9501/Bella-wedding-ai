@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { signIn, signUp } from '@/lib/supabase';
+import { validatePassword, getPasswordStrength } from '@/lib/password-validator';
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('signin');
@@ -12,10 +13,21 @@ export default function AuthPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState({ text: '', type: 'success', show: false });
   const [loading, setLoading] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   const showMessage = (text: string, type: string) => {
     setMessage({ text, type, show: true });
     setTimeout(() => setMessage({ text: '', type: 'success', show: false }), 4000);
+  };
+
+  const handlePasswordChange = (password: string) => {
+    setPasswordSignUp(password);
+    if (password) {
+      const validation = validatePassword(password);
+      setPasswordErrors(validation.errors);
+    } else {
+      setPasswordErrors([]);
+    }
   };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,7 +57,7 @@ export default function AuthPage() {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!emailSignUp || !passwordSignUp || !confirmPassword) {
       showMessage('✗ Please fill in all fields', 'error');
       return;
@@ -56,8 +68,11 @@ export default function AuthPage() {
       return;
     }
 
-    if (passwordSignUp.length < 6) {
-      showMessage('✗ Password must be at least 6 characters', 'error');
+    // Validate password strength
+    const validation = validatePassword(passwordSignUp);
+    if (!validation.isValid) {
+      showMessage(`✗ ${validation.errors[0]}`, 'error');
+      setPasswordErrors(validation.errors);
       return;
     }
 
@@ -68,6 +83,7 @@ export default function AuthPage() {
       setEmailSignUp('');
       setPasswordSignUp('');
       setConfirmPassword('');
+      setPasswordErrors([]);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Account creation failed. Please try again.';
       showMessage(`✗ ${errorMessage}`, 'error');
@@ -448,14 +464,45 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Password</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     placeholder="Create a password"
                     value={passwordSignUp}
-                    onChange={(e) => setPasswordSignUp(e.target.value)}
+                    onChange={(e) => handlePasswordChange(e.target.value)}
                     disabled={loading}
-                    required 
+                    required
                   />
+                  {passwordSignUp && (
+                    <div style={{
+                      fontSize: '0.75rem',
+                      marginTop: '8px',
+                      padding: '8px',
+                      backgroundColor: passwordErrors.length === 0 ? '#e0f5e0' : '#fff5e0',
+                      borderRadius: '4px',
+                      border: `1px solid ${passwordErrors.length === 0 ? '#c6f5c6' : '#ffe0b0'}`
+                    }}>
+                      <div style={{ fontWeight: '600', marginBottom: '4px', color: '#666' }}>
+                        Password Requirements:
+                      </div>
+                      <ul style={{ margin: '0', paddingLeft: '20px', color: '#666' }}>
+                        <li style={{ color: passwordSignUp.length >= 8 ? '#5cb85c' : '#d9534f' }}>
+                          At least 8 characters {passwordSignUp.length >= 8 ? '✓' : '✗'}
+                        </li>
+                        <li style={{ color: /[A-Z]/.test(passwordSignUp) ? '#5cb85c' : '#d9534f' }}>
+                          One uppercase letter {/[A-Z]/.test(passwordSignUp) ? '✓' : '✗'}
+                        </li>
+                        <li style={{ color: /[a-z]/.test(passwordSignUp) ? '#5cb85c' : '#d9534f' }}>
+                          One lowercase letter {/[a-z]/.test(passwordSignUp) ? '✓' : '✗'}
+                        </li>
+                        <li style={{ color: /[0-9]/.test(passwordSignUp) ? '#5cb85c' : '#d9534f' }}>
+                          One number {/[0-9]/.test(passwordSignUp) ? '✓' : '✗'}
+                        </li>
+                        <li style={{ color: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordSignUp) ? '#5cb85c' : '#d9534f' }}>
+                          One special character (!@#$%^&*) {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(passwordSignUp) ? '✓' : '✗'}
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>Confirm Password</label>

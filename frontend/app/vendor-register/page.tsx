@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Check } from 'lucide-react';
+import { validatePassword } from '@/lib/password-validator';
 
 const VENDOR_TIERS = [
   {
@@ -91,6 +92,7 @@ export default function VendorRegister() {
   const [selectedTier, setSelectedTier] = useState('featured');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
     businessName: '',
@@ -104,13 +106,31 @@ export default function VendorRegister() {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Real-time password validation
+    if (name === 'password' && value) {
+      const validation = validatePassword(value);
+      setPasswordErrors(validation.errors);
+    } else if (name === 'password' && !value) {
+      setPasswordErrors([]);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Validate password strength
+    const validation = validatePassword(formData.password);
+    if (!validation.isValid) {
+      setError(validation.errors[0]);
+      setPasswordErrors(validation.errors);
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/vendors', {
@@ -323,8 +343,33 @@ export default function VendorRegister() {
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
                     required
-                    minLength={8}
                   />
+                  {formData.password && (
+                    <div className={`mt-2 p-3 rounded-lg text-xs ${
+                      passwordErrors.length === 0 ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'
+                    }`}>
+                      <div className="font-semibold mb-2 text-gray-700">
+                        Password Requirements:
+                      </div>
+                      <ul className="space-y-1 text-gray-600">
+                        <li className={formData.password.length >= 8 ? 'text-green-600' : 'text-red-600'}>
+                          {formData.password.length >= 8 ? '✓' : '✗'} At least 8 characters
+                        </li>
+                        <li className={/[A-Z]/.test(formData.password) ? 'text-green-600' : 'text-red-600'}>
+                          {/[A-Z]/.test(formData.password) ? '✓' : '✗'} One uppercase letter
+                        </li>
+                        <li className={/[a-z]/.test(formData.password) ? 'text-green-600' : 'text-red-600'}>
+                          {/[a-z]/.test(formData.password) ? '✓' : '✗'} One lowercase letter
+                        </li>
+                        <li className={/[0-9]/.test(formData.password) ? 'text-green-600' : 'text-red-600'}>
+                          {/[0-9]/.test(formData.password) ? '✓' : '✗'} One number
+                        </li>
+                        <li className={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password) ? 'text-green-600' : 'text-red-600'}>
+                          {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password) ? '✓' : '✗'} One special character (!@#$%^&*)
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
                 <div>
