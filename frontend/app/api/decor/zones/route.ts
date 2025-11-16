@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 interface DecorZone {
   id?: string;
@@ -19,6 +15,10 @@ interface DecorZone {
 
 // GET all zones for a bride
 export async function GET(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const { searchParams } = new URL(request.url);
     const brideId = searchParams.get('brideId');
@@ -53,6 +53,10 @@ export async function GET(request: NextRequest) {
 
 // POST create new zone (custom zone)
 export async function POST(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const body = await request.json();
     const { brideId, zoneName, zoneType, notes } = body;
@@ -103,6 +107,10 @@ export async function POST(request: NextRequest) {
 
 // PATCH update zone (mark as applicable/not applicable, update notes)
 export async function PATCH(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const body = await request.json();
     const { zoneId, isApplicable, notes, zoneName } = body;
@@ -137,6 +145,10 @@ export async function PATCH(request: NextRequest) {
 
 // DELETE zone (only custom zones)
 export async function DELETE(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const { searchParams } = new URL(request.url);
     const zoneId = searchParams.get('zoneId');

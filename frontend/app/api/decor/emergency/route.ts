@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // GET all emergency items for a bride
 export async function GET(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const { searchParams } = new URL(request.url);
     const brideId = searchParams.get('brideId');
@@ -42,6 +42,10 @@ export async function GET(request: NextRequest) {
 
 // POST create new emergency item
 export async function POST(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const body = await request.json();
     const { brideId, itemName, itemType, quantity, packedInBox, notes } = body;
@@ -81,6 +85,10 @@ export async function POST(request: NextRequest) {
 
 // PATCH update emergency item
 export async function PATCH(request: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   try {
     const body = await request.json();
     const { itemId, isPacked, quantity, packedInBox, notes } = body;
