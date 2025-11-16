@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
 import AuthWall from '@/components/AuthWall';
-import { Heart, Send, Sparkles, MessageCircle, Lightbulb, Calendar, DollarSign, Users } from 'lucide-react';
+import { Heart, Send, Sparkles, MessageCircle, Lightbulb, Calendar, DollarSign, Users, MapPin, Lock } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -21,6 +21,12 @@ interface WeddingContext {
   theme?: string;
 }
 
+interface UserTier {
+  tier: 'free' | 'standard' | 'premium';
+  messagesLimit: number;
+  messagesUsed: number;
+}
+
 export default function AIAssistantPage() {
   const router = useRouter();
   const { isAuthenticated, loading, user } = useAuth();
@@ -28,6 +34,7 @@ export default function AIAssistantPage() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [weddingContext, setWeddingContext] = useState<WeddingContext>({});
+  const [userTier, setUserTier] = useState<UserTier>({ tier: 'standard', messagesLimit: 60, messagesUsed: 0 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when messages change
@@ -35,10 +42,11 @@ export default function AIAssistantPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Load wedding context
+  // Load wedding context and user tier
   useEffect(() => {
     if (isAuthenticated && user?.id) {
       loadWeddingContext();
+      loadUserTier();
       // Add welcome message
       if (messages.length === 0) {
         addAssistantMessage(
@@ -47,6 +55,35 @@ export default function AIAssistantPage() {
       }
     }
   }, [isAuthenticated, user]);
+
+  const loadUserTier = () => {
+    if (!user?.id) return;
+
+    // In real app, fetch from API
+    // For now, mock Standard tier with message tracking
+    const storageKey = `bella_ai_messages_${user.id}`;
+    const stored = localStorage.getItem(storageKey);
+
+    if (stored) {
+      const data = JSON.parse(stored);
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+      // Reset count if new month
+      if (data.month !== currentMonth) {
+        const tier = { tier: 'standard', messagesLimit: 60, messagesUsed: 0 };
+        setUserTier(tier);
+        localStorage.setItem(storageKey, JSON.stringify({ ...tier, month: currentMonth }));
+      } else {
+        setUserTier({ tier: data.tier, messagesLimit: data.messagesLimit, messagesUsed: data.messagesUsed });
+      }
+    } else {
+      // New user - set initial tier
+      const tier = { tier: 'standard', messagesLimit: 60, messagesUsed: 0 };
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      setUserTier(tier);
+      localStorage.setItem(storageKey, JSON.stringify({ ...tier, month: currentMonth }));
+    }
+  };
 
   const loadWeddingContext = async () => {
     if (!user?.id) return;
@@ -140,6 +177,17 @@ export default function AIAssistantPage() {
   const handleSend = async () => {
     if (!input.trim()) return;
 
+    // Check message limit
+    if (userTier.messagesUsed >= userTier.messagesLimit) {
+      addAssistantMessage(
+        `⚠️ You've reached your monthly message limit (${userTier.messagesLimit} messages).\n\n` +
+        (userTier.tier === 'standard'
+          ? "Upgrade to Premium for 120 messages/month! Visit the Pricing page to upgrade."
+          : "Upgrade your plan for more AI assistant messages! Visit the Pricing page.")
+      );
+      return;
+    }
+
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -150,6 +198,18 @@ export default function AIAssistantPage() {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
+
+    // Increment message count
+    const newMessagesUsed = userTier.messagesUsed + 1;
+    const updatedTier = { ...userTier, messagesUsed: newMessagesUsed };
+    setUserTier(updatedTier);
+
+    // Save to localStorage
+    if (user?.id) {
+      const storageKey = `bella_ai_messages_${user.id}`;
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      localStorage.setItem(storageKey, JSON.stringify({ ...updatedTier, month: currentMonth }));
+    }
 
     // Simulate AI thinking time
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -226,11 +286,34 @@ export default function AIAssistantPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Sparkles className="w-8 h-8 text-champagne-600" />
-            <h1 className="text-4xl font-serif text-champagne-900">AI Planning Assistant</h1>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Sparkles className="w-8 h-8 text-champagne-600" />
+                <h1 className="text-4xl font-serif text-champagne-900">AI Planning Assistant</h1>
+              </div>
+              <p className="text-champagne-700">Your personal wedding planning expert, available 24/7</p>
+            </div>
+
+            {/* Message Counter */}
+            <div className="px-4 py-2 bg-white rounded-lg shadow-sm border border-champagne-200">
+              <div className="text-xs text-champagne-600">AI Messages This Month</div>
+              <div className="font-semibold text-champagne-900">
+                {userTier.messagesUsed} / {userTier.messagesLimit}
+                {userTier.messagesUsed >= userTier.messagesLimit && (
+                  <Lock className="w-4 h-4 inline ml-2 text-red-500" />
+                )}
+              </div>
+              {userTier.tier === 'standard' && userTier.messagesUsed > 50 && (
+                <button
+                  onClick={() => router.push('/pricing')}
+                  className="mt-1 text-xs text-purple-600 hover:text-purple-800 font-medium"
+                >
+                  Upgrade for 120 →
+                </button>
+              )}
+            </div>
           </div>
-          <p className="text-champagne-700">Your personal wedding planning expert, available 24/7</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -275,23 +358,38 @@ export default function AIAssistantPage() {
 
               {/* Input */}
               <div className="border-t border-champagne-200 p-4">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Ask me anything about wedding planning..."
-                    className="flex-1 px-4 py-3 border border-champagne-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                  />
-                  <button
-                    onClick={handleSend}
-                    disabled={!input.trim()}
-                    className="px-6 py-3 bg-champagne-600 text-white rounded-lg hover:bg-champagne-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
-                </div>
+                {userTier.messagesUsed >= userTier.messagesLimit ? (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                    <Lock className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                    <p className="text-sm text-red-800 mb-3">
+                      You've used all {userTier.messagesLimit} AI messages this month.
+                    </p>
+                    <button
+                      onClick={() => router.push('/pricing')}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700"
+                    >
+                      {userTier.tier === 'standard' ? 'Upgrade to Premium (120 messages/mo)' : 'Upgrade Your Plan'}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                      placeholder="Ask me anything about wedding planning..."
+                      className="flex-1 px-4 py-3 border border-champagne-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
+                    />
+                    <button
+                      onClick={handleSend}
+                      disabled={!input.trim()}
+                      className="px-6 py-3 bg-champagne-600 text-white rounded-lg hover:bg-champagne-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                    >
+                      <Send className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
