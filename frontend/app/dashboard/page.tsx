@@ -101,13 +101,13 @@ const DASHBOARD_CARDS = [
   {
     id: 'vendor-questions',
     title: 'Vendor Questions',
-    description: 'Critical questions to ask',
+    description: '200+ critical questions',
     icon: ClipboardList,
     color: 'bg-purple-50',
     iconColor: 'text-purple-600',
     href: '/vendor-questions',
     status: 'free',
-    tier: 'Free'
+    tier: 'Free Preview'
   },
   {
     id: 'ai-assistant',

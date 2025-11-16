@@ -3,6 +3,8 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Heart, Sparkles, Music, Camera, Video, Utensils, Flower2, MapPin, Scissors, Cake, Users, Car, Package, Mail, ClipboardList, Printer, Download, CheckCircle2, Lightbulb, Guitar, ImagePlus, Shirt, Wine, Hotel } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
 
 interface VendorQuestion {
   id: string;
@@ -553,10 +555,56 @@ const VENDOR_QUESTIONS: VendorCategory[] = [
 function VendorQuestionsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isAuthenticated, loading } = useAuth();
   const [selectedVendor, setSelectedVendor] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [askedQuestions, setAskedQuestions] = useState<Set<string>>(new Set());
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  // Preview mode - show only Photography vendor questions
+  const previewVendor = VENDOR_QUESTIONS.find(v => v.id === 'photographer');
+  const previewContent = previewVendor ? (
+    <div className="space-y-4">
+      <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <div className="flex items-center gap-3 mb-4">
+          {previewVendor.icon && <previewVendor.icon className={`w-6 h-6 ${previewVendor.color}`} />}
+          <h3 className="text-xl font-bold text-gray-900">{previewVendor.name}</h3>
+          <span className="ml-auto bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-medium">
+            {previewVendor.questions.length} Questions
+          </span>
+        </div>
+        <div className="space-y-2">
+          {previewVendor.questions.slice(0, 5).map((q, idx) => (
+            <div key={q.id} className="text-sm text-gray-700 flex gap-2">
+              <span className="text-gray-400">{idx + 1}.</span>
+              <span>{q.question}</span>
+            </div>
+          ))}
+          <p className="text-sm text-gray-500 italic mt-3">
+            + {previewVendor.questions.length - 5} more questions...
+          </p>
+        </div>
+      </div>
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+        <p className="text-sm text-blue-900 font-medium">
+          📋 {VENDOR_QUESTIONS.length - 1} more vendor categories with 200+ total questions available
+        </p>
+      </div>
+    </div>
+  ) : null;
+
+  if (!isAuthenticated) {
+    return <AuthWall featureName="Vendor Questions" previewContent={previewContent} fullLock={false} />;
+  }
 
   // Auto-select vendor from URL parameter
   useEffect(() => {
