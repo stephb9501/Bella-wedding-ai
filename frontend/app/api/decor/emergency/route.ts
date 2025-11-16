@@ -124,6 +124,11 @@ export async function PATCH(request: NextRequest) {
 
 // Helper: Create emergency items from template
 async function createEmergencyItemsFromTemplate(brideId: string) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   // Get template items
   const { data: templates, error: fetchError } = await supabase
     .from('emergency_items_template')

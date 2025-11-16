@@ -187,6 +187,11 @@ export async function DELETE(request: NextRequest) {
 
 // Helper: Create default zones for a new bride
 async function createDefaultZones(brideId: string) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   const defaultZones = [
     { zone_name: 'Entrance or Welcome', zone_type: 'entrance', display_order: 1 },
     { zone_name: 'Guestbook or Memory Table', zone_type: 'guestbook', display_order: 2 },
