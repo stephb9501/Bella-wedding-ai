@@ -96,33 +96,73 @@ export default function DecorPage() {
 
   // Fetch functions
   const fetchStyles = async () => {
-    const res = await fetch('/api/decor/styles');
-    const data = await res.json();
-    setStyles(data.styles || []);
+    try {
+      const res = await fetch('/api/decor/styles');
+      if (!res.ok) {
+        console.error('Failed to fetch styles:', res.status, res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setStyles(data.styles || []);
+    } catch (error) {
+      console.error('Error fetching styles:', error);
+    }
   };
 
   const fetchZones = async (userId: string) => {
-    const res = await fetch(`/api/decor/zones?brideId=${userId}`);
-    const data = await res.json();
-    setZones(data.zones || []);
+    try {
+      const res = await fetch(`/api/decor/zones?brideId=${userId}`);
+      if (!res.ok) {
+        console.error('Failed to fetch zones:', res.status, res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setZones(data.zones || []);
+    } catch (error) {
+      console.error('Error fetching zones:', error);
+    }
   };
 
   const fetchItems = async (userId: string) => {
-    const res = await fetch(`/api/decor/items?brideId=${userId}`);
-    const data = await res.json();
-    setItems(data.items || []);
+    try {
+      const res = await fetch(`/api/decor/items?brideId=${userId}`);
+      if (!res.ok) {
+        console.error('Failed to fetch items:', res.status, res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setItems(data.items || []);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
   };
 
   const fetchEmergencyItems = async (userId: string) => {
-    const res = await fetch(`/api/decor/emergency?brideId=${userId}`);
-    const data = await res.json();
-    setEmergencyItems(data.items || []);
+    try {
+      const res = await fetch(`/api/decor/emergency?brideId=${userId}`);
+      if (!res.ok) {
+        console.error('Failed to fetch emergency items:', res.status, res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setEmergencyItems(data.items || []);
+    } catch (error) {
+      console.error('Error fetching emergency items:', error);
+    }
   };
 
   const fetchPackingBoxes = async (userId: string) => {
-    const res = await fetch(`/api/decor/boxes?brideId=${userId}`);
-    const data = await res.json();
-    setPackingBoxes(data.boxes || []);
+    try {
+      const res = await fetch(`/api/decor/boxes?brideId=${userId}`);
+      if (!res.ok) {
+        console.error('Failed to fetch packing boxes:', res.status, res.statusText);
+        return;
+      }
+      const data = await res.json();
+      setPackingBoxes(data.boxes || []);
+    } catch (error) {
+      console.error('Error fetching packing boxes:', error);
+    }
   };
 
   // Zone actions
