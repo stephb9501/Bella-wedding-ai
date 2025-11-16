@@ -142,6 +142,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Photo Showcase */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          </div>
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          </div>
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          </div>
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          </div>
+        </div>
+      </section>
+
       {/* Features Grid */}
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="text-center mb-12">
@@ -173,6 +191,31 @@ export default function HomePage() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Testimonial Section with Photo */}
+      <section className="relative overflow-hidden py-20">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/75"></div>
+        </div>
+
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <div className="mb-6">
+            <Heart className="w-12 h-12 text-champagne-400 mx-auto mb-4" />
+          </div>
+          <blockquote className="text-2xl md:text-3xl font-serif text-white mb-6 leading-relaxed">
+            "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
+          </blockquote>
+          <p className="text-lg text-champagne-200 font-medium">
+            — Happy Bride ♥
+          </p>
         </div>
       </section>
 

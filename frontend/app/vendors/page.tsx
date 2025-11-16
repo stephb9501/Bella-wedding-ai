@@ -118,15 +118,31 @@ export default function Vendors() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Hero */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+      {/* Hero Section with Photo Background */}
+      <div className="relative overflow-hidden mb-8">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/wedding-photos/deltalow-131.jpg')",
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/85 to-white/90"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 py-16 text-center">
+          <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
             Find Your Perfect Vendors
           </h2>
           <p className="text-xl text-gray-600 mb-8">
             Browse verified wedding professionals in your area
           </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        {/* Search and Filters */}
+        <div className="text-center mb-12">
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto">

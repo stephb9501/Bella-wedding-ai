@@ -376,14 +376,32 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-4xl font-serif font-bold text-gray-900 mb-2">
-            {coupleData.partnerOne} & {coupleData.partnerTwo}
-          </h2>
-          <p className="text-gray-600 text-lg">
-            Your wedding journey to {coupleData.weddingLocation}
-          </p>
+        {/* Welcome Banner with Photo */}
+        <div className="relative mb-8 rounded-2xl overflow-hidden shadow-lg">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
+              backgroundPosition: 'center 40%'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
+          </div>
+
+          <div className="relative px-8 py-12 text-center">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2">
+              {coupleData.partnerOne} & {coupleData.partnerTwo}
+            </h2>
+            <p className="text-xl text-white/90 mb-4">
+              {coupleData.weddingLocation} • {new Date(coupleData.weddingDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </p>
+            <div className="flex items-center justify-center gap-2 text-champagne-200">
+              <Calendar className="w-5 h-5" />
+              <span className="text-lg font-medium">
+                {stats.daysUntilWedding} days until your special day
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Countdown + Key Stats */}
