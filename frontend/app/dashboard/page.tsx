@@ -11,6 +11,8 @@ import {
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
 import { PhotoGallery } from '@/components/PhotoGallery';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
 
 interface DashboardStats {
   totalGuests: number;
@@ -215,6 +217,7 @@ const DASHBOARD_CARDS = [
 
 
 export default function Dashboard() {
+  const { isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('website');
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -293,6 +296,19 @@ export default function Dashboard() {
   const budgetPercentage = Math.round((stats.spent / stats.budget) * 100);
   const taskPercentage = Math.round((stats.tasksCompleted / stats.totalTasks) * 100);
   const rsvpPercentage = Math.round(((stats.rsvpYes + stats.rsvpNo) / stats.totalGuests) * 100);
+
+  // Auth protection - completely locked
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AuthWall featureName="Dashboard" fullLock={true} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">

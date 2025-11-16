@@ -3,9 +3,25 @@
 import { PhotoGallery } from '@/components/PhotoGallery';
 import { useRouter } from 'next/navigation';
 import { Heart } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
 
 export default function Photos() {
   const router = useRouter();
+  const { isAuthenticated, loading } = useAuth();
+
+  // Auth protection - completely locked
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AuthWall featureName="Gallery" fullLock={true} />;
+  }
 
   // TODO: Get actual wedding ID from user session
   // For now using a demo wedding ID
