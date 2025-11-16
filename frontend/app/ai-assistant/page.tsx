@@ -166,12 +166,57 @@ export default function AIAssistantPage() {
     }
 
     // Stress/overwhelmed
-    if (msg.includes('stress') || msg.includes('overwhelm') || msg.includes('help') || msg.includes('confused')) {
+    if (msg.includes('stress') || msg.includes('overwhelm') || msg.includes('help') || msg.includes('confused') || msg.includes('anxious')) {
       return "Take a deep breath! Wedding planning can feel overwhelming, but you've got this. 💕\n\nLet's break it down:\n\n1. **Start with the big 3:** Venue, date, budget\n2. **Use the checklist:** One task at a time\n3. **Delegate:** You don't have to do everything yourself\n4. **Take breaks:** Planning should be fun!\n\nWhat's stressing you most right now? I can help you tackle it step by step.";
     }
 
+    // Dress shopping
+    if (msg.includes('dress') || msg.includes('gown') || msg.includes('attire') || msg.includes('what to wear')) {
+      return "Let's talk wedding attire! 👗\n\n**Dress Shopping Tips:**\n• Start 9-12 months before your wedding\n• Budget: $1,000-$5,000 (average $1,800)\n• Bring only 2-3 trusted people\n• Try different silhouettes (A-line, ballgown, mermaid, sheath)\n• Consider your venue & theme\n\n**Timeline:**\n• Order: 6-9 months before\n• Alterations: 2-3 months before\n• Final fitting: 2-4 weeks before\n\nNeed recommendations for bridal shops in your area? I can help you find them in our vendor directory!";
+    }
+
+    // Photography
+    if (msg.includes('photo') && !msg.includes('vendor')) {
+      return "Photography is one of the most important investments! 📸\n\n**Popular Photography Styles:**\n• Traditional/Posed - Classic formal shots\n• Photojournalistic - Candid, documentary style\n• Fine Art - Artistic, editorial aesthetic\n• Dark & Moody - Dramatic lighting\n• Bright & Airy - Light, ethereal feel\n\n**Budget:** $2,500-$10,000 (10-15% of total budget)\n\n**Questions to Ask:**\n• How many hours of coverage?\n• Second shooter included?\n• Digital files included?\n• Turnaround time for photos?\n• Experience with your venue?\n\nBrowse photographers in our vendor directory and message them directly!";
+    }
+
+    // Music/Entertainment
+    if (msg.includes('music') || msg.includes('band') || msg.includes('entertainment')) {
+      return "Music sets the mood for your entire celebration! 🎵\n\n**DJ vs Live Band:**\n\n**DJ ($1,000-$3,000)**\n✓ More song variety\n✓ Takes up less space\n✓ More affordable\n✗ Less interactive energy\n\n**Live Band ($3,000-$10,000)**\n✓ Unique energy & experience\n✓ Can personalize songs\n✓ Wow factor for guests\n✗ More expensive\n✗ Limited song selection\n\n**Key Considerations:**\n• Match your venue size\n• Guest demographics\n• Music preferences\n• Budget constraints\n\nWant to browse DJs and bands? Check our vendor directory!";
+    }
+
+    // Venue selection
+    if (msg.includes('venue') && !msg.includes('vendor')) {
+      return "Choosing your venue is one of the first big decisions! 🏛️\n\n**Venue Types:**\n• Ballroom/Hotel - Classic, all-inclusive\n• Barn/Rustic - Trendy, DIY-friendly\n• Garden/Outdoor - Natural, romantic\n• Museum/Gallery - Unique, artistic\n• Restaurant/Brewery - Intimate, casual\n• Beach/Destination - Scenic, adventurous\n\n**Questions to Ask:**\n• What's included? (tables, chairs, linens?)\n• Guest capacity?\n• Indoor backup if outdoor?\n• Catering flexibility?\n• Parking availability?\n• Setup/teardown time?\n\n**Budget:** 40-50% of total wedding budget\n\nReady to search? Browse venues in our vendor directory!";
+    }
+
+    // Catering/Food
+    if (msg.includes('food') || msg.includes('cater') || msg.includes('menu') || msg.includes('meal')) {
+      return "Food is a major highlight for your guests! 🍽️\n\n**Catering Styles:**\n• Plated Dinner - Formal, sit-down service ($75-150/person)\n• Buffet - Variety, interactive ($50-100/person)\n• Family Style - Shareable, communal ($60-120/person)\n• Food Stations - Trendy, interactive ($60-130/person)\n• Cocktail Reception - Casual, mingling ($40-80/person)\n\n**Menu Planning Tips:**\n• Offer 2-3 entrée choices\n• Accommodate dietary restrictions\n• Include vegetarian options\n• Consider cultural significance\n• Seasonal ingredients save money\n\n**Budget:** Plan $75-150 per guest (including drinks)\n\nBrowse caterers and get quotes in our vendor directory!";
+    }
+
+    // Flowers/Florist
+    if (msg.includes('flower') && !msg.includes('vendor')) {
+      return "Flowers add beauty and fragrance to your day! 🌸\n\n**Floral Needs:**\n• Bridal bouquet ($150-$350)\n• Bridesmaids bouquets ($50-$100 each)\n• Boutonnieres ($15-$30 each)\n• Centerpieces ($75-$200 each)\n• Ceremony arrangements ($200-$500)\n• Arch/altar florals ($300-$1,000)\n\n**Money-Saving Tips:**\n• Choose seasonal flowers\n• Use greenery as filler\n• Repurpose ceremony flowers at reception\n• Consider potted plants\n• Mix in non-floral elements\n\n**Budget:** 8-10% of total budget ($1,500-$5,000)\n\n**Popular Flowers by Season:**\n• Spring: Tulips, peonies, ranunculus\n• Summer: Roses, hydrangeas, dahlias\n• Fall: Chrysanthemums, dahlias, amaranthus\n• Winter: Amaryllis, holly, evergreens\n\nFind florists in our vendor directory!";
+    }
+
+    // Invitations
+    if (msg.includes('invite') || msg.includes('save the date') || msg.includes('stationery')) {
+      return "Your invitations set the tone for your wedding! 💌\n\n**Stationery Timeline:**\n• Save-the-Dates: 6-8 months before (for destination weddings: 9-12 months)\n• Invitations: Mail 6-8 weeks before\n• RSVP deadline: 3-4 weeks before wedding\n\n**What to Include:**\n✓ Couple's names\n✓ Date, time, location\n✓ Dress code\n✓ RSVP card & deadline\n✓ Wedding website URL\n✓ Registry information (optional)\n✓ Hotel block details\n\n**Budget:** $1.50-$8 per invitation\n\n**Options:**\n• Digital invites ($0-$50 total)\n• DIY templates ($50-$200)\n• Semi-custom ($300-$800)\n• Custom/letterpress ($1,000-$3,000)\n\nUse our website builder to create a wedding website and share with your invites!";
+    }
+
+    // Honeymoon
+    if (msg.includes('honeymoon') || msg.includes('travel') || msg.includes('trip')) {
+      return "Time to plan your dream honeymoon! ✈️\n\n**Honeymoon Timing:**\n• Right after wedding (traditional)\n• A few weeks later (less stressful)\n• 'Minimoon' now + big trip later\n\n**Popular Destinations:**\n• Beach: Maldives, Bora Bora, Hawaii\n• European: Italy, Greece, France\n• Adventure: New Zealand, Iceland, Costa Rica\n• Cultural: Japan, Morocco, Peru\n• All-Inclusive: Mexico, Caribbean resorts\n\n**Budget:** 5-10% of wedding budget ($3,000-$10,000)\n\n**Planning Tips:**\n• Book 6-8 months in advance\n• Use wedding registry for honeymoon fund\n• Consider off-season for savings\n• Apply for travel rewards credit card\n• Purchase travel insurance\n\nMany couples use honeymoon funds on their registry - add yours in the Registry section!";
+    }
+
+    // Seating chart
+    if (msg.includes('seating') || msg.includes('table assignment') || msg.includes('where to sit')) {
+      return "Seating arrangements can be tricky! 🪑\n\n**Seating Tips:**\n• Start with VIPs (parents, grandparents, wedding party)\n• Group friends who know each other\n• Mix tables so guests can meet new people\n• Separate feuding family members 😅\n• Seat quiet guests with chatty ones\n• Put kids near parents\n\n**Table Sizes:**\n• Round: 8-10 guests\n• Rectangle: 6-8 guests\n• King's table (head table): Wedding party\n\n**Seating Styles:**\n• Assigned tables + open seating\n• Fully assigned with place cards\n• Complete open seating (casual only)\n\n**Timeline:** Finalize 2 weeks before wedding\n\nPremium subscribers can use our Seating Chart Designer tool! (Coming soon)";
+    }
+
     // Default helpful response
-    return "I'm here to help with:\n\n• **Budget planning** - Get cost breakdowns and saving tips\n• **Timeline creation** - Know what to do and when\n• **Vendor recommendations** - Find the perfect pros\n• **Décor ideas** - Style suggestions and planning\n• **Guest management** - List building and RSVPs\n• **Checklist guidance** - Stay organized and on track\n\nWhat would you like help with? Just ask me anything about wedding planning!";
+    return "I'm here to help with:\n\n• **Budget planning** - Get cost breakdowns and saving tips\n• **Timeline creation** - Know what to do and when\n• **Vendor recommendations** - Find the perfect pros\n• **Décor ideas** - Style suggestions and planning\n• **Guest management** - List building and RSVPs\n• **Checklist guidance** - Stay organized and on track\n• **Photography advice** - Styles, pricing, what to ask\n• **Dress shopping** - Timeline, budget, tips\n• **Catering options** - Menu styles, pricing, planning\n• **Music & entertainment** - DJ vs band, budgeting\n• **Invitations** - Timeline, wording, what to include\n• **Honeymoon planning** - Destinations, budgeting, timing\n\nWhat would you like help with? Just ask me anything about wedding planning!";
   };
 
   const handleSend = async () => {
