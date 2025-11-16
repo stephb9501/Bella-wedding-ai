@@ -27,6 +27,19 @@ interface UserTier {
   messagesUsed: number;
 }
 
+interface GuidedQuestionsData {
+  weddingDate: string;
+  budget: string;
+  guestCount: string;
+  location: string;
+  venueType: string;
+  theme: string;
+  topPriorities: string;
+  biggestConcerns: string;
+  vendorsNeeded: string;
+  additionalNotes: string;
+}
+
 export default function AIAssistantPage() {
   const router = useRouter();
   const { isAuthenticated, loading, user } = useAuth();
@@ -35,6 +48,19 @@ export default function AIAssistantPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [weddingContext, setWeddingContext] = useState<WeddingContext>({});
   const [userTier, setUserTier] = useState<UserTier>({ tier: 'standard', messagesLimit: 60, messagesUsed: 0 });
+  const [showGuidedQuestions, setShowGuidedQuestions] = useState(false);
+  const [guidedAnswers, setGuidedAnswers] = useState<GuidedQuestionsData>({
+    weddingDate: '',
+    budget: '',
+    guestCount: '',
+    location: '',
+    venueType: '',
+    theme: '',
+    topPriorities: '',
+    biggestConcerns: '',
+    vendorsNeeded: '',
+    additionalNotes: '',
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when messages change
@@ -217,6 +243,38 @@ export default function AIAssistantPage() {
 
     // Default helpful response
     return "I'm here to help with:\n\n• **Budget planning** - Get cost breakdowns and saving tips\n• **Timeline creation** - Know what to do and when\n• **Vendor recommendations** - Find the perfect pros\n• **Décor ideas** - Style suggestions and planning\n• **Guest management** - List building and RSVPs\n• **Checklist guidance** - Stay organized and on track\n• **Photography advice** - Styles, pricing, what to ask\n• **Dress shopping** - Timeline, budget, tips\n• **Catering options** - Menu styles, pricing, planning\n• **Music & entertainment** - DJ vs band, budgeting\n• **Invitations** - Timeline, wording, what to include\n• **Honeymoon planning** - Destinations, budgeting, timing\n\nWhat would you like help with? Just ask me anything about wedding planning!";
+  };
+
+  const handleGuidedQuestionsSubmit = () => {
+    // Validate required fields
+    if (!guidedAnswers.weddingDate || !guidedAnswers.budget || !guidedAnswers.guestCount) {
+      alert('Please fill in at least the wedding date, budget, and guest count.');
+      return;
+    }
+
+    // Save to wedding context
+    const newContext: WeddingContext = {
+      weddingDate: guidedAnswers.weddingDate,
+      budget: parseInt(guidedAnswers.budget.replace(/[^0-9]/g, '')) || 0,
+      guestCount: parseInt(guidedAnswers.guestCount) || 0,
+      location: guidedAnswers.location,
+      theme: guidedAnswers.theme,
+    };
+    setWeddingContext(newContext);
+
+    // Save all guided answers to localStorage for AI reference
+    if (user?.id) {
+      localStorage.setItem(`bella_wedding_profile_${user.id}`, JSON.stringify(guidedAnswers));
+      localStorage.setItem('bella_wedding_details', JSON.stringify(newContext));
+    }
+
+    // Close modal
+    setShowGuidedQuestions(false);
+
+    // Generate comprehensive AI response based on all their answers
+    const comprehensiveResponse = `Perfect! I've saved all your wedding details. Here's a personalized summary based on what you shared:\n\n**Your Wedding Overview:**\n📅 Date: ${new Date(guidedAnswers.weddingDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}\n💰 Budget: $${parseInt(guidedAnswers.budget.replace(/[^0-9]/g, '')).toLocaleString()}\n👥 Guests: ${guidedAnswers.guestCount}\n📍 Location: ${guidedAnswers.location || 'Not specified'}\n🎨 Theme: ${guidedAnswers.theme || 'Not specified'}\n\n**Your Top Priorities:** ${guidedAnswers.topPriorities || 'Not specified'}\n\n**Your Biggest Concerns:** ${guidedAnswers.biggestConcerns || 'Not specified'}\n\n**Vendors You Need:** ${guidedAnswers.vendorsNeeded || 'Not specified'}\n\n${guidedAnswers.additionalNotes ? `**Additional Notes:** ${guidedAnswers.additionalNotes}\n\n` : ''}I'm now customizing all my responses based on your specific wedding details. You saved several messages by filling this out upfront! 🎉\n\nWhat would you like help with first? I can help you:\n• Create a detailed timeline\n• Break down your budget by category\n• Find vendors that match your needs and budget\n• Suggest ideas for your ${guidedAnswers.theme || 'chosen'} theme\n• Address your specific concerns`;
+
+    addAssistantMessage(comprehensiveResponse);
   };
 
   const handleSend = async () => {
@@ -441,6 +499,23 @@ export default function AIAssistantPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Guided Setup */}
+            <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl shadow-lg p-6 border-2 border-purple-300">
+              <h3 className="font-bold text-champagne-900 mb-2 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                Wedding Profile
+              </h3>
+              <p className="text-sm text-champagne-700 mb-4">
+                Complete your wedding profile to get personalized AI responses and save message credits!
+              </p>
+              <button
+                onClick={() => setShowGuidedQuestions(true)}
+                className="w-full px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-medium text-sm"
+              >
+                Complete Wedding Profile
+              </button>
+            </div>
+
             {/* Quick Questions */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <h3 className="font-semibold text-champagne-900 mb-4 flex items-center gap-2">
@@ -517,6 +592,193 @@ export default function AIAssistantPage() {
             )}
           </div>
         </div>
+
+        {/* Guided Questions Modal */}
+        {showGuidedQuestions && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              {/* Modal Header */}
+              <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-t-2xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-1">Complete Your Wedding Profile</h2>
+                    <p className="text-purple-100 text-sm">
+                      Answer these questions once to save message credits and get personalized AI responses!
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowGuidedQuestions(false)}
+                    className="text-white/80 hover:text-white text-2xl"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 space-y-6">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+                  <strong>💡 Pro Tip:</strong> Write detailed paragraph responses! This helps the AI understand your needs better and saves you from having to explain things multiple times.
+                </div>
+
+                {/* Wedding Date */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Wedding Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={guidedAnswers.weddingDate}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, weddingDate: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none"
+                  />
+                </div>
+
+                {/* Budget */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Total Wedding Budget <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., $25,000"
+                    value={guidedAnswers.budget}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, budget: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none"
+                  />
+                </div>
+
+                {/* Guest Count */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Expected Guest Count <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 150"
+                    value={guidedAnswers.guestCount}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, guestCount: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none"
+                  />
+                </div>
+
+                {/* Location */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Wedding Location (City/State)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Austin, TX or Napa Valley, CA"
+                    value={guidedAnswers.location}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, location: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none"
+                  />
+                </div>
+
+                {/* Venue Type */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Venue Type or Preferences
+                  </label>
+                  <textarea
+                    placeholder="e.g., Outdoor garden venue, rustic barn, elegant ballroom, beachfront resort, etc. Describe your ideal venue setting."
+                    value={guidedAnswers.venueType}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, venueType: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none resize-none"
+                  />
+                </div>
+
+                {/* Theme */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Wedding Theme or Style
+                  </label>
+                  <textarea
+                    placeholder="e.g., Romantic garden with soft blush and gold colors, modern minimalist black and white, vintage rustic with wildflowers, etc."
+                    value={guidedAnswers.theme}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, theme: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none resize-none"
+                  />
+                </div>
+
+                {/* Top Priorities */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Your Top 3 Priorities
+                  </label>
+                  <textarea
+                    placeholder="e.g., Amazing food and drinks, stunning photography to capture every moment, creating a fun dance party atmosphere. Be specific about what matters most to you!"
+                    value={guidedAnswers.topPriorities}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, topPriorities: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none resize-none"
+                  />
+                </div>
+
+                {/* Biggest Concerns */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Your Biggest Concerns or Questions
+                  </label>
+                  <textarea
+                    placeholder="e.g., Worried about staying within budget, not sure how to find reliable vendors, concerned about timeline and getting everything done, anxious about coordinating family drama, etc."
+                    value={guidedAnswers.biggestConcerns}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, biggestConcerns: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none resize-none"
+                  />
+                </div>
+
+                {/* Vendors Needed */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Which Vendors Do You Still Need to Book?
+                  </label>
+                  <textarea
+                    placeholder="e.g., Still need to book: photographer, florist, and DJ. Already have venue and caterer locked in. Looking for someone who can do both hair and makeup."
+                    value={guidedAnswers.vendorsNeeded}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, vendorsNeeded: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none resize-none"
+                  />
+                </div>
+
+                {/* Additional Notes */}
+                <div>
+                  <label className="block text-sm font-bold text-champagne-900 mb-2">
+                    Any Other Important Details?
+                  </label>
+                  <textarea
+                    placeholder="e.g., This is a second wedding for both of us so we want a smaller, intimate celebration. We're having a destination wedding so logistics are tricky. We want to incorporate cultural traditions from both families. Etc."
+                    value={guidedAnswers.additionalNotes}
+                    onChange={(e) => setGuidedAnswers({ ...guidedAnswers, additionalNotes: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-champagne-200 rounded-lg focus:border-purple-400 focus:outline-none resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="sticky bottom-0 bg-gray-50 px-6 py-4 rounded-b-2xl border-t border-champagne-200 flex gap-3">
+                <button
+                  onClick={() => setShowGuidedQuestions(false)}
+                  className="flex-1 px-6 py-3 border-2 border-champagne-300 text-champagne-700 rounded-lg hover:bg-champagne-50 transition font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleGuidedQuestionsSubmit}
+                  className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-medium"
+                >
+                  Save Wedding Profile
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
