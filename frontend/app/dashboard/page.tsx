@@ -6,7 +6,8 @@ import {
   Calendar, Users, DollarSign, Heart, MapPin, Camera,
   Sparkles, MessageCircle, Settings, LogOut, Menu, X,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
-  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList
+  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList,
+  Palette
 } from 'lucide-react';
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
@@ -76,6 +77,17 @@ const DASHBOARD_CARDS = [
     color: 'bg-emerald-50',
     iconColor: 'text-emerald-600',
     href: '/budget',
+    status: 'standard',
+    tier: 'Standard'
+  },
+  {
+    id: 'decor',
+    title: 'Décor & Setup',
+    description: 'Plan zones & packing lists',
+    icon: Palette,
+    color: 'bg-fuchsia-50',
+    iconColor: 'text-fuchsia-600',
+    href: '/decor',
     status: 'standard',
     tier: 'Standard'
   },
