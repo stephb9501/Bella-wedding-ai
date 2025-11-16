@@ -432,15 +432,20 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-600 text-center md:text-left">
-              © 2025 Bella Wedding AI. Made with <Heart className="w-4 h-4 text-rose-500 inline" /> for your special day.
-            </p>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>Trusted by 1000+ couples</span>
-              <span>•</span>
-              <span>5-star rated</span>
+          <div className="border-t border-gray-200 pt-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-3">
+              <p className="text-gray-600 text-center md:text-left">
+                © 2025 Bella Wedding AI. Made with <Heart className="w-4 h-4 text-rose-500 inline" /> for your special day.
+              </p>
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <span>Trusted by 1000+ couples</span>
+                <span>•</span>
+                <span>5-star rated</span>
+              </div>
             </div>
+            <p className="text-center text-xs text-gray-500 italic">
+              Wedding photography by Deltalow Photography • Ft. Walton Beach, Florida
+            </p>
           </div>
         </div>
       </footer>
