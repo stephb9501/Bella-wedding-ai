@@ -40,35 +40,7 @@ export default function Budget() {
   const [budget, setBudget] = useState<BudgetItem[]>(INITIAL_BUDGET);
   const [totalBudget, setTotalBudget] = useState(40000);
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
-        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
-      </div>
-    );
-  }
-
-  // Preview content - show budget categories
-  const previewContent = (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Budget Categories</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {INITIAL_BUDGET.map(item => (
-            <div key={item.id} className="flex items-center gap-2 text-gray-700">
-              <DollarSign className="w-4 h-4 text-champagne-600" />
-              <span className="text-sm">{item.category}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  if (!isAuthenticated) {
-    return <AuthWall featureName="Budget Tracker" previewContent={previewContent} fullLock={false} />;
-  }
+  // FREE TO EXPLORE - No auth required
 
   const stats = {
     estimated: budget.reduce((sum, item) => sum + item.estimated, 0),
