@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,11 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For now, log the contact form submission
-    // In production, you would:
-    // 1. Store in database
-    // 2. Send notification email to admin
-    // 3. Send confirmation email to user
+    // Log the submission
     console.log('Contact form submission:', {
       name,
       email,
@@ -35,8 +34,38 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-    // TODO: Add email notification service (SendGrid, Resend, etc.)
-    // TODO: Store in Supabase contact_submissions table
+    // Send admin notification email
+    try {
+      const adminEmail = process.env.ADMIN_EMAIL;
+      if (adminEmail && process.env.RESEND_API_KEY) {
+        await resend.emails.send({
+          from: 'Bella Wedding AI <onboarding@resend.dev>',
+          to: adminEmail,
+          replyTo: email,
+          subject: `💬 Contact Form: ${subject}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #E11D48;">New Contact Form Message</h2>
+              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p><strong>From:</strong> ${name}</p>
+                <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                  <p><strong>Message:</strong></p>
+                  <p style="white-space: pre-wrap;">${message}</p>
+                </div>
+              </div>
+              <p style="color: #666; font-size: 12px;">Reply directly to this email to respond to ${name}</p>
+            </div>
+          `,
+        });
+      }
+    } catch (emailError) {
+      // Log error but don't fail the submission
+      console.error('Failed to send contact notification email:', emailError);
+    }
+
+    // TODO: Store in Supabase contact_submissions table for record keeping
 
     return NextResponse.json(
       {
