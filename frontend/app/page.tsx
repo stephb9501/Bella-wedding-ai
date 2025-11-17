@@ -144,18 +144,20 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Hero Image Background */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
-            backgroundPosition: 'center 30%'
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/75"></div>
-        </div>
+        {/* Hero Image Background with Border */}
+        <div className="max-w-7xl mx-auto px-4 pt-6">
+          <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
+                backgroundPosition: 'center 40%'
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/75"></div>
+            </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-16 text-center">
+            <div className="relative max-w-5xl mx-auto px-4 py-16 text-center">
           <div className="mb-6 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
@@ -212,23 +214,25 @@ export default function HomePage() {
               <div className="text-sm text-gray-600">No Credit Card</div>
             </div>
           </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Photo Showcase */}
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
-          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
-          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
-          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
         </div>
       </section>
@@ -244,21 +248,21 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div
                 key={index}
                 onClick={() => router.push(feature.href)}
-                className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition cursor-pointer group"
+                className="bg-white rounded-xl p-5 shadow-md hover:shadow-xl transition cursor-pointer group"
               >
-                <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition`}>
-                  <Icon className="w-7 h-7 text-white" />
+                <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition`}>
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h4>
-                <p className="text-gray-600">{feature.description}</p>
-                <div className="mt-4 text-champagne-600 font-medium group-hover:translate-x-2 transition inline-block">
+                <h4 className="text-lg font-bold text-gray-900 mb-1">{feature.title}</h4>
+                <p className="text-sm text-gray-600">{feature.description}</p>
+                <div className="mt-3 text-champagne-600 text-sm font-medium group-hover:translate-x-2 transition inline-block">
                   Explore →
                 </div>
               </div>
@@ -274,8 +278,11 @@ export default function HomePage() {
             <h3 className="text-3xl font-serif font-bold text-gray-900 mb-3">
               For Wedding Vendors
             </h3>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 mb-2">
               Grow your business and connect with couples planning their dream wedding
+            </p>
+            <p className="text-base text-champagne-700 font-semibold">
+              ✨ Create a FREE profile to get discovered • Access all planning tools for your own events
             </p>
           </div>
 
@@ -325,23 +332,23 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-16">
+      <section className="relative overflow-hidden py-12">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center top'
+            backgroundPosition: 'center center'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/75"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/70 to-black/80"></div>
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <blockquote className="text-2xl md:text-3xl font-serif text-white mb-6 leading-relaxed">
+          <blockquote className="text-xl md:text-2xl font-serif text-white mb-4 leading-relaxed">
             "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
           </blockquote>
-          <p className="text-lg text-champagne-200 font-medium">
-            <Heart className="w-5 h-5 inline-block mr-2 text-champagne-400" />
+          <p className="text-base text-champagne-200 font-medium">
+            <Heart className="w-4 h-4 inline-block mr-2 text-champagne-400" />
             Happy Bride
           </p>
         </div>
@@ -384,10 +391,12 @@ export default function HomePage() {
             <div>
               <h5 className="font-bold text-gray-900 mb-3">Features</h5>
               <ul className="space-y-2 text-gray-600 text-sm">
-                <li><a href="/guests" className="hover:text-champagne-600">Guest List</a></li>
+                <li><a href="/guests" className="hover:text-champagne-600">Guest List & RSVP</a></li>
                 <li><a href="/photos" className="hover:text-champagne-600">Photo Gallery</a></li>
-                <li><a href="/registry" className="hover:text-champagne-600">Registry</a></li>
-                <li><a href="/budget" className="hover:text-champagne-600">Budget</a></li>
+                <li><a href="/registry" className="hover:text-champagne-600">Registry Aggregator</a></li>
+                <li><a href="/budget" className="hover:text-champagne-600">Budget Tracker</a></li>
+                <li><a href="/checklist" className="hover:text-champagne-600">Timeline & Checklist</a></li>
+                <li><a href="/ai" className="hover:text-champagne-600">AI Assistant</a></li>
               </ul>
             </div>
 
@@ -401,10 +410,11 @@ export default function HomePage() {
             </div>
 
             <div>
-              <h5 className="font-bold text-gray-900 mb-3">Get Started</h5>
+              <h5 className="font-bold text-gray-900 mb-3">For Vendors</h5>
               <ul className="space-y-2 text-gray-600 text-sm">
-                <li><a href="/auth" className="hover:text-champagne-600">Sign Up</a></li>
-                <li><a href="/dashboard" className="hover:text-champagne-600">Dashboard</a></li>
+                <li><a href="/vendor-register" className="hover:text-champagne-600">Vendor Sign Up</a></li>
+                <li><a href="/vendors" className="hover:text-champagne-600">Browse Vendors</a></li>
+                <li><a href="/vendor-pricing" className="hover:text-champagne-600">Pricing</a></li>
               </ul>
             </div>
           </div>
