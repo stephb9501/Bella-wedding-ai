@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const { priceId, userType } = await request.json();
 
-    if (\!priceId) {
+    if (!priceId) {
       return NextResponse.json({ error: 'Missing priceId' }, { status: 400 });
     }
 
