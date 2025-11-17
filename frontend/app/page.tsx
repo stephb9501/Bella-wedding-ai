@@ -154,7 +154,7 @@ export default function HomePage() {
                     </button>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
+                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
                     >
                       Get Started
                     </button>
@@ -218,13 +218,13 @@ export default function HomePage() {
                   <>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
+                      className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
                     >
                       Get Started Free
                     </button>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-8 py-3 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-300"
+                      className="px-8 py-3 bg-white hover:bg-gray-50 text-champagne-700 font-bold rounded-lg shadow-lg transition border-2 border-champagne-300"
                     >
                       Sign In
                     </button>
@@ -262,7 +262,7 @@ export default function HomePage() {
       </section>
 
       {/* Photo Showcase */}
-      <section className="max-w-7xl mx-auto px-4 py-6">
+      <section className="max-w-7xl mx-auto px-4 py-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
             <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
@@ -283,7 +283,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-6">
           <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
-            Everything You Need (And Many More Features!)
+            Everything You Need And Many More Features!
           </h3>
           <p className="text-base text-gray-600">
             Powerful tools to make wedding planning effortless
@@ -348,11 +348,11 @@ export default function HomePage() {
               {/* Vendor CTA */}
               <div className="mt-4 text-center">
                 <p className="text-sm text-champagne-700 font-semibold mb-3">
-                  ✨ Create a FREE profile to get discovered
+                  ✨ Create a FREE profile to get discovered and book jobs on our platform
                 </p>
                 <button
                   onClick={() => router.push('/vendor-register')}
-                  className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
+                  className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
                 >
                   Join as a Vendor
                 </button>
@@ -363,18 +363,18 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-24">
+      <section className="relative overflow-hidden py-16">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 30%'
+            backgroundPosition: 'center 70%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/50"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 text-center pt-8">
           <blockquote className="text-lg md:text-xl font-serif text-white mb-3 leading-relaxed">
             "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
           </blockquote>
@@ -386,7 +386,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-champagne-500 to-rose-500 py-12">
+      <section className="bg-gradient-to-r from-champagne-500 to-rose-500 py-8">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h3 className="text-3xl font-serif font-bold text-white mb-3">
             Ready to Start Planning?
@@ -404,7 +404,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-8">
+      <footer className="bg-white border-t border-gray-200 py-6">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
             <div>
@@ -449,7 +449,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-8 text-center text-gray-600 text-sm">
+          <div className="border-t border-gray-200 pt-6 text-center text-gray-600 text-sm">
             <p>© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
           </div>
         </div>
