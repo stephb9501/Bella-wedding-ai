@@ -20,9 +20,25 @@ export async function POST(req: NextRequest) {
     const fromEmail = userEmail || 'Anonymous';
     const fromUserId = userId || 'Unknown';
 
-    // Load the service account credentials
-    const credentialsPath = path.join(process.cwd(), 'credentials', 'bella-wedding-ai-3b4cd3a0a900.json');
-    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf-8'));
+    // Try to load credentials from environment variables first, then fall back to file
+    let credentials;
+    if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+      credentials = {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      };
+    } else {
+      // Fall back to credentials file
+      const credentialsPath = path.join(process.cwd(), 'credentials', 'bella-wedding-ai-3b4cd3a0a900.json');
+      if (!fs.existsSync(credentialsPath)) {
+        console.error('Credentials file not found and environment variables not set');
+        return NextResponse.json(
+          { error: 'Feedback service not configured' },
+          { status: 503 }
+        );
+      }
+      credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf-8'));
+    }
 
     // Create JWT client for authentication
     const jwtClient = new google.auth.JWT({

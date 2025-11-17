@@ -157,7 +157,7 @@ export default function HomePage() {
                     </button>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
+                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
                     >
                       Get Started
                     </button>
@@ -191,7 +191,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/75 to-white/60"></div>
             </div>
 
-            <div className="relative max-w-5xl mx-auto px-4 pt-24 pb-16 text-center">
+            <div className="relative max-w-5xl mx-auto px-4 pt-56 pb-16 text-center">
           <div className="mb-4 max-w-3xl mx-auto">
             <div className="mb-6">
               <div className="flex items-center justify-center gap-3 mb-4">
@@ -346,7 +346,7 @@ export default function HomePage() {
                 </p>
                 <button
                   onClick={() => router.push('/vendor-register')}
-                  className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
+                  className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
                 >
                   Join as a Vendor
                 </button>
@@ -460,11 +460,11 @@ export default function HomePage() {
                     <Facebook className="w-5 h-5 text-white" />
                   </a>
                   <a
-                    href="https://twitter.com/intent/tweet?url=https://bellaweddingai.com&text=Check%20out%20Bella%20Wedding%20AI%20-%20The%20ultimate%20wedding%20planning%20platform!"
+                    href="https://x.com/intent/tweet?url=https%3A%2F%2Fbellaweddingai.com&text=Check%20out%20Bella%20Wedding%20AI%20-%20Your%20AI-powered%20wedding%20planning%20platform!"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-gradient-to-br from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
-                    aria-label="Share on Twitter"
+                    aria-label="Share on X (formerly Twitter)"
                   >
                     <Twitter className="w-5 h-5 text-white" />
                   </a>
