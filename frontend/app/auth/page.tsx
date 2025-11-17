@@ -39,13 +39,26 @@ export default function AuthPage() {
 
     setLoading(true);
     try {
-      await signIn(emailSignIn, passwordSignIn);
+      const { user } = await signIn(emailSignIn, passwordSignIn);
       showMessage('✓ Sign in successful! Redirecting...', 'success');
       setEmailSignIn('');
       setPasswordSignIn('');
-      // Redirect to dashboard after 1 second
-      setTimeout(() => {
-        window.location.href = '/dashboard';
+
+      // Check if user has completed onboarding
+      setTimeout(async () => {
+        const { default: { supabase } } = await import('@/lib/supabase');
+        const { data: profile } = await supabase
+          .from('couples')
+          .select('partner_one_name')
+          .eq('bride_id', user.user.id)
+          .single();
+
+        // Redirect to onboarding if profile not complete, otherwise dashboard
+        if (!profile || !profile.partner_one_name) {
+          window.location.href = '/onboarding';
+        } else {
+          window.location.href = '/dashboard';
+        }
       }, 1000);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Sign in failed. Please check your credentials.';
@@ -79,11 +92,13 @@ export default function AuthPage() {
     setLoading(true);
     try {
       await signUp(emailSignUp, passwordSignUp);
-      showMessage('✓ Account created successfully! Check your email to confirm.', 'success');
+      showMessage('✓ Account created! Check your email to confirm, then sign in to complete your profile.', 'success');
       setEmailSignUp('');
       setPasswordSignUp('');
       setConfirmPassword('');
       setPasswordErrors([]);
+      // Switch to sign in tab after successful signup
+      setTimeout(() => setActiveTab('signin'), 2000);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Account creation failed. Please try again.';
       showMessage(`✗ ${errorMessage}`, 'error');

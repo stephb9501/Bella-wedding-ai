@@ -13,6 +13,7 @@ import { RegistryAggregator } from '@/components/RegistryAggregator';
 import { PhotoGallery } from '@/components/PhotoGallery';
 import { useAuth } from '@/lib/useAuth';
 import AuthWall from '@/components/AuthWall';
+import { signOut } from '@/lib/supabase';
 
 interface DashboardStats {
   totalGuests: number;
@@ -312,6 +313,15 @@ export default function Dashboard() {
     });
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   const budgetPercentage = Math.round((stats.spent / stats.budget) * 100);
   const taskPercentage = Math.round((stats.tasksCompleted / stats.totalTasks) * 100);
   const rsvpPercentage = Math.round(((stats.rsvpYes + stats.rsvpNo) / stats.totalGuests) * 100);
@@ -345,12 +355,14 @@ export default function Dashboard() {
             <button
               onClick={() => router.push('/settings')}
               className="p-2 hover:bg-gray-100 rounded-lg transition"
+              title="Settings"
             >
               <Settings className="w-5 h-5 text-gray-600" />
             </button>
             <button
-              onClick={() => router.push('/')}
+              onClick={handleLogout}
               className="p-2 hover:bg-gray-100 rounded-lg transition"
+              title="Logout"
             >
               <LogOut className="w-5 h-5 text-gray-600" />
             </button>
@@ -372,10 +384,16 @@ export default function Dashboard() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-champagne-200 p-4">
-          <button className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2">
+          <button
+            onClick={() => router.push('/settings')}
+            className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2"
+          >
             <Settings className="w-5 h-5" /> Settings
           </button>
-          <button className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2"
+          >
             <LogOut className="w-5 h-5" /> Logout
           </button>
         </div>
