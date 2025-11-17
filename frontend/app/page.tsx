@@ -118,7 +118,7 @@ export default function HomePage() {
       "AI Wedding Assistant",
       "Vendor Directory"
     ],
-    "screenshot": "https://bellaweddingai.com/images/IMG_3941.JPG"
+    "screenshot": "https://bellaweddingai.com/wedding-photos/deltalow-560.jpg"
   };
 
   return (
@@ -184,7 +184,7 @@ export default function HomePage() {
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
-                backgroundImage: "url('/images/IMG_3941.JPG')",
+                backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
                 backgroundPosition: 'center 15%'
               }}
             >
@@ -229,16 +229,16 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 py-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/images/IMG_3941.JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/images/IMG_3942.JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/images/IMG_3943 (1).JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/images/IMG_3941.JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
           </div>
         </div>
       </section>
@@ -351,7 +351,7 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/images/IMG_3942.JPG')",
+            backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
             backgroundPosition: 'center 45%'
           }}
         >
