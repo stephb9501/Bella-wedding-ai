@@ -28,9 +28,9 @@ const BRIDE_TIERS = [
   {
     id: 'standard',
     name: 'Standard',
-    price: '$27.99',
+    price: '$13.99',
     period: '/month',
-    originalPrice: '$39.99',
+    originalPrice: '$19.99',
     description: 'Perfect for small weddings and DIY planning',
     icon: Heart,
     color: 'from-blue-400 to-blue-600',
@@ -50,9 +50,9 @@ const BRIDE_TIERS = [
   {
     id: 'premium',
     name: 'Premium',
-    price: '$41.99',
+    price: '$20.99',
     period: '/month',
-    originalPrice: '$59.99',
+    originalPrice: '$29.99',
     description: 'Ideal for full planning with advanced AI tools',
     icon: Crown,
     color: 'from-purple-400 to-rose-600',
