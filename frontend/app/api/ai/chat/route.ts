@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/auth-helpers';
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
   try {
     const { message, context } = await request.json();
 
@@ -34,7 +38,7 @@ export async function POST(request: NextRequest) {
 - Budget optimization and cost-saving strategies
 - Timeline and schedule planning
 - Guest list management advice
-- Theme, décor, and color scheme ideas
+- Theme, decor, and color scheme ideas
 - Stress management and planning tips
 - Etiquette and tradition questions
 - Destination wedding planning
