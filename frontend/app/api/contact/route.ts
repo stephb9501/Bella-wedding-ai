@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -38,6 +36,7 @@ export async function POST(request: NextRequest) {
     try {
       const adminEmail = process.env.ADMIN_EMAIL;
       if (adminEmail && process.env.RESEND_API_KEY) {
+        const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
           from: 'Bella Wedding AI <onboarding@resend.dev>',
           to: adminEmail,

@@ -4,8 +4,6 @@ import { randomBytes } from 'crypto';
 import bcrypt from 'bcryptjs';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 function generateVendorId(): string {
   return `vendor_${randomBytes(12).toString('hex')}`;
 }
@@ -99,6 +97,7 @@ export async function POST(request: NextRequest) {
       const adminEmail = process.env.ADMIN_EMAIL;
       if (adminEmail && process.env.RESEND_API_KEY) {
         const location = city && state ? `${city}, ${state}` : city || state || 'Not specified';
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
         await resend.emails.send({
           from: 'Bella Wedding AI <onboarding@resend.dev>',
