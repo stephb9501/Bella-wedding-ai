@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Heart, Users, Camera, Gift, Calendar, DollarSign, CheckCircle, Sparkles, Briefcase, TrendingUp, Star, MessageSquare } from 'lucide-react';
+import { Heart, Users, Camera, Gift, Calendar, DollarSign, CheckCircle, Sparkles, Briefcase, TrendingUp, Star, MessageSquare, Facebook, Twitter, Instagram, Share2 } from 'lucide-react';
 import { getCurrentUser } from '@/lib/supabase';
 
 export default function HomePage() {
@@ -136,7 +136,7 @@ export default function HomePage() {
             <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-serif font-bold bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-serif font-bold text-gray-900">
               Bella Wedding AI
             </h1>
           </div>
@@ -185,7 +185,7 @@ export default function HomePage() {
                 backgroundPosition: 'center 15%'
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/70"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/75 to-white/60"></div>
             </div>
 
             <div className="relative max-w-5xl mx-auto px-4 py-16 text-center">
@@ -195,7 +195,7 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
                   <Heart className="w-7 h-7 text-white" />
                 </div>
-                <h2 className="text-3xl font-serif font-bold bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
+                <h2 className="text-3xl font-serif font-bold text-gray-900">
                   Bella Wedding AI
                 </h2>
               </div>
@@ -210,35 +210,6 @@ export default function HomePage() {
             <p className="text-base md:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-6">
               Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
             </p>
-
-            {/* Get Started Button - MOVED TO TOP */}
-            {!loading && (
-              <div className="flex gap-4 justify-center mb-6">
-                {!isLoggedIn ? (
-                  <>
-                    <button
-                      onClick={() => router.push('/auth')}
-                      className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
-                    >
-                      Get Started Free
-                    </button>
-                    <button
-                      onClick={() => router.push('/auth')}
-                      className="px-8 py-3 bg-white hover:bg-gray-50 text-champagne-700 font-bold rounded-lg shadow-lg transition border-2 border-champagne-300"
-                    >
-                      Sign In
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => router.push('/dashboard')}
-                    className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
-                  >
-                    Go to Dashboard
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Stats */}
@@ -316,6 +287,26 @@ export default function HomePage() {
                   </div>
                 );
               })}
+
+              {/* Couple CTA */}
+              <div className="mt-4 text-center">
+                {!loading && !isLoggedIn && (
+                  <button
+                    onClick={() => router.push('/auth')}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700 text-lg"
+                  >
+                    Get Started Free
+                  </button>
+                )}
+                {!loading && isLoggedIn && (
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700 text-lg"
+                  >
+                    Go to Dashboard
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -363,18 +354,18 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-16">
+      <section className="relative overflow-hidden py-12">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 70%'
+            backgroundPosition: 'center 35%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/50"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 text-center pt-8">
+        <div className="relative max-w-4xl mx-auto px-4 text-center py-12">
           <blockquote className="text-lg md:text-xl font-serif text-white mb-3 leading-relaxed">
             "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
           </blockquote>
@@ -449,8 +440,43 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-6 text-center text-gray-600 text-sm">
-            <p>© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
+          <div className="border-t border-gray-200 pt-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-gray-600 text-sm">© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
+
+              <div className="flex items-center gap-4">
+                <span className="text-gray-600 text-sm font-medium">Share:</span>
+                <div className="flex gap-3">
+                  <a
+                    href="https://www.facebook.com/sharer/sharer.php?u=https://bellaweddingai.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
+                    aria-label="Share on Facebook"
+                  >
+                    <Facebook className="w-5 h-5 text-white" />
+                  </a>
+                  <a
+                    href="https://twitter.com/intent/tweet?url=https://bellaweddingai.com&text=Check%20out%20Bella%20Wedding%20AI%20-%20The%20ultimate%20wedding%20planning%20platform!"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gradient-to-br from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
+                    aria-label="Share on Twitter"
+                  >
+                    <Twitter className="w-5 h-5 text-white" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
+                    aria-label="Follow on Instagram"
+                  >
+                    <Instagram className="w-5 h-5 text-white" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
