@@ -2,13 +2,12 @@ import { google } from 'googleapis';
 import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getCurrentUser } from '@/lib/supabase-server';
 
 const gmail = google.gmail('v1');
 
 export async function POST(req: NextRequest) {
   try {
-    const { feedback, category } = await req.json();
+    const { feedback, category, userEmail, userId } = await req.json();
 
     if (!feedback) {
       return NextResponse.json(
@@ -17,19 +16,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get user info if available
-    let userEmail = 'Anonymous';
-    let userId = 'Unknown';
-    try {
-      const user = await getCurrentUser();
-      if (user) {
-        userEmail = user.email || 'Unknown';
-        userId = user.id;
-      }
-    } catch (error) {
-      // User not logged in or error getting user
-      console.log('Could not get user info:', error);
-    }
+    // Use provided user info or default to anonymous
+    const fromEmail = userEmail || 'Anonymous';
+    const fromUserId = userId || 'Unknown';
 
     // Load the service account credentials
     const credentialsPath = path.join(process.cwd(), 'credentials', 'bella-wedding-ai-3b4cd3a0a900.json');
@@ -68,8 +57,8 @@ export async function POST(req: NextRequest) {
 
           <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
             <p style="margin: 5px 0; color: #666;"><strong>Category:</strong> ${categoryLabels[category] || category}</p>
-            <p style="margin: 5px 0; color: #666;"><strong>From:</strong> ${userEmail}</p>
-            <p style="margin: 5px 0; color: #666;"><strong>User ID:</strong> ${userId}</p>
+            <p style="margin: 5px 0; color: #666;"><strong>From:</strong> ${fromEmail}</p>
+            <p style="margin: 5px 0; color: #666;"><strong>User ID:</strong> ${fromUserId}</p>
             <p style="margin: 5px 0; color: #666;"><strong>Time:</strong> ${new Date().toLocaleString()}</p>
           </div>
 

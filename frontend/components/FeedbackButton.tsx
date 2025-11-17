@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MessageSquare, X, Send } from 'lucide-react';
+import { getCurrentUser } from '@/lib/supabase';
 
 export default function FeedbackButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,25 @@ export default function FeedbackButton() {
   const [category, setCategory] = useState('improvement');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get user info when component mounts
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        if (user) {
+          setUserEmail(user.email || null);
+          setUserId(user.id);
+        }
+      } catch (error) {
+        // User not logged in, that's ok
+        console.log('User not logged in');
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +41,8 @@ export default function FeedbackButton() {
         body: JSON.stringify({
           feedback,
           category,
+          userEmail,
+          userId,
         }),
       });
 
