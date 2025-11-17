@@ -14,28 +14,30 @@ const VENDOR_TIERS = [
     features: [
       '1 photo',
       'Basic profile',
-      'Bottom of search results',
-      '5 replies/month',
-      '10% commission per booking',
+      'Listed at bottom of search',
+      '5 replies/month limit',
+      '10% commission per booked job',
       'No analytics',
-      'Not eligible for AI matching'
+      'No AI matching'
     ],
     color: 'from-gray-400 to-gray-600'
   },
   {
     id: 'premium',
     name: 'Premium',
-    price: '$34.99/mo',
+    price: '$34.99',
     commission: '5%',
     popular: false,
     features: [
       'Up to 25 photos',
       'Full profile',
+      'Website + social links',
       'Medium search visibility',
-      'Unlimited messages',
+      'Unlimited inbound + outbound messaging',
       'Basic analytics',
-      '5% commission per booking',
-      '1 region, 1 category',
+      '5% commission per booked job',
+      '1 region',
+      '1 category',
       '1 staff login'
     ],
     color: 'from-blue-400 to-blue-600'
@@ -43,18 +45,19 @@ const VENDOR_TIERS = [
   {
     id: 'featured',
     name: 'Featured',
-    price: '$49.99/mo',
+    price: '$49.99',
     commission: '2%',
     popular: true,
     features: [
       'Up to 50 photos',
-      'Priority search placement',
+      'Priority placement',
       'Featured badge',
       'Homepage rotation',
-      'Full analytics',
+      'Full analytics (views, clicks, saves, CTR)',
       'AI profile optimizer',
-      '2% commission per booking',
-      '2 categories, 2 regions',
+      '2% commission per booked job',
+      '2 categories',
+      '2 regions',
       '2 staff accounts'
     ],
     color: 'from-purple-400 to-purple-600'
@@ -62,19 +65,19 @@ const VENDOR_TIERS = [
   {
     id: 'elite',
     name: 'Elite',
-    price: '$79.99/mo',
+    price: '$79.99',
     commission: '0%',
     popular: false,
     features: [
       'Unlimited photos',
       'Top search placement',
       '"Recommended Vendor" section',
-      'Multi-city (up to 3)',
+      'Multi-city visibility (up to 3)',
       'Up to 3 categories',
       'Up to 5 staff accounts',
       'AI automation tools',
       'Custom support',
-      '0% commission - no booking fees'
+      '0% commission - no booking fees ever'
     ],
     color: 'from-amber-400 to-amber-600'
   }
@@ -264,7 +267,7 @@ export default function VendorRegister() {
             <div className="text-center">
               <button
                 onClick={() => setStep(2)}
-                className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition"
+                className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-champagne-900 font-bold rounded-lg shadow-lg transition border-2 border-champagne-700"
               >
                 Continue to Registration
               </button>
@@ -447,7 +450,7 @@ export default function VendorRegister() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-champagne-900 font-bold rounded-lg transition border-2 border-champagne-700"
                 >
                   {loading ? 'Creating Account...' : 'Create Account'}
                 </button>
