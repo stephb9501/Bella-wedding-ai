@@ -139,7 +139,7 @@ export default function HomePage() {
             <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Great Vibes', cursive" }}>
               Bella Wedding AI
             </h1>
           </div>
@@ -193,16 +193,6 @@ export default function HomePage() {
 
             <div className="relative max-w-5xl mx-auto px-4 pt-56 pb-16 text-center">
           <div className="mb-4 max-w-3xl mx-auto">
-            <div className="mb-6">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
-                  <Heart className="w-7 h-7 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Bella Wedding AI
-                </h2>
-              </div>
-            </div>
             <h3 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
               <br />
@@ -362,20 +352,20 @@ export default function HomePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 35%'
+            backgroundPosition: 'center 20%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 text-center pt-16 pb-8">
-          <blockquote className="text-lg md:text-xl font-serif text-white mb-4 leading-relaxed drop-shadow-lg">
-            "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
-          </blockquote>
-          <p className="text-sm text-white font-medium drop-shadow-lg">
+        <div className="relative max-w-4xl mx-auto px-4 text-center pt-8 pb-8">
+          <p className="text-sm text-white font-medium drop-shadow-lg mb-6">
             <Heart className="w-4 h-4 inline-block mr-1 text-champagne-300" />
             Happy Bride
           </p>
+          <blockquote className="text-lg md:text-xl font-serif text-white leading-relaxed drop-shadow-lg">
+            "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
+          </blockquote>
         </div>
       </section>
 
