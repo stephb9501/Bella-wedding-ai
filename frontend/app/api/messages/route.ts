@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+import { supabaseServer } from '@/lib/supabase-server';
 
 export async function GET(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { searchParams } = new URL(request.url);
@@ -20,7 +12,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing booking_id' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('messages')
       .select('*')
       .eq('booking_id', bookingId)
@@ -30,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     // Mark messages as read for the current user
     if (userId) {
-      await supabase
+      await supabaseServer
         .from('messages')
         .update({ read: true })
         .eq('booking_id', bookingId)
@@ -46,7 +38,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { booking_id, sender_id, sender_type, message } = await request.json();
@@ -58,7 +49,7 @@ export async function POST(request: NextRequest) {
     // Check bride tier limits (if sender is bride)
     if (sender_type === 'bride') {
       // Get bride's tier
-      const { data: brideData } = await supabase
+      const { data: brideData } = await supabaseServer
         .from('brides')
         .select('tier')
         .eq('id', sender_id)
@@ -71,7 +62,7 @@ export async function POST(request: NextRequest) {
       startOfMonth.setDate(1);
       startOfMonth.setHours(0, 0, 0, 0);
 
-      const { data: messageCount } = await supabase
+      const { data: messageCount } = await supabaseServer
         .from('messages')
         .select('id')
         .eq('sender_id', sender_id)
@@ -91,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     // Check vendor tier limits (if sender is vendor)
     if (sender_type === 'vendor') {
-      const { data: vendorData } = await supabase
+      const { data: vendorData } = await supabaseServer
         .from('vendors')
         .select('tier, message_count_this_month')
         .eq('id', sender_id)
@@ -109,13 +100,13 @@ export async function POST(request: NextRequest) {
       }
 
       // Increment vendor message count
-      await supabase
+      await supabaseServer
         .from('vendors')
         .update({ message_count_this_month: count + 1 })
         .eq('id', sender_id);
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('messages')
       .insert({
         booking_id,
@@ -135,7 +126,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { searchParams } = new URL(request.url);
@@ -143,7 +133,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) return NextResponse.json({ error: 'Missing message id' }, { status: 400 });
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('messages')
       .delete()
       .eq('id', id);

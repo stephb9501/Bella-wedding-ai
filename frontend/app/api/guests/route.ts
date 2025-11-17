@@ -1,28 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase-server';
 import { randomBytes } from 'crypto';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
 
 function generateGuestToken(): string {
   return randomBytes(16).toString('hex');
 }
 
 export async function GET(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { searchParams } = new URL(request.url);
     const weddingId = searchParams.get('weddingId');
 
     if (!weddingId) return NextResponse.json({ error: 'Missing weddingId' }, { status: 400 });
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('guests')
       .select('*')
       .eq('wedding_id', weddingId)
@@ -37,8 +28,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { wedding_id, name, email, phone } = await request.json();
 
@@ -48,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     const guest_token = generateGuestToken();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('guests')
       .insert({
         wedding_id,
@@ -78,15 +67,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const body = await request.json();
     const { id, ...updateData } = body;
 
     if (!id) return NextResponse.json({ error: 'Missing guest id' }, { status: 400 });
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('guests')
       .update(updateData)
       .eq('id', id)
@@ -101,15 +88,13 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) return NextResponse.json({ error: 'Missing guest id' }, { status: 400 });
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('guests')
       .delete()
       .eq('id', id);

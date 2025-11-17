@@ -1,22 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+import { supabaseServer } from '@/lib/supabase-server';
 
 export async function GET(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { searchParams } = new URL(request.url);
     const brideId = searchParams.get('bride_id');
     const vendorId = searchParams.get('vendor_id');
 
-    let query = supabase.from('vendor_bookings').select('*, vendors(*)');
+    let query = supabaseServer.from('vendor_bookings').select('*, vendors(*)');
 
     if (brideId) {
       query = query.eq('bride_id', brideId);
@@ -37,7 +29,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { bride_id, vendor_id, wedding_date, venue_location, message } = await request.json();
@@ -47,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if booking already exists
-    const { data: existing } = await supabase
+    const { data: existing } = await supabaseServer
       .from('vendor_bookings')
       .select('id')
       .eq('bride_id', bride_id)
@@ -59,13 +50,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Get vendor category for permissions
-    const { data: vendor } = await supabase
+    const { data: vendor } = await supabaseServer
       .from('vendors')
       .select('category')
       .eq('id', vendor_id)
       .single();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('vendor_bookings')
       .insert({
         bride_id,
@@ -81,7 +72,7 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
 
     // Increment vendor's booking_requests count
-    await supabase.rpc('increment_booking_requests', { vendor_id_input: vendor_id });
+    await supabaseServer.rpc('increment_booking_requests', { vendor_id_input: vendor_id });
 
     return NextResponse.json(data?.[0] || {}, { status: 201 });
   } catch (error) {
@@ -91,7 +82,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { id, status } = await request.json();
@@ -100,7 +90,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('vendor_bookings')
       .update({ status })
       .eq('id', id)
@@ -115,7 +105,6 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const { searchParams } = new URL(request.url);
@@ -123,7 +112,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) return NextResponse.json({ error: 'Missing booking id' }, { status: 400 });
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('vendor_bookings')
       .delete()
       .eq('id', id);

@@ -1,26 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseServer } from '@/lib/supabase-server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { randomBytes } from 'crypto';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
-
 export async function GET(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { searchParams } = new URL(request.url);
     const vendorId = searchParams.get('vendor_id');
 
     if (!vendorId) return NextResponse.json({ error: 'Missing vendor_id' }, { status: 400 });
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('vendor_photos')
       .select('*')
       .eq('vendor_id', vendorId)
@@ -35,8 +26,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -73,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Save to database
     const photoUrl = `/uploads/vendors/${vendorId}/${fileName}`;
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('vendor_photos')
       .insert({
         vendor_id: vendorId,
@@ -85,12 +74,12 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
 
     // Update vendor photo count
-    const { data: photos } = await supabase
+    const { data: photos } = await supabaseServer
       .from('vendor_photos')
       .select('id')
       .eq('vendor_id', vendorId);
 
-    await supabase
+    await supabaseServer
       .from('vendors')
       .update({ photo_count: photos?.length || 0 })
       .eq('id', vendorId);
@@ -103,8 +92,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
-
   try {
     const { searchParams } = new URL(request.url);
     const photoId = searchParams.get('id');
@@ -112,13 +99,13 @@ export async function DELETE(request: NextRequest) {
     if (!photoId) return NextResponse.json({ error: 'Missing photo id' }, { status: 400 });
 
     // Get vendor_id before deleting
-    const { data: photo } = await supabase
+    const { data: photo } = await supabaseServer
       .from('vendor_photos')
       .select('vendor_id')
       .eq('id', photoId)
       .single();
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('vendor_photos')
       .delete()
       .eq('id', photoId);
@@ -127,12 +114,12 @@ export async function DELETE(request: NextRequest) {
 
     // Update vendor photo count
     if (photo) {
-      const { data: photos } = await supabase
+      const { data: photos } = await supabaseServer
         .from('vendor_photos')
         .select('id')
         .eq('vendor_id', photo.vendor_id);
 
-      await supabase
+      await supabaseServer
         .from('vendors')
         .update({ photo_count: photos?.length || 0 })
         .eq('id', photo.vendor_id);

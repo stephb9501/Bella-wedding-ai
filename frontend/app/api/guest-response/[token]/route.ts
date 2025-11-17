@@ -1,18 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
-  : null;
+import { supabaseServer } from '@/lib/supabase-server';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { token: string } }
 ) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const token = params.token;
@@ -20,7 +12,7 @@ export async function GET(
     if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 });
 
     // Fetch guest by token
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('guests')
       .select('*')
       .eq('guest_token', token)
@@ -31,7 +23,7 @@ export async function GET(
     }
 
     // Mark link as clicked
-    await supabase
+    await supabaseServer
       .from('guests')
       .update({ link_clicked: true })
       .eq('guest_token', token);
@@ -47,7 +39,6 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { token: string } }
 ) {
-  if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
 
   try {
     const token = params.token;
@@ -56,7 +47,7 @@ export async function POST(
     if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 });
 
     // Verify token exists
-    const { data: existingGuest, error: fetchError } = await supabase
+    const { data: existingGuest, error: fetchError } = await supabaseServer
       .from('guests')
       .select('id')
       .eq('guest_token', token)
@@ -67,7 +58,7 @@ export async function POST(
     }
 
     // Update guest data
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('guests')
       .update({
         ...body,
