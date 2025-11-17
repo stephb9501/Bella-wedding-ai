@@ -3,13 +3,22 @@
 import { useRouter } from 'next/navigation';
 import { MessagingInbox } from '@/components/MessagingInbox';
 import { MessageCircle } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
 
 export default function MessagesPage() {
   const router = useRouter();
+  const { user } = useAuth();
 
-  // TODO: Get from auth session
-  const userId = 'demo-bride-123';
-  const userType = 'bride';
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <p className="text-gray-600">Please log in to view messages</p>
+      </div>
+    );
+  }
+
+  const userId = user.id;
+  const userType = 'bride'; // TODO: Determine from user profile
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
