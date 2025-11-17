@@ -1,10 +1,24 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Heart, Users, Camera, Gift, Calendar, DollarSign, CheckCircle, Sparkles } from 'lucide-react';
+import { getCurrentUser } from '@/lib/supabase';
 
 export default function HomePage() {
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const user = await getCurrentUser();
+    setIsLoggedIn(!!user);
+    setLoading(false);
+  };
 
   const features = [
     {
@@ -66,18 +80,33 @@ export default function HomePage() {
           </div>
 
           <div className="flex gap-3">
-            <button
-              onClick={() => router.push('/auth')}
-              className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition"
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
-            >
-              Dashboard
-            </button>
+            {!loading && (
+              <>
+                {!isLoggedIn ? (
+                  <>
+                    <button
+                      onClick={() => router.push('/auth')}
+                      className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition"
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => router.push('/auth')}
+                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
+                    >
+                      Get Started
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
+                  >
+                    Go to Dashboard
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -95,78 +124,91 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/75"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-32 text-center">
-          <div className="mb-8 max-w-3xl mx-auto">
-            <h2 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-6">
+        <div className="relative max-w-7xl mx-auto px-4 py-16 text-center">
+          <div className="mb-6 max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
               <br />
               <span className="bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
                 Perfectly Planned
               </span>
             </h2>
-            <p className="text-xl md:text-2xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
               Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
             </p>
           </div>
 
-          <div className="flex gap-4 justify-center mb-12">
-            <button
-              onClick={() => router.push('/auth')}
-              className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
-            >
-              Get Started Free
-            </button>
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-200"
-            >
-              View Dashboard
-            </button>
-          </div>
+          {!loading && (
+            <div className="flex gap-4 justify-center mb-8">
+              {!isLoggedIn ? (
+                <>
+                  <button
+                    onClick={() => router.push('/auth')}
+                    className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+                  >
+                    Get Started Free
+                  </button>
+                  <button
+                    onClick={() => router.push('/auth')}
+                    className="px-8 py-3 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-200"
+                  >
+                    Sign In
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+                >
+                  Go to Dashboard
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto">
             <div>
-              <div className="text-4xl font-bold text-champagne-600 mb-2">12+</div>
-              <div className="text-gray-600">Features</div>
+              <div className="text-3xl font-bold text-champagne-600 mb-1">12+</div>
+              <div className="text-sm text-gray-600">Features</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-rose-600 mb-2">1000+</div>
-              <div className="text-gray-600">Brides</div>
+              <div className="text-3xl font-bold text-rose-600 mb-1">1000+</div>
+              <div className="text-sm text-gray-600">Brides</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-purple-600 mb-2">500+</div>
-              <div className="text-gray-600">Vendors</div>
+              <div className="text-3xl font-bold text-purple-600 mb-1">500+</div>
+              <div className="text-sm text-gray-600">Vendors</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Photo Showcase */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
           </div>
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
           </div>
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
           </div>
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-cover" />
+          <div className="relative h-48 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-cover object-top" />
           </div>
         </div>
       </section>
 
       {/* Features Grid */}
-      <section className="max-w-7xl mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h3 className="text-4xl font-serif font-bold text-gray-900 mb-4">
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h3 className="text-3xl font-serif font-bold text-gray-900 mb-3">
             Everything You Need
           </h3>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg text-gray-600">
             Powerful tools to make wedding planning effortless
           </p>
         </div>
@@ -195,42 +237,40 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-20">
+      <section className="relative overflow-hidden py-16">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center'
+            backgroundPosition: 'center top'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/60 to-black/75"></div>
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <div className="mb-6">
-            <Heart className="w-12 h-12 text-champagne-400 mx-auto mb-4" />
-          </div>
           <blockquote className="text-2xl md:text-3xl font-serif text-white mb-6 leading-relaxed">
             "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
           </blockquote>
           <p className="text-lg text-champagne-200 font-medium">
-            — Happy Bride ♥
+            <Heart className="w-5 h-5 inline-block mr-2 text-champagne-400" />
+            Happy Bride
           </p>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-champagne-500 to-rose-500 py-20">
+      <section className="bg-gradient-to-r from-champagne-500 to-rose-500 py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h3 className="text-4xl font-serif font-bold text-white mb-4">
+          <h3 className="text-3xl font-serif font-bold text-white mb-3">
             Ready to Start Planning?
           </h3>
-          <p className="text-xl text-white/90 mb-8">
+          <p className="text-lg text-white/90 mb-6">
             Join thousands of brides who are planning their dream wedding with Bella
           </p>
           <button
             onClick={() => router.push('/auth')}
-            className="px-10 py-4 bg-white hover:bg-gray-100 text-champagne-600 font-bold rounded-lg shadow-xl transition transform hover:scale-105"
+            className="px-10 py-3 bg-white hover:bg-gray-100 text-champagne-600 font-bold rounded-lg shadow-xl transition transform hover:scale-105"
           >
             Get Started Free
           </button>
@@ -238,9 +278,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-12">
+      <footer className="bg-white border-t border-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
