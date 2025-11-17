@@ -39,7 +39,7 @@ export default function AuthPage() {
 
     setLoading(true);
     try {
-      const { user } = await signIn(emailSignIn, passwordSignIn);
+      const data = await signIn(emailSignIn, passwordSignIn);
       showMessage('✓ Sign in successful! Redirecting...', 'success');
       setEmailSignIn('');
       setPasswordSignIn('');
@@ -50,7 +50,7 @@ export default function AuthPage() {
         const { data: profile } = await supabase
           .from('couples')
           .select('partner_one_name')
-          .eq('bride_id', user.user.id)
+          .eq('bride_id', data.user?.id)
           .single();
 
         // Redirect to onboarding if profile not complete, otherwise dashboard
