@@ -157,7 +157,7 @@ export default function HomePage() {
                     </button>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
+                      className="px-6 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg shadow-md transition"
                     >
                       Get Started
                     </button>
@@ -165,7 +165,7 @@ export default function HomePage() {
                 ) : (
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
+                    className="px-6 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg shadow-md transition"
                   >
                     Dashboard
                   </button>
@@ -264,7 +264,7 @@ export default function HomePage() {
               {!loading && !isLoggedIn && (
                 <button
                   onClick={() => router.push('/auth')}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
                 >
                   Get Started Free
                 </button>
@@ -272,7 +272,7 @@ export default function HomePage() {
               {!loading && isLoggedIn && (
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
                 >
                   Go to Dashboard
                 </button>
@@ -312,7 +312,7 @@ export default function HomePage() {
             <div className="mb-6 text-center">
               <button
                 onClick={() => router.push('/vendor-register')}
-                className="w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
+                className="w-full px-6 py-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
               >
                 Join for Free
               </button>
@@ -346,18 +346,18 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden" style={{ minHeight: '400px' }}>
+      <section className="relative overflow-hidden" style={{ minHeight: '600px' }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 55%'
+            backgroundImage: "url('/images/IMG_3942.JPG')",
+            backgroundPosition: 'center 50%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/50"></div>
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 text-center py-24">
+        <div className="relative max-w-6xl mx-auto px-4 text-center py-32">
           <p className="text-sm text-white font-medium drop-shadow-lg mb-6">
             <Heart className="w-4 h-4 inline-block mr-1 text-champagne-300" />
             Happy Bride
@@ -369,7 +369,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-pink-500 to-rose-500 py-12">
+      <section className="bg-gradient-to-r from-champagne-400 to-rose-400 py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h3 className="text-3xl font-serif font-bold text-white mb-3">
             Ready to Start Planning?
