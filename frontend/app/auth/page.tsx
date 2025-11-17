@@ -91,8 +91,21 @@ export default function AuthPage() {
 
     setLoading(true);
     try {
-      await signUp(emailSignUp, passwordSignUp);
-      showMessage('✓ Account created! Check your email to confirm, then sign in to complete your profile.', 'success');
+      const { user } = await signUp(emailSignUp, passwordSignUp);
+
+      // Send signup notification (don't wait for it)
+      if (user) {
+        fetch('/api/signup-notification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            userId: user.id,
+          }),
+        }).catch(err => console.error('Signup notification failed:', err));
+      }
+
+      showMessage('✓ Account created! Check your email for a welcome message and to confirm your account.', 'success');
       setEmailSignUp('');
       setPasswordSignUp('');
       setConfirmPassword('');
