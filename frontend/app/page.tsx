@@ -129,6 +129,9 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
+      {/* Google Fonts - Playfair Display */}
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&display=swap" rel="stylesheet" />
+
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-champagne-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -136,7 +139,7 @@ export default function HomePage() {
             <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-serif font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
               Bella Wedding AI
             </h1>
           </div>
@@ -188,14 +191,14 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/75 to-white/60"></div>
             </div>
 
-            <div className="relative max-w-5xl mx-auto px-4 py-16 text-center">
+            <div className="relative max-w-5xl mx-auto px-4 pt-24 pb-16 text-center">
           <div className="mb-4 max-w-3xl mx-auto">
             <div className="mb-6">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
                   <Heart className="w-7 h-7 text-white" />
                 </div>
-                <h2 className="text-3xl font-serif font-bold text-gray-900">
+                <h2 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
                   Bella Wedding AI
                 </h2>
               </div>
@@ -293,7 +296,7 @@ export default function HomePage() {
                 {!loading && !isLoggedIn && (
                   <button
                     onClick={() => router.push('/auth')}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700 text-lg"
+                    className="w-full px-6 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-800 text-xl"
                   >
                     Get Started Free
                   </button>
@@ -301,7 +304,7 @@ export default function HomePage() {
                 {!loading && isLoggedIn && (
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700 text-lg"
+                    className="w-full px-6 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-800 text-xl"
                   >
                     Go to Dashboard
                   </button>
@@ -354,7 +357,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-12">
+      <section className="relative overflow-hidden py-8">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -362,15 +365,15 @@ export default function HomePage() {
             backgroundPosition: 'center 35%'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/50"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 text-center py-12">
-          <blockquote className="text-lg md:text-xl font-serif text-white mb-3 leading-relaxed">
+        <div className="relative max-w-4xl mx-auto px-4 text-center pt-16 pb-8">
+          <blockquote className="text-lg md:text-xl font-serif text-white mb-4 leading-relaxed drop-shadow-lg">
             "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
           </blockquote>
-          <p className="text-sm text-champagne-200 font-medium">
-            <Heart className="w-4 h-4 inline-block mr-1 text-champagne-400" />
+          <p className="text-sm text-white font-medium drop-shadow-lg">
+            <Heart className="w-4 h-4 inline-block mr-1 text-champagne-300" />
             Happy Bride
           </p>
         </div>
