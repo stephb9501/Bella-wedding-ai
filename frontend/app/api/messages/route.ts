@@ -1,22 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
+import { requireAuth } from '@/lib/auth-helpers';
 
 export async function GET(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
 
   try {
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get('booking_id');
+    const conversationId = searchParams.get('conversation_id');
     const userId = searchParams.get('user_id');
 
-    if (!bookingId) {
-      return NextResponse.json({ error: 'Missing booking_id' }, { status: 400 });
+    if (!bookingId && !conversationId) {
+      return NextResponse.json({ error: 'Missing booking_id or conversation_id' }, { status: 400 });
     }
 
-    const { data, error } = await supabaseServer
+    let query = supabaseServer
       .from('messages')
       .select('*')
-      .eq('booking_id', bookingId)
       .order('created_at', { ascending: true });
+
+    if (bookingId) {
+      query = query.eq('booking_id', bookingId);
+    } else if (conversationId) {
+      query = query.eq('conversation_id', conversationId);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
 
@@ -38,11 +49,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
 
   try {
-    const { booking_id, sender_id, sender_type, message } = await request.json();
+    const { booking_id, conversation_id, sender_id, sender_type, message_text, message } = await request.json();
+    const messageContent = message_text || message;
 
-    if (!booking_id || !sender_id || !sender_type || !message) {
+    if ((!booking_id && !conversation_id) || !sender_id || !sender_type || !messageContent) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -106,15 +120,24 @@ export async function POST(request: NextRequest) {
         .eq('id', sender_id);
     }
 
+    const insertData: any = {
+      sender_id,
+      sender_type,
+      message_text: messageContent,
+      message: messageContent,
+      read: false,
+    };
+
+    if (booking_id) {
+      insertData.booking_id = booking_id;
+    }
+    if (conversation_id) {
+      insertData.conversation_id = conversation_id;
+    }
+
     const { data, error } = await supabaseServer
       .from('messages')
-      .insert({
-        booking_id,
-        sender_id,
-        sender_type,
-        message,
-        read: false,
-      })
+      .insert(insertData)
       .select();
 
     if (error) throw error;
@@ -126,6 +149,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
 
   try {
     const { searchParams } = new URL(request.url);
