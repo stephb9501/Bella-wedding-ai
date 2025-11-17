@@ -127,16 +127,16 @@ export default function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
             <div>
-              <div className="text-4xl font-bold text-champagne-600 mb-2">12+</div>
+              <div className="text-4xl font-bold text-champagne-600 mb-2">20+</div>
               <div className="text-gray-600">Features</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-rose-600 mb-2">1000+</div>
-              <div className="text-gray-600">Brides</div>
+              <div className="text-4xl font-bold text-rose-600 mb-2">100%</div>
+              <div className="text-gray-600">Free to Start</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-purple-600 mb-2">500+</div>
-              <div className="text-gray-600">Vendors</div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">24/7</div>
+              <div className="text-gray-600">AI Support</div>
             </div>
           </div>
         </div>
@@ -211,10 +211,10 @@ export default function HomePage() {
             <Heart className="w-12 h-12 text-champagne-400 mx-auto mb-4" />
           </div>
           <blockquote className="text-2xl md:text-3xl font-serif text-white mb-6 leading-relaxed">
-            "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
+            "Plan your dream wedding with powerful tools, vendor marketplace, and AI assistance – all in one elegant platform."
           </blockquote>
           <p className="text-lg text-champagne-200 font-medium">
-            — Happy Bride ♥
+            — Join Early Access Today
           </p>
         </div>
       </section>
@@ -226,7 +226,7 @@ export default function HomePage() {
             Ready to Start Planning?
           </h3>
           <p className="text-xl text-white/90 mb-8">
-            Join thousands of brides who are planning their dream wedding with Bella
+            Start planning your dream wedding today – completely free to get started
           </p>
           <button
             onClick={() => router.push('/auth')}
