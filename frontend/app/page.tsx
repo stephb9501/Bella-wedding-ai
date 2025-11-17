@@ -157,8 +157,7 @@ export default function HomePage() {
                     </button>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg shadow-md transition border-2 border-rose-700"
-                      style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+                      className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
                     >
                       Get Started
                     </button>
@@ -166,8 +165,7 @@ export default function HomePage() {
                 ) : (
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg shadow-md transition border-2 border-rose-700"
-                    style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+                    className="px-6 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition"
                   >
                     Dashboard
                   </button>
@@ -266,8 +264,7 @@ export default function HomePage() {
               {!loading && !isLoggedIn && (
                 <button
                   onClick={() => router.push('/auth')}
-                  className="w-full px-6 py-4 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl border-2 border-rose-700"
-                  style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+                  className="w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
                 >
                   Get Started Free
                 </button>
@@ -275,8 +272,7 @@ export default function HomePage() {
               {!loading && isLoggedIn && (
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="w-full px-6 py-4 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl border-2 border-rose-700"
-                  style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+                  className="w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
                 >
                   Go to Dashboard
                 </button>
@@ -311,6 +307,17 @@ export default function HomePage() {
           {/* RIGHT COLUMN - VENDORS */}
           <div>
             <h4 className="text-xl font-bold text-rose-600 mb-4 text-center">For Vendors</h4>
+
+            {/* Vendor CTA - Moved to top */}
+            <div className="mb-6 text-center">
+              <button
+                onClick={() => router.push('/vendor-register')}
+                className="w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl"
+              >
+                Join for Free
+              </button>
+            </div>
+
             <div className="space-y-3">
               {vendorFeatures.map((feature, index) => {
                 const Icon = feature.icon;
@@ -333,37 +340,24 @@ export default function HomePage() {
                   </div>
                 );
               })}
-
-              {/* Vendor CTA */}
-              <div className="mt-4 text-center">
-                <p className="text-sm text-champagne-700 font-semibold mb-3">
-                  ✨ Create a FREE profile to get discovered and book jobs on our platform
-                </p>
-                <button
-                  onClick={() => router.push('/vendor-register')}
-                  className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
-                >
-                  Join as a Vendor
-                </button>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-8">
+      <section className="relative overflow-hidden" style={{ minHeight: '400px' }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 65%'
+            backgroundPosition: 'center 55%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/50"></div>
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 text-center pt-4 pb-12">
+        <div className="relative max-w-6xl mx-auto px-4 text-center py-24">
           <p className="text-sm text-white font-medium drop-shadow-lg mb-6">
             <Heart className="w-4 h-4 inline-block mr-1 text-champagne-300" />
             Happy Bride
@@ -375,7 +369,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-champagne-500 to-rose-500 py-8">
+      <section className="bg-gradient-to-r from-pink-500 to-rose-500 py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h3 className="text-3xl font-serif font-bold text-white mb-3">
             Ready to Start Planning?
@@ -385,8 +379,7 @@ export default function HomePage() {
           </p>
           <button
             onClick={() => router.push('/auth')}
-            className="px-10 py-4 bg-white hover:bg-gray-50 text-rose-700 font-extrabold rounded-lg shadow-xl transition transform hover:scale-105 text-xl border-2 border-white"
-            style={{ backgroundColor: '#FFFFFF', color: '#BE123C' }}
+            className="px-10 py-4 bg-white hover:bg-gray-50 text-pink-600 font-extrabold rounded-lg shadow-xl transition transform hover:scale-105 text-xl"
           >
             Get Started Free
           </button>
