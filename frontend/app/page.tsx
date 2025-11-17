@@ -118,7 +118,7 @@ export default function HomePage() {
       "AI Wedding Assistant",
       "Vendor Directory"
     ],
-    "screenshot": "https://bellaweddingai.com/wedding-photos/deltalow-560.jpg"
+    "screenshot": "https://bellaweddingai.com/images/IMG_3941.JPG"
   };
 
   return (
@@ -193,13 +193,13 @@ export default function HomePage() {
 
             <div className="relative max-w-5xl mx-auto px-4 pt-72 pb-16 text-center">
           <div className="mb-4 max-w-3xl mx-auto">
-            <h3 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
               <br />
               <span className="bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
                 Perfectly Planned
               </span>
-            </h3>
+            </h2>
             <p className="text-base md:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-6">
               Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
             </p>
@@ -229,16 +229,16 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 py-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-130.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-130.jpg" alt="Elegant bride and groom at romantic beach wedding ceremony at sunset" className="w-full h-full object-contain bg-gray-100" />
           </div>
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-447.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-447.jpg" alt="Beautiful wedding reception table setup with floral centerpieces and elegant decor" className="w-full h-full object-contain bg-gray-100" />
           </div>
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-512.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-512.jpg" alt="Bride and groom sharing romantic moment on beach with ocean waves in background" className="w-full h-full object-contain bg-gray-100" />
           </div>
           <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-            <img src="/wedding-photos/deltalow-119.jpg" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+            <img src="/wedding-photos/deltalow-119.jpg" alt="Happy newlyweds celebrating their beach wedding with joy and laughter" className="w-full h-full object-contain bg-gray-100" />
           </div>
         </div>
       </section>
@@ -246,9 +246,9 @@ export default function HomePage() {
       {/* Features Grid - 2 VERTICAL COLUMNS */}
       <section className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-6">
-          <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-serif font-bold text-gray-900 mb-2">
             Everything You Need And Many More Features!
-          </h3>
+          </h2>
           <p className="text-base text-gray-600">
             Powerful tools to make wedding planning effortless
           </p>
@@ -257,7 +257,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* LEFT COLUMN - BRIDES */}
           <div>
-            <h4 className="text-xl font-bold text-champagne-600 mb-4 text-center">For Couples</h4>
+            <h3 className="text-xl font-bold text-champagne-600 mb-4 text-center">For Couples</h3>
 
             {/* Couple CTA - Moved up for better visibility */}
             <div className="mb-6 text-center">
@@ -306,7 +306,7 @@ export default function HomePage() {
 
           {/* RIGHT COLUMN - VENDORS */}
           <div>
-            <h4 className="text-xl font-bold text-rose-600 mb-4 text-center">For Vendors</h4>
+            <h3 className="text-xl font-bold text-rose-600 mb-4 text-center">For Vendors</h3>
 
             {/* Vendor CTA - Moved to top */}
             <div className="mb-6 text-center">

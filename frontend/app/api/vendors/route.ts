@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { randomBytes } from 'crypto';
+import bcrypt from 'bcryptjs';
 
 function generateVendorId(): string {
   return `vendor_${randomBytes(12).toString('hex')}`;
@@ -53,14 +54,16 @@ export async function POST(request: NextRequest) {
 
     const vendorId = generateVendorId();
 
-    // TODO: Hash password before storing
+    // Hash password before storing (10 rounds for security)
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const { data, error } = await supabaseServer
       .from('vendors')
       .insert({
         id: vendorId,
         business_name: businessName,
         email,
-        password, // TODO: Hash this
+        password: hashedPassword,
         phone: phone || '',
         category,
         city: city || '',
