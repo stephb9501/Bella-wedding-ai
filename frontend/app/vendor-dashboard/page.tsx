@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap } from 'lucide-react';
+import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote } from 'lucide-react';
 import Image from 'next/image';
+import { VendorAnalytics } from '@/components/VendorAnalytics';
+import { VendorBookings } from '@/components/VendorBookings';
+import { VendorReviews } from '@/components/VendorReviews';
 
 interface VendorProfile {
   id: string;
@@ -48,6 +51,7 @@ export default function VendorDashboard() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews'>('overview');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // TODO: Get vendor ID from auth session
@@ -234,6 +238,57 @@ export default function VendorDashboard() {
           </div>
         )}
 
+        {/* Tabs Navigation */}
+        <div className="bg-white rounded-xl shadow-md mb-6 flex overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`flex-1 py-4 px-6 font-medium transition flex items-center justify-center gap-2 ${
+              activeTab === 'overview'
+                ? 'bg-champagne-50 border-b-2 border-champagne-600 text-champagne-700'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <ImageIcon className="w-5 h-5" />
+            Overview
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`flex-1 py-4 px-6 font-medium transition flex items-center justify-center gap-2 ${
+              activeTab === 'analytics'
+                ? 'bg-champagne-50 border-b-2 border-champagne-600 text-champagne-700'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <BarChart3 className="w-5 h-5" />
+            Analytics
+          </button>
+          <button
+            onClick={() => setActiveTab('bookings')}
+            className={`flex-1 py-4 px-6 font-medium transition flex items-center justify-center gap-2 ${
+              activeTab === 'bookings'
+                ? 'bg-champagne-50 border-b-2 border-champagne-600 text-champagne-700'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <Calendar className="w-5 h-5" />
+            Bookings
+          </button>
+          <button
+            onClick={() => setActiveTab('reviews')}
+            className={`flex-1 py-4 px-6 font-medium transition flex items-center justify-center gap-2 ${
+              activeTab === 'reviews'
+                ? 'bg-champagne-50 border-b-2 border-champagne-600 text-champagne-700'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <Quote className="w-5 h-5" />
+            Reviews
+          </button>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <>
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow p-4">
@@ -350,6 +405,23 @@ export default function VendorDashboard() {
             </div>
           )}
         </div>
+          </>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && profile && (
+          <VendorAnalytics vendorId={vendorId} tier={profile.tier} />
+        )}
+
+        {/* Bookings Tab */}
+        {activeTab === 'bookings' && (
+          <VendorBookings vendorId={vendorId} />
+        )}
+
+        {/* Reviews Tab */}
+        {activeTab === 'reviews' && (
+          <VendorReviews vendorId={vendorId} />
+        )}
       </div>
     </div>
   );
