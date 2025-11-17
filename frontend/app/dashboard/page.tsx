@@ -14,6 +14,7 @@ import { PhotoGallery } from '@/components/PhotoGallery';
 import { useAuth } from '@/lib/useAuth';
 import AuthWall from '@/components/AuthWall';
 import { signOut, getCurrentUser, supabase } from '@/lib/supabase';
+import FeedbackButton from '@/components/FeedbackButton';
 
 interface DashboardStats {
   totalGuests: number;
@@ -766,6 +767,9 @@ export default function Dashboard() {
           {coupleData.tier === 'free' && '📌 Free Tier'}
         </p>
       </footer>
+
+      {/* Floating Feedback Button for Early Testers */}
+      <FeedbackButton />
     </div>
   );
 }
