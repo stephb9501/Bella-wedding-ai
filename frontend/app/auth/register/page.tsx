@@ -48,36 +48,35 @@ export default function RegisterPage() {
     }
 
     try {
-      // Create auth user
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            full_name: formData.fullName,
-            wedding_date: formData.weddingDate,
-          },
+      // Call API endpoint to create user (sends admin email notification)
+      const response = await fetch('/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+          weddingDate: formData.weddingDate,
+          plan: 'standard', // Default to standard plan
+        }),
       });
 
-      if (signUpError) throw signUpError;
+      const data = await response.json();
 
-      if (authData.user) {
-        // Create user profile in database
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: authData.user.id,
-            email: formData.email,
-            full_name: formData.fullName,
-            wedding_date: formData.weddingDate || null,
-            subscription_tier: 'standard',
-          });
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create account');
+      }
 
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-          // Continue anyway, profile might already exist
-        }
+      if (data.success) {
+        // Sign in the user on the client side
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (signInError) throw signInError;
 
         // Redirect to dashboard
         router.push('/dashboard');

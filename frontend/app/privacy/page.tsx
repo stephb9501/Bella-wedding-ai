@@ -364,10 +364,39 @@ export default function PrivacyPolicyPage() {
               </div>
             </div>
             <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mt-4">
-              <p className="text-gray-700">
-                <strong>Note:</strong> No security system is perfect. While we strive to protect your information,
-                we cannot guarantee absolute security. Please use a strong, unique password and enable two-factor
-                authentication (when available) to enhance your account security.
+              <p className="text-gray-700 mb-3">
+                <strong>Important Security Disclaimer:</strong> While we implement commercially reasonable safeguards
+                to protect your data, no security system is perfect. We cannot and do not guarantee absolute security.
+                You acknowledge and agree that:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                <li>The internet is not a 100% secure environment</li>
+                <li>You assume all risks associated with online data transmission</li>
+                <li>We are not liable for unauthorized access resulting from circumstances beyond our reasonable control</li>
+                <li>Third-party service providers (Supabase, Vercel, etc.) maintain their own security measures</li>
+              </ul>
+              <p className="text-gray-700 mt-3">
+                Please use a strong, unique password and enable two-factor authentication (when available) to enhance your account security.
+              </p>
+            </div>
+
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded mt-4">
+              <h3 className="font-bold text-gray-900 mb-2">Data Breach Response Procedure</h3>
+              <p className="text-gray-700 mb-3">
+                In the event of a security incident or data breach, we will use commercially reasonable efforts to:
+              </p>
+              <ol className="list-decimal list-inside space-y-1 text-gray-700 ml-4">
+                <li>Detect and confirm the incident</li>
+                <li>Contain and secure affected systems</li>
+                <li>Evaluate the scope and nature of affected data</li>
+                <li>Notify affected users within a reasonable time frame as required by applicable law</li>
+                <li>Provide recommended protective actions (e.g., password reset, credit monitoring)</li>
+                <li>Document remediation steps and implement additional safeguards</li>
+              </ol>
+              <p className="text-gray-700 mt-3">
+                <strong>Note:</strong> Our liability for data breaches does not include consequential, indirect, or punitive damages.
+                See our <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">Terms of Service</Link> for
+                full limitation of liability provisions.
               </p>
             </div>
           </section>
