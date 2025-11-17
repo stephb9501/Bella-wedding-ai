@@ -28,7 +28,7 @@ const BRIDE_TIERS = [
   {
     id: 'standard',
     name: 'Standard',
-    price: '$19.99',
+    price: '$27.99',
     period: '/month',
     originalPrice: '$39.99',
     description: 'Perfect for small weddings and DIY planning',
@@ -50,7 +50,7 @@ const BRIDE_TIERS = [
   {
     id: 'premium',
     name: 'Premium',
-    price: '$29.99',
+    price: '$41.99',
     period: '/month',
     originalPrice: '$59.99',
     description: 'Ideal for full planning with advanced AI tools',
@@ -136,7 +136,7 @@ export default function BrideSubscription() {
             <Zap className="w-6 h-6 text-yellow-400 animate-pulse" />
           </div>
           <p className="text-lg">
-            <span className="font-bold text-yellow-400">50% OFF</span> for your first 3 months • Plus limited <span className="font-bold text-green-400">FREE</span> early tester spots!
+            <span className="font-bold text-yellow-400">30% OFF</span> for your first 3 months • Plus limited <span className="font-bold text-green-400">FREE</span> early tester spots!
           </p>
         </div>
       </div>
@@ -187,7 +187,7 @@ export default function BrideSubscription() {
                 {tier.blackFriday && (
                   <div className="absolute -top-3 -right-3">
                     <div className="bg-gradient-to-br from-red-600 to-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                      50% OFF
+                      30% OFF
                     </div>
                   </div>
                 )}
