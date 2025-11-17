@@ -15,6 +15,7 @@ const PLATFORMS = [
   { name: 'Zola', id: 'zola', icon: '💍' },
   { name: 'Amazon', id: 'amazon', icon: '📦' },
   { name: 'Target', id: 'target', icon: '🎯' },
+  { name: 'Walmart', id: 'walmart', icon: '🛒' },
   { name: 'Williams-Sonoma', id: 'williams-sonoma', icon: '🍳' },
   { name: 'Bed Bath & Beyond', id: 'bed-bath-beyond', icon: '🛏️' },
   { name: 'Honeyfund', id: 'honeyfund', icon: '✈️' },
