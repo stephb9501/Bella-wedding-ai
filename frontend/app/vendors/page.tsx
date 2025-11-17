@@ -348,8 +348,11 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 }
 
 function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [upgradeRequired, setUpgradeRequired] = useState(false);
   const [formData, setFormData] = useState({
     wedding_date: '',
     venue_location: '',
@@ -359,34 +362,53 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
+    setUpgradeRequired(false);
 
     try {
-      // TODO: Get bride_id from session/auth
-      const brideId = 'demo-bride-123';
+      // Get current user and their tier
+      const { getCurrentUser } = await import('@/lib/supabase');
+      const user = await getCurrentUser();
+
+      if (!user) {
+        setError('Please sign in to contact vendors');
+        setLoading(false);
+        return;
+      }
+
+      // Get user's subscription tier from profile
+      const profileResponse = await fetch(`/api/profile?userId=${user.id}`);
+      const profile = await profileResponse.json();
+      const brideTier = profile?.subscription_tier || 'standard';
 
       const response = await fetch('/api/vendor-bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bride_id: brideId,
+          bride_id: user.id,
           vendor_id: vendor.id,
           wedding_date: formData.wedding_date,
           venue_location: formData.venue_location,
           message: formData.message,
+          bride_tier: brideTier,
         }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to send booking request');
+        if (result.upgradeRequired) {
+          setUpgradeRequired(true);
+        }
+        throw new Error(result.error || 'Failed to send booking request');
       }
 
       setSuccess(true);
       setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 2500);
     } catch (error: any) {
-      alert(error.message || 'Failed to send booking request');
+      setError(error.message || 'Failed to send booking request');
     } finally {
       setLoading(false);
     }
@@ -468,22 +490,34 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
               </div>
             </div>
 
-            {/* Vendor Info */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h5 className="font-semibold text-gray-900 mb-2">Vendor Contact</h5>
-              <div className="space-y-1 text-sm text-gray-600">
-                {vendor.email && (
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    <span>{vendor.email}</span>
-                  </div>
+            {/* Error Messages */}
+            {error && (
+              <div className={`mt-6 p-4 rounded-lg ${upgradeRequired ? 'bg-amber-50 border-2 border-amber-200' : 'bg-red-50 border-2 border-red-200'}`}>
+                <p className={`font-medium ${upgradeRequired ? 'text-amber-900' : 'text-red-900'}`}>
+                  {error}
+                </p>
+                {upgradeRequired && (
+                  <button
+                    onClick={() => router.push('/bride-subscription')}
+                    className="mt-3 px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg transition inline-flex items-center gap-2"
+                  >
+                    Upgrade to Premium
+                    <span>→</span>
+                  </button>
                 )}
-                {vendor.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    <span>{vendor.phone}</span>
-                  </div>
-                )}
+              </div>
+            )}
+
+            {/* Info Box */}
+            <div className="mt-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <MessageCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                <div>
+                  <h5 className="font-semibold text-blue-900 mb-1">Secure In-Platform Messaging</h5>
+                  <p className="text-sm text-blue-800">
+                    {vendor.business_name} will be notified via email and can respond through their vendor dashboard. Your contact details remain private until you're ready to share them.
+                  </p>
+                </div>
               </div>
             </div>
 
