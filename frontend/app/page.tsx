@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Heart, Users, Camera, Gift, Calendar, DollarSign, CheckCircle, Sparkles, Briefcase, TrendingUp, Star, MessageSquare } from 'lucide-react';
+import { Heart, Users, Camera, Gift, Calendar, DollarSign, CheckCircle, Sparkles, Briefcase, TrendingUp, Star, MessageSquare, Facebook, Twitter, Instagram, Share2 } from 'lucide-react';
 import { getCurrentUser } from '@/lib/supabase';
 
 export default function HomePage() {
@@ -96,19 +96,50 @@ export default function HomePage() {
     }
   ];
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Bella Wedding AI",
+    "description": "AI-powered wedding planning platform with guest management, budget tracking, timeline, photo gallery, and vendor directory",
+    "url": "https://bellaweddingai.com",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Guest List & RSVP Management",
+      "Photo Gallery",
+      "Registry Aggregator",
+      "Budget Tracker",
+      "Timeline & Checklist",
+      "AI Wedding Assistant",
+      "Vendor Directory"
+    ],
+    "screenshot": "https://bellaweddingai.com/images/IMG_3941.JPG"
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 via-rose-50 to-champagne-50">
-      {/* Google Fonts */}
-      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&display=swap" rel="stylesheet" />
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
+      {/* Google Fonts - Playfair Display & Great Vibes */}
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Great+Vibes&display=swap" rel="stylesheet" />
 
       {/* Header */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-champagne-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push('/')}>
-            <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center shadow-md">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-champagne-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Great Vibes', cursive" }}>
               Bella Wedding AI
             </h1>
           </div>
@@ -119,14 +150,14 @@ export default function HomePage() {
                 {!isLoggedIn ? (
                   <>
                     <button
-                      onClick={() => router.push('/auth/login')}
-                      className="px-5 py-2.5 text-gray-700 hover:text-gray-900 font-semibold transition-colors"
+                      onClick={() => router.push('/auth')}
+                      className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition"
                     >
                       Sign In
                     </button>
                     <button
-                      onClick={() => router.push('/auth/register')}
-                      className="px-6 py-2.5 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-105"
+                      onClick={() => router.push('/auth')}
+                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
                     >
                       Get Started
                     </button>
@@ -134,7 +165,7 @@ export default function HomePage() {
                 ) : (
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="px-6 py-2.5 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-105"
+                    className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
                   >
                     Dashboard
                   </button>
@@ -146,187 +177,210 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 sm:py-32">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{
-            backgroundImage: "url('/images/IMG_3941.JPG')",
-            backgroundPosition: 'center 40%'
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/95 to-white"></div>
+      <section className="relative overflow-hidden bg-gradient-to-br from-champagne-50 to-rose-50 py-4">
+        {/* Hero Image Background with Border */}
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-white" style={{ minHeight: '500px' }}>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: "url('/images/IMG_3941.JPG')",
+                backgroundPosition: 'center 15%'
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/75 to-white/60"></div>
+            </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <div className="mb-10 max-w-4xl mx-auto">
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="relative max-w-5xl mx-auto px-4 pt-72 pb-16 text-center">
+          <div className="mb-4 max-w-3xl mx-auto">
+            <h3 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
               <br />
               <span className="bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
                 Perfectly Planned
               </span>
-            </h2>
-            <p className="text-xl sm:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
-              Everything you need to plan the perfect wedding – guest management, budgeting, timelines, vendor marketplace, and AI-powered insights. All in one elegant platform.
+            </h3>
+            <p className="text-base md:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-6">
+              Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <button
-              onClick={() => router.push('/auth/register')}
-              className="px-10 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-            >
-              Get Started Free
-            </button>
-            <button
-              onClick={() => router.push('/vendors')}
-              className="px-10 py-4 bg-white hover:bg-gray-50 text-gray-900 font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all border-2 border-gray-200"
-            >
-              Browse Vendors
-            </button>
-          </div>
-
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-md">
-              <div className="text-4xl font-bold text-champagne-600 mb-2">20+</div>
-              <div className="text-gray-600 font-medium">Features</div>
+          <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
+            <div>
+              <div className="text-xl font-bold text-champagne-600 mb-1">15+ Features</div>
+              <div className="text-xs text-gray-600">All-in-One Platform</div>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-md">
-              <div className="text-4xl font-bold text-rose-600 mb-2">100%</div>
-              <div className="text-gray-600 font-medium">Free to Start</div>
+            <div>
+              <div className="text-xl font-bold text-rose-600 mb-1">AI-Powered</div>
+              <div className="text-xs text-gray-600">Smart Planning</div>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-md">
-              <div className="text-4xl font-bold text-purple-600 mb-2">24/7</div>
-              <div className="text-gray-600 font-medium">AI Support</div>
+            <div>
+              <div className="text-xl font-bold text-purple-600 mb-1">Free to Start</div>
+              <div className="text-xs text-gray-600">No Credit Card</div>
+            </div>
+          </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Photo Showcase */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <section className="max-w-7xl mx-auto px-4 py-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {['/images/IMG_3941.JPG', '/images/IMG_3942.JPG', '/images/IMG_3943 (1).JPG', '/images/IMG_3941.JPG'].map((img, i) => (
-            <div key={i} className="relative h-64 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <img src={img} alt="Wedding" className="w-full h-full object-cover object-center" />
-            </div>
-          ))}
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/images/IMG_3941.JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+          </div>
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/images/IMG_3942.JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+          </div>
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/images/IMG_3943 (1).JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+          </div>
+          <div className="relative h-64 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
+            <img src="/images/IMG_3941.JPG" alt="Wedding" className="w-full h-full object-contain bg-gray-100" />
+          </div>
         </div>
       </section>
 
-      {/* For Brides Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-        <div className="text-center mb-12">
-          <h3 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-            For Brides
+      {/* Features Grid - 2 VERTICAL COLUMNS */}
+      <section className="max-w-7xl mx-auto px-4 py-8">
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
+            Everything You Need And Many More Features!
           </h3>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Powerful tools to make wedding planning effortless and enjoyable
+          <p className="text-base text-gray-600">
+            Powerful tools to make wedding planning effortless
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {brideFeatures.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <div
-                key={index}
-                onClick={() => router.push(feature.href)}
-                className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all cursor-pointer group border border-gray-100"
-              >
-                <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-md`}>
-                  <Icon className="w-8 h-8 text-white" />
-                </div>
-                <h4 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h4>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                <div className="mt-5 text-champagne-600 font-semibold group-hover:translate-x-2 transition-transform inline-block">
-                  Explore →
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* For Vendors Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-champagne-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h3 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-              For Vendors
-            </h3>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Grow your wedding business and connect with couples
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            {vendorFeatures.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <div
-                  key={index}
-                  onClick={() => router.push(feature.href)}
-                  className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all cursor-pointer group border border-gray-100"
-                >
-                  <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-md`}>
-                    <Icon className="w-8 h-8 text-white" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* LEFT COLUMN - BRIDES */}
+          <div>
+            <h4 className="text-xl font-bold text-champagne-600 mb-4 text-center">For Couples</h4>
+            <div className="space-y-3">
+              {brideFeatures.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={index}
+                    onClick={() => router.push(feature.href)}
+                    className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition cursor-pointer group flex items-start gap-3"
+                  >
+                    <div className={`w-10 h-10 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition`}>
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="text-base font-bold text-gray-900 mb-1">{feature.title}</h5>
+                      <p className="text-sm text-gray-600">{feature.description}</p>
+                    </div>
+                    <div className="text-champagne-600 text-sm font-medium group-hover:translate-x-1 transition">
+                      →
+                    </div>
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h4>
-                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                </div>
-              );
-            })}
+                );
+              })}
+
+              {/* Couple CTA */}
+              <div className="mt-4 text-center">
+                {!loading && !isLoggedIn && (
+                  <button
+                    onClick={() => router.push('/auth')}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-800 text-xl"
+                  >
+                    Get Started Free
+                  </button>
+                )}
+                {!loading && isLoggedIn && (
+                  <button
+                    onClick={() => router.push('/dashboard')}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-800 text-xl"
+                  >
+                    Go to Dashboard
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="text-center">
-            <button
-              onClick={() => router.push('/vendor-register')}
-              className="px-10 py-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-            >
-              Join as a Vendor
-            </button>
+          {/* RIGHT COLUMN - VENDORS */}
+          <div>
+            <h4 className="text-xl font-bold text-rose-600 mb-4 text-center">For Vendors</h4>
+            <div className="space-y-3">
+              {vendorFeatures.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={index}
+                    onClick={() => router.push(feature.href)}
+                    className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition cursor-pointer group flex items-start gap-3"
+                  >
+                    <div className={`w-10 h-10 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition`}>
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h5 className="text-base font-bold text-gray-900 mb-1">{feature.title}</h5>
+                      <p className="text-sm text-gray-600">{feature.description}</p>
+                    </div>
+                    <div className="text-champagne-600 text-sm font-medium group-hover:translate-x-1 transition">
+                      →
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Vendor CTA */}
+              <div className="mt-4 text-center">
+                <p className="text-sm text-champagne-700 font-semibold mb-3">
+                  ✨ Create a FREE profile to get discovered and book jobs on our platform
+                </p>
+                <button
+                  onClick={() => router.push('/vendor-register')}
+                  className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
+                >
+                  Join as a Vendor
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonial Section */}
-      <section className="relative overflow-hidden py-24">
+      {/* Testimonial Section with Photo */}
+      <section className="relative overflow-hidden py-8">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/images/IMG_3942.JPG')",
-            backgroundPosition: 'center 30%'
+            backgroundPosition: 'center 45%'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-black/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="mb-8">
-            <Heart className="w-14 h-14 text-champagne-400 mx-auto mb-4" />
-          </div>
-          <blockquote className="text-2xl sm:text-3xl lg:text-4xl text-white mb-8 leading-relaxed" style={{ fontFamily: "'Playfair Display', serif" }}>
-            "Plan your dream wedding with powerful tools, vendor marketplace, and AI assistance – all in one elegant platform."
-          </blockquote>
-          <p className="text-xl text-champagne-200 font-semibold">
-            — Join Early Access Today
+        <div className="relative max-w-4xl mx-auto px-4 text-center pt-8 pb-8">
+          <p className="text-sm text-white font-medium drop-shadow-lg mb-6">
+            <Heart className="w-4 h-4 inline-block mr-1 text-champagne-300" />
+            Happy Bride
           </p>
+          <blockquote className="text-lg md:text-xl font-serif text-white leading-relaxed drop-shadow-lg">
+            "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
+          </blockquote>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-champagne-500 via-rose-500 to-champagne-500 py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h3 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+      <section className="bg-gradient-to-r from-champagne-500 to-rose-500 py-8">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h3 className="text-3xl font-serif font-bold text-white mb-3">
             Ready to Start Planning?
           </h3>
-          <p className="text-xl sm:text-2xl text-white/95 mb-10 max-w-2xl mx-auto">
-            Start planning your dream wedding today – completely free to get started
+          <p className="text-lg text-white/90 mb-6">
+            Start planning your dream wedding with AI-powered tools and expert guidance
           </p>
           <button
-            onClick={() => router.push('/auth/register')}
-            className="px-12 py-4 bg-white hover:bg-gray-50 text-champagne-600 font-bold text-lg rounded-xl shadow-2xl transition-all transform hover:scale-105"
+            onClick={() => router.push('/auth')}
+            className="px-10 py-3 bg-white hover:bg-gray-100 text-champagne-600 font-bold rounded-lg shadow-xl transition transform hover:scale-105"
           >
             Get Started Free
           </button>
@@ -334,52 +388,91 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+      <footer className="bg-white border-t border-gray-200 py-6">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>Bella Wedding AI</span>
+                <span className="font-serif font-bold text-lg">Bella Wedding AI</span>
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm">
                 Your AI-powered wedding planning platform
               </p>
             </div>
 
             <div>
-              <h5 className="font-bold text-gray-900 mb-4">Features</h5>
-              <ul className="space-y-2.5 text-gray-600 text-sm">
-                <li><a href="/guests" className="hover:text-champagne-600 transition-colors">Guest List</a></li>
-                <li><a href="/photos" className="hover:text-champagne-600 transition-colors">Photo Gallery</a></li>
-                <li><a href="/registry" className="hover:text-champagne-600 transition-colors">Registry</a></li>
-                <li><a href="/budget" className="hover:text-champagne-600 transition-colors">Budget</a></li>
+              <h5 className="font-bold text-gray-900 mb-3">Features</h5>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li><a href="/guests" className="hover:text-champagne-600">Guest List & RSVP</a></li>
+                <li><a href="/photos" className="hover:text-champagne-600">Photo Gallery</a></li>
+                <li><a href="/registry" className="hover:text-champagne-600">Registry Aggregator</a></li>
+                <li><a href="/budget" className="hover:text-champagne-600">Budget Tracker</a></li>
+                <li><a href="/checklist" className="hover:text-champagne-600">Timeline & Checklist</a></li>
+                <li><a href="/ai" className="hover:text-champagne-600">AI Assistant</a></li>
               </ul>
             </div>
 
             <div>
-              <h5 className="font-bold text-gray-900 mb-4">Company</h5>
-              <ul className="space-y-2.5 text-gray-600 text-sm">
-                <li><a href="/contact" className="hover:text-champagne-600 transition-colors">Contact</a></li>
-                <li><a href="/privacy" className="hover:text-champagne-600 transition-colors">Privacy</a></li>
-                <li><a href="/terms" className="hover:text-champagne-600 transition-colors">Terms</a></li>
+              <h5 className="font-bold text-gray-900 mb-3">Company</h5>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li><a href="/contact" className="hover:text-champagne-600">Contact</a></li>
+                <li><a href="/privacy" className="hover:text-champagne-600">Privacy</a></li>
+                <li><a href="/terms" className="hover:text-champagne-600">Terms</a></li>
               </ul>
             </div>
 
             <div>
-              <h5 className="font-bold text-gray-900 mb-4">Get Started</h5>
-              <ul className="space-y-2.5 text-gray-600 text-sm">
-                <li><a href="/auth/register" className="hover:text-champagne-600 transition-colors">Sign Up</a></li>
-                <li><a href="/auth/login" className="hover:text-champagne-600 transition-colors">Sign In</a></li>
-                <li><a href="/vendor-register" className="hover:text-champagne-600 transition-colors">Vendor Sign Up</a></li>
+              <h5 className="font-bold text-gray-900 mb-3">For Vendors</h5>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li><a href="/vendor-register" className="hover:text-champagne-600">Vendor Sign Up</a></li>
+                <li><a href="/vendor-pricing" className="hover:text-champagne-600">Pricing & Plans</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-8 text-center text-gray-600 text-sm">
-            <p>© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
+          <div className="border-t border-gray-200 pt-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="text-gray-600 text-sm">© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
+                <p className="text-gray-500 text-xs mt-1">Photos by Deltalow • Fort Walton Beach & Eglin AFB Beach, Florida</p>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <span className="text-gray-600 text-sm font-medium">Share:</span>
+                <div className="flex gap-3">
+                  <a
+                    href="https://www.facebook.com/sharer/sharer.php?u=https://bellaweddingai.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
+                    aria-label="Share on Facebook"
+                  >
+                    <Facebook className="w-5 h-5 text-white" />
+                  </a>
+                  <a
+                    href="https://x.com/intent/tweet?url=https%3A%2F%2Fbellaweddingai.com&text=Check%20out%20Bella%20Wedding%20AI%20-%20Your%20AI-powered%20wedding%20planning%20platform!"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gradient-to-br from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
+                    aria-label="Share on X (formerly Twitter)"
+                  >
+                    <Twitter className="w-5 h-5 text-white" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full flex items-center justify-center transition transform hover:scale-110 shadow-md"
+                    aria-label="Follow on Instagram"
+                  >
+                    <Instagram className="w-5 h-5 text-white" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
