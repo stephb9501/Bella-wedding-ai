@@ -15,6 +15,15 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
+  // Consent checkboxes (required for signup)
+  const [agreeAge, setAgreeAge] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [agreeAI, setAgreeAI] = useState(false);
+  const [agreeVendor, setAgreeVendor] = useState(false);
+  const [agreeArbitration, setAgreeArbitration] = useState(false);
+  const [agreeMarketing, setAgreeMarketing] = useState(false); // Optional
+
   const showMessage = (text: string, type: string) => {
     setMessage({ text, type, show: true });
     setTimeout(() => setMessage({ text: '', type: 'success', show: false }), 4000);
@@ -86,6 +95,32 @@ export default function AuthPage() {
     if (!validation.isValid) {
       showMessage(`✗ ${validation.errors[0]}`, 'error');
       setPasswordErrors(validation.errors);
+      return;
+    }
+
+    // Validate required consent checkboxes
+    if (!agreeAge) {
+      showMessage('✗ You must confirm you are 18+ years old', 'error');
+      return;
+    }
+    if (!agreeTerms) {
+      showMessage('✗ You must agree to the Terms of Service', 'error');
+      return;
+    }
+    if (!agreePrivacy) {
+      showMessage('✗ You must agree to the Privacy Policy', 'error');
+      return;
+    }
+    if (!agreeAI) {
+      showMessage('✗ You must acknowledge the AI disclaimer', 'error');
+      return;
+    }
+    if (!agreeVendor) {
+      showMessage('✗ You must acknowledge the vendor disclaimer', 'error');
+      return;
+    }
+    if (!agreeArbitration) {
+      showMessage('✗ You must agree to binding arbitration', 'error');
       return;
     }
 
@@ -381,6 +416,61 @@ export default function AuthPage() {
             border: 1px solid #c6f5c6;
           }
 
+          /* Consent Checkboxes */
+          .consent-section {
+            margin: 20px 0;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border: 1px solid #ddd;
+          }
+
+          .consent-header {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #a64c74;
+            margin-bottom: 12px;
+            margin-top: 0;
+          }
+
+          .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #555;
+            line-height: 1.4;
+          }
+
+          .checkbox-label input[type="checkbox"] {
+            margin-top: 3px;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            cursor: pointer;
+            accent-color: #a64c74;
+          }
+
+          .checkbox-label span {
+            flex: 1;
+          }
+
+          .checkbox-label a {
+            color: #a64c74;
+            text-decoration: underline;
+            font-weight: 600;
+          }
+
+          .checkbox-label a:hover {
+            color: #b84b7a;
+          }
+
+          .checkbox-label:last-child {
+            margin-bottom: 0;
+          }
+
           /* Footer */
           footer {
             margin-top: 2.5em;
@@ -404,6 +494,10 @@ export default function AuthPage() {
 
             .tabs {
               gap: 20px;
+            }
+
+            .checkbox-label {
+              font-size: 0.75rem;
             }
           }
         `}</style>
@@ -534,15 +628,99 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Confirm Password</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={loading}
-                    required 
+                    required
                   />
                 </div>
+
+                {/* Required Consent Checkboxes */}
+                <div className="consent-section">
+                  <p className="consent-header">Required Agreements:</p>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreeAge}
+                      onChange={(e) => setAgreeAge(e.target.checked)}
+                      disabled={loading}
+                      required
+                    />
+                    <span>I am 18+ years old and legally able to enter this agreement</span>
+                  </label>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreeTerms}
+                      onChange={(e) => setAgreeTerms(e.target.checked)}
+                      disabled={loading}
+                      required
+                    />
+                    <span>I agree to the <a href="/terms" target="_blank">Terms of Service</a></span>
+                  </label>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreePrivacy}
+                      onChange={(e) => setAgreePrivacy(e.target.checked)}
+                      disabled={loading}
+                      required
+                    />
+                    <span>I agree to the <a href="/privacy" target="_blank">Privacy Policy</a></span>
+                  </label>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreeAI}
+                      onChange={(e) => setAgreeAI(e.target.checked)}
+                      disabled={loading}
+                      required
+                    />
+                    <span>I understand AI suggestions may be inaccurate and I am solely responsible for final decisions <a href="/ai-disclaimer" target="_blank">(AI Disclaimer)</a></span>
+                  </label>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreeVendor}
+                      onChange={(e) => setAgreeVendor(e.target.checked)}
+                      disabled={loading}
+                      required
+                    />
+                    <span>I understand Bella Wedding AI is not responsible for vendor performance, quality, or contracts <a href="/vendor-disclaimer" target="_blank">(Vendor Disclaimer)</a></span>
+                  </label>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreeArbitration}
+                      onChange={(e) => setAgreeArbitration(e.target.checked)}
+                      disabled={loading}
+                      required
+                    />
+                    <span>I agree to binding arbitration and waive my right to jury trial <a href="/arbitration" target="_blank">(Arbitration Agreement)</a></span>
+                  </label>
+
+                  <p className="consent-header" style={{ marginTop: '16px' }}>Optional:</p>
+
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={agreeMarketing}
+                      onChange={(e) => setAgreeMarketing(e.target.checked)}
+                      disabled={loading}
+                    />
+                    <span>I agree to receive marketing emails and wedding planning tips (you can unsubscribe anytime)</span>
+                  </label>
+                </div>
+
                 <button type="submit" disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}
                 </button>

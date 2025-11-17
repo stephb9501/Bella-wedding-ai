@@ -129,8 +129,8 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* Google Fonts - Playfair Display */}
-      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&display=swap" rel="stylesheet" />
+      {/* Google Fonts - Playfair Display & Great Vibes */}
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Great+Vibes&display=swap" rel="stylesheet" />
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-champagne-200 sticky top-0 z-50">
