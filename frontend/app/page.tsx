@@ -165,6 +165,7 @@ export default function HomePage() {
                 Perfectly Planned
               </span>
             </h2>
+            {/* Force cache refresh - v2 */}
             <p className="text-xl sm:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
               Everything you need to plan the perfect wedding – guest management, budgeting, timelines, vendor marketplace, and AI-powered insights. All in one elegant platform.
             </p>
