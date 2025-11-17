@@ -8,7 +8,7 @@ import AuthWall from '@/components/AuthWall';
 
 export default function Guests() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
 
   // Auth protection - completely locked
   if (loading) {
@@ -19,13 +19,12 @@ export default function Guests() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <AuthWall featureName="Guest List" fullLock={true} />;
   }
 
-  // TODO: Get actual wedding ID from user session
-  // For now using a demo wedding ID
-  const weddingId = 'demo-wedding-123';
+  // Use authenticated user ID as wedding ID (one user = one wedding)
+  const weddingId = user.id;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">

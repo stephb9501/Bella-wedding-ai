@@ -145,7 +145,7 @@ ${formData.additionalInfo}
             onClick={() => router.push('/dashboard')}
             className="text-champagne-600 hover:text-champagne-700 font-medium"
           >
-            ← Back
+            Back
           </button>
         </div>
       </header>
