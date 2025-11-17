@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth-helpers';
 
+// OpenAI GPT-4 Wedding Assistant
 export async function POST(request: NextRequest) {
   const authError = await requireAuth(request);
   if (authError) return authError;
