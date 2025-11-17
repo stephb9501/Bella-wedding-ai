@@ -15,6 +15,7 @@ interface TimelineItem {
   notes?: string;
   musicCue?: string;
   completed?: boolean;
+  enabled?: boolean;
 }
 
 interface CeremonyEvent {
@@ -120,6 +121,9 @@ export default function Timeline() {
   const [activeView, setActiveView] = useState<TimelineView>('master');
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [ceremonyEvents, setCeremonyEvents] = useState<CeremonyEvent[]>(INITIAL_CEREMONY_EVENTS);
+  const [enabledItems, setEnabledItems] = useState<Set<string>>(new Set(MASTER_TIMELINE.map(item => item.time)));
+  const [customTimes, setCustomTimes] = useState<Map<string, string>>(new Map());
+  const [editingTime, setEditingTime] = useState<string | null>(null);
 
   const toggleComplete = (time: string) => {
     setCompletedItems(prev => {
@@ -131,6 +135,31 @@ export default function Timeline() {
       }
       return newSet;
     });
+  };
+
+  const toggleEnabled = (time: string) => {
+    setEnabledItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(time)) {
+        newSet.delete(time);
+      } else {
+        newSet.add(time);
+      }
+      return newSet;
+    });
+  };
+
+  const updateTime = (originalTime: string, newTime: string) => {
+    setCustomTimes(prev => {
+      const newMap = new Map(prev);
+      newMap.set(originalTime, newTime);
+      return newMap;
+    });
+    setEditingTime(null);
+  };
+
+  const getDisplayTime = (originalTime: string) => {
+    return customTimes.get(originalTime) || originalTime;
   };
 
   // Ceremony event management functions
@@ -412,34 +441,70 @@ export default function Timeline() {
           <div className="space-y-3">
             {filteredTimeline.map((item, index) => {
             const isCompleted = completedItems.has(item.time);
+            const isEnabled = enabledItems.has(item.time);
             const Icon = categoryIcons[item.category];
             const colorClass = categoryColors[item.category];
+            const displayTime = getDisplayTime(item.time);
+            const isEditingThisTime = editingTime === item.time;
 
             return (
               <div
                 key={index}
                 className={`bg-white rounded-xl shadow-sm border-2 overflow-hidden transition ${
+                  !isEnabled ? 'opacity-40 bg-gray-50 border-gray-300' :
                   isCompleted ? 'opacity-60 border-green-300' : 'border-gray-200 hover:shadow-md'
                 }`}
               >
                 <div className="flex items-start gap-4 p-4">
                   {/* Time */}
-                  <div className="flex-shrink-0 w-24 text-right">
-                    <div className="font-bold text-lg text-gray-900">{item.time}</div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      <Clock className="w-3 h-3 inline mr-1" />
-                      {item.time}
-                    </div>
+                  <div className="flex-shrink-0 w-32">
+                    {isEditingThisTime ? (
+                      <input
+                        type="text"
+                        defaultValue={displayTime}
+                        onBlur={(e) => updateTime(item.time, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            updateTime(item.time, e.currentTarget.value);
+                          }
+                        }}
+                        className="w-full px-2 py-1 text-sm border border-champagne-500 rounded focus:outline-none focus:ring-2 focus:ring-champagne-500"
+                        autoFocus
+                      />
+                    ) : (
+                      <div className="text-right">
+                        <div className="font-bold text-lg text-gray-900">{displayTime}</div>
+                        <button
+                          onClick={() => setEditingTime(item.time)}
+                          className="text-xs text-champagne-600 hover:text-champagne-700 mt-1 flex items-center justify-end gap-1 w-full"
+                        >
+                          <Edit className="w-3 h-3" />
+                          Edit time
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Checkbox */}
-                  <div className="flex-shrink-0 pt-1">
-                    <input
-                      type="checkbox"
-                      checked={isCompleted}
-                      onChange={() => toggleComplete(item.time)}
-                      className="w-5 h-5 rounded border-gray-300 text-champagne-600 focus:ring-champagne-500 cursor-pointer"
-                    />
+                  {/* Checkboxes */}
+                  <div className="flex-shrink-0 pt-1 flex flex-col gap-2">
+                    <label className="flex items-center cursor-pointer" title="Applies to me">
+                      <input
+                        type="checkbox"
+                        checked={isEnabled}
+                        onChange={() => toggleEnabled(item.time)}
+                        className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      />
+                      <span className="ml-1 text-xs text-gray-600">Apply</span>
+                    </label>
+                    {isEnabled && (
+                      <input
+                        type="checkbox"
+                        checked={isCompleted}
+                        onChange={() => toggleComplete(item.time)}
+                        className="w-5 h-5 rounded border-gray-300 text-champagne-600 focus:ring-champagne-500 cursor-pointer"
+                        title="Mark as completed"
+                      />
+                    )}
                   </div>
 
                   {/* Content */}
