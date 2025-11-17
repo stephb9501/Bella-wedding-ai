@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
             .eq('id', brideData.data.id);
 
           // TODO: Send email notification about failed payment
-          console.log(`  Payment failed for bride: ${brideData.data.email}`);
+          console.log(`ï¿½ Payment failed for bride: ${brideData.data.email}`);
         } else if (vendorData.data) {
           await supabaseServer
             .from('vendors')
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
             .eq('id', vendorData.data.id);
 
           // TODO: Send email notification about failed payment
-          console.log(`  Payment failed for vendor: ${vendorData.data.email}`);
+          console.log(`ï¿½ Payment failed for vendor: ${vendorData.data.email}`);
         }
         break;
       }
@@ -173,10 +173,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-
-// Disable body parsing for webhook
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
