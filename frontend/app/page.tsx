@@ -150,7 +150,7 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{
-            backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
+            backgroundImage: "url('/images/IMG_3941.JPG')",
             backgroundPosition: 'center 40%'
           }}
         />
@@ -206,7 +206,7 @@ export default function HomePage() {
       {/* Photo Showcase */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {['/wedding-photos/deltalow-130.jpg', '/wedding-photos/deltalow-447.jpg', '/wedding-photos/deltalow-512.jpg', '/wedding-photos/deltalow-119.jpg'].map((img, i) => (
+          {['/images/IMG_3941.JPG', '/images/IMG_3942.JPG', '/images/IMG_3943 (1).JPG', '/images/IMG_3941.JPG'].map((img, i) => (
             <div key={i} className="relative h-64 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
               <img src={img} alt="Wedding" className="w-full h-full object-cover object-center" />
             </div>
@@ -295,7 +295,7 @@ export default function HomePage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
+            backgroundImage: "url('/images/IMG_3942.JPG')",
             backgroundPosition: 'center 30%'
           }}
         >
