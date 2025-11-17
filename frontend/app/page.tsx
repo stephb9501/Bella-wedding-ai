@@ -191,7 +191,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/75 to-white/60"></div>
             </div>
 
-            <div className="relative max-w-5xl mx-auto px-4 pt-56 pb-16 text-center">
+            <div className="relative max-w-5xl mx-auto px-4 pt-72 pb-16 text-center">
           <div className="mb-4 max-w-3xl mx-auto">
             <h3 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
@@ -352,7 +352,7 @@ export default function HomePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 20%'
+            backgroundPosition: 'center 45%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
@@ -435,7 +435,10 @@ export default function HomePage() {
 
           <div className="border-t border-gray-200 pt-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-gray-600 text-sm">© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
+              <div>
+                <p className="text-gray-600 text-sm">© 2025 Bella Wedding AI. Made with 💕 for your special day.</p>
+                <p className="text-gray-500 text-xs mt-1">Photos by Deltalow • Fort Walton Beach & Eglin AFB Beach, Florida</p>
+              </div>
 
               <div className="flex items-center gap-4">
                 <span className="text-gray-600 text-sm font-medium">Share:</span>
