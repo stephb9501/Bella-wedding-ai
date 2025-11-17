@@ -133,7 +133,7 @@ export function GuestImporter({ userId, onImportComplete }: Props) {
       const response = await fetch('/api/guests/import', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, guests }),
+        body: JSON.stringify({ wedding_id: userId, guests }),
       });
 
       if (!response.ok) {

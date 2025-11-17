@@ -18,15 +18,15 @@ export async function POST(request: NextRequest) {
   if (authError) return authError;
 
   try {
-    const { user_id, guests } = await request.json();
+    const { wedding_id, guests } = await request.json();
 
-    if (!user_id || !guests || !Array.isArray(guests)) {
+    if (!wedding_id || !guests || !Array.isArray(guests)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Validate and sanitize guest data
     const validatedGuests = guests.map((guest: GuestRow) => ({
-      user_id,
+      wedding_id,
       name: guest.name?.trim() || 'Unknown',
       email: guest.email?.trim() || null,
       phone: guest.phone?.trim() || null,
