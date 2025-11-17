@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X, ClipboardList } from 'lucide-react';
 import Image from 'next/image';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface Vendor {
   id: string;
@@ -356,13 +357,21 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
     message: '',
   });
 
+  const supabase = createClientComponentClient();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // TODO: Get bride_id from session/auth
-      const brideId = 'demo-bride-123';
+      // Get authenticated user ID
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert('Please log in to send booking requests');
+        onClose();
+        return;
+      }
+      const brideId = user.id;
 
       const response = await fetch('/api/vendor-bookings', {
         method: 'POST',
