@@ -151,13 +151,14 @@ export default function HomePage() {
                   <>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition"
+                      className="px-4 py-2 text-gray-900 hover:text-black font-bold transition"
                     >
                       Sign In
                     </button>
                     <button
                       onClick={() => router.push('/auth')}
-                      className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
+                      className="px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg shadow-md transition border-2 border-rose-700"
+                      style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
                     >
                       Get Started
                     </button>
@@ -165,7 +166,8 @@ export default function HomePage() {
                 ) : (
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="px-6 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-md transition border-2 border-champagne-700"
+                    className="px-6 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg shadow-md transition border-2 border-rose-700"
+                    style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
                   >
                     Dashboard
                   </button>
@@ -258,6 +260,29 @@ export default function HomePage() {
           {/* LEFT COLUMN - BRIDES */}
           <div>
             <h4 className="text-xl font-bold text-champagne-600 mb-4 text-center">For Couples</h4>
+
+            {/* Couple CTA - Moved up for better visibility */}
+            <div className="mb-6 text-center">
+              {!loading && !isLoggedIn && (
+                <button
+                  onClick={() => router.push('/auth')}
+                  className="w-full px-6 py-4 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl border-2 border-rose-700"
+                  style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+                >
+                  Get Started Free
+                </button>
+              )}
+              {!loading && isLoggedIn && (
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="w-full px-6 py-4 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 text-xl border-2 border-rose-700"
+                  style={{ backgroundColor: '#E11D48', color: '#FFFFFF' }}
+                >
+                  Go to Dashboard
+                </button>
+              )}
+            </div>
+
             <div className="space-y-3">
               {brideFeatures.map((feature, index) => {
                 const Icon = feature.icon;
@@ -280,26 +305,6 @@ export default function HomePage() {
                   </div>
                 );
               })}
-
-              {/* Couple CTA */}
-              <div className="mt-4 text-center">
-                {!loading && !isLoggedIn && (
-                  <button
-                    onClick={() => router.push('/auth')}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-800 text-xl"
-                  >
-                    Get Started Free
-                  </button>
-                )}
-                {!loading && isLoggedIn && (
-                  <button
-                    onClick={() => router.push('/dashboard')}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-extrabold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-800 text-xl"
-                  >
-                    Go to Dashboard
-                  </button>
-                )}
-              </div>
             </div>
           </div>
 
@@ -352,13 +357,13 @@ export default function HomePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 45%'
+            backgroundPosition: 'center 65%'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-black/50"></div>
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 text-center pt-8 pb-8">
+        <div className="relative max-w-6xl mx-auto px-4 text-center pt-4 pb-12">
           <p className="text-sm text-white font-medium drop-shadow-lg mb-6">
             <Heart className="w-4 h-4 inline-block mr-1 text-champagne-300" />
             Happy Bride
@@ -380,7 +385,8 @@ export default function HomePage() {
           </p>
           <button
             onClick={() => router.push('/auth')}
-            className="px-10 py-3 bg-white hover:bg-gray-100 text-champagne-600 font-bold rounded-lg shadow-xl transition transform hover:scale-105"
+            className="px-10 py-4 bg-white hover:bg-gray-50 text-rose-700 font-extrabold rounded-lg shadow-xl transition transform hover:scale-105 text-xl border-2 border-white"
+            style={{ backgroundColor: '#FFFFFF', color: '#BE123C' }}
           >
             Get Started Free
           </button>
