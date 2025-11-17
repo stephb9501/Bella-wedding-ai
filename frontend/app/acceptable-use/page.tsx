@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ShieldX, ArrowLeft, AlertTriangle, XCircle } from 'lucide-react';
+import { ShieldAlert, ArrowLeft } from 'lucide-react';
 
 export default function AcceptableUsePage() {
   return (
@@ -13,12 +13,12 @@ export default function AcceptableUsePage() {
             Back to Home
           </Link>
           <div className="flex items-center gap-3">
-            <ShieldX className="w-8 h-8 text-champagne-600" />
+            <ShieldAlert className="w-8 h-8 text-champagne-600" />
             <div>
               <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Acceptable Use Policy
               </h1>
-              <p className="text-sm text-gray-600 mt-1">Version 1.0 " Effective Date: January 17, 2025</p>
+              <p className="text-sm text-gray-600 mt-1">Version 1.0 - Effective Date: January 17, 2025</p>
             </div>
           </div>
         </div>
@@ -26,156 +26,324 @@ export default function AcceptableUsePage() {
 
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-8">
+
           <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              1. Introduction
+            </h2>
             <p className="text-gray-700 leading-relaxed">
-              This Acceptable Use Policy outlines prohibited conduct on Bella Wedding AI. Violations may result in account
-              suspension or termination. This policy is part of our{' '}
-              <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">Terms of Service</Link>.
+              This Acceptable Use Policy ("Policy") governs your use of Bella Wedding AI's services, platform,
+              and features. By accessing or using our platform, you agree to comply with this Policy. Violation
+              of this Policy may result in immediate suspension or termination of your account without notice
+              or refund.
             </p>
           </section>
 
-          <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
-              <div>
-                <p className="font-bold text-gray-900 mb-2">Zero Tolerance Policy</p>
-                <p className="text-gray-700">
-                  We have zero tolerance for illegal activity, harassment, spam, or abuse. Violators will be banned immediately.
-                </p>
-              </div>
-            </div>
-          </div>
-
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <XCircle className="w-6 h-6 text-red-600" />
-              Prohibited Activities
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              2. Prohibited Activities
             </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              You agree not to engage in any of the following prohibited activities:
+            </p>
+
             <div className="space-y-4">
-              <div className="bg-red-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">1. Illegal Activity</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.1 Illegal Activities</h3>
                 <p className="text-gray-700">
-                  Do NOT use Bella Wedding AI for any illegal purpose or to violate laws in your jurisdiction. This includes
-                  but is not limited to: fraud, money laundering, trafficking, piracy, distributing illegal content, or
-                  facilitating illegal transactions.
+                  - Using the platform for any unlawful purpose or in violation of any applicable laws
+                </p>
+                <p className="text-gray-700">
+                  - Uploading, posting, or transmitting content that is illegal, harmful, or offensive
+                </p>
+                <p className="text-gray-700">
+                  - Infringing on intellectual property rights of others
+                </p>
+                <p className="text-gray-700">
+                  - Engaging in fraud, identity theft, or misrepresentation
                 </p>
               </div>
 
-              <div className="bg-orange-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">2. Harassment & Hate Speech</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.2 Harassment and Abuse</h3>
                 <p className="text-gray-700">
-                  Do NOT harass, threaten, bully, or intimidate other users. Do NOT post hate speech, discriminatory content,
-                  or content that incites violence based on race, religion, gender, sexual orientation, disability, or any
-                  protected class.
+                  - Harassing, threatening, or intimidating other users or vendors
+                </p>
+                <p className="text-gray-700">
+                  - Posting discriminatory, hateful, or abusive content
+                </p>
+                <p className="text-gray-700">
+                  - Stalking or otherwise violating the privacy of others
+                </p>
+                <p className="text-gray-700">
+                  - Impersonating any person or entity
                 </p>
               </div>
 
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">3. Spam & Unsolicited Marketing</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.3 Security Violations</h3>
                 <p className="text-gray-700">
-                  Do NOT send spam, unsolicited commercial messages, or bulk messages to other users. Do NOT use the platform
-                  for phishing, scams, or deceptive marketing practices.
+                  - Attempting to gain unauthorized access to our systems or user accounts
+                </p>
+                <p className="text-gray-700">
+                  - Distributing viruses, malware, or other harmful code
+                </p>
+                <p className="text-gray-700">
+                  - Interfering with or disrupting the platform's functionality
+                </p>
+                <p className="text-gray-700">
+                  - Bypassing or attempting to bypass security measures
                 </p>
               </div>
 
-              <div className="bg-purple-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">4. Intellectual Property Violation</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.4 Spam and Misuse</h3>
                 <p className="text-gray-700">
-                  Do NOT upload, post, or share content that infringes on others' copyrights, trademarks, patents, or trade
-                  secrets. Only upload content you own or have permission to use. See our{' '}
-                  <Link href="/dmca" className="text-champagne-600 hover:text-champagne-700 underline">DMCA Policy</Link>.
+                  - Sending unsolicited messages or advertisements (spam)
+                </p>
+                <p className="text-gray-700">
+                  - Creating multiple accounts to abuse features or circumvent restrictions
+                </p>
+                <p className="text-gray-700">
+                  - Using automated tools (bots, scrapers) without permission
+                </p>
+                <p className="text-gray-700">
+                  - Manipulating or gaming our AI systems
                 </p>
               </div>
 
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">5. Malicious Software & Hacking</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.5 Commercial Misuse</h3>
                 <p className="text-gray-700">
-                  Do NOT upload viruses, malware, or any code designed to harm, disrupt, or gain unauthorized access to
-                  systems. Do NOT attempt to hack, exploit, or bypass security measures on our platform.
+                  - Using the platform for unauthorized commercial purposes
+                </p>
+                <p className="text-gray-700">
+                  - Reselling or redistributing our services without permission
+                </p>
+                <p className="text-gray-700">
+                  - Posting false or misleading vendor information
+                </p>
+                <p className="text-gray-700">
+                  - Engaging in unfair competitive practices
                 </p>
               </div>
 
-              <div className="bg-pink-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">6. Sexually Explicit or Inappropriate Content</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.6 Data Mining and Extraction</h3>
                 <p className="text-gray-700">
-                  Bella Wedding AI is a wedding planning platform. Do NOT post sexually explicit, pornographic, or obscene
-                  content. Keep all content appropriate for all ages.
+                  - Scraping, harvesting, or extracting data from the platform
+                </p>
+                <p className="text-gray-700">
+                  - Using data mining tools or automated access methods
+                </p>
+                <p className="text-gray-700">
+                  - Collecting user information without consent
+                </p>
+                <p className="text-gray-700">
+                  - Reverse engineering our AI models or algorithms
                 </p>
               </div>
 
-              <div className="bg-green-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">7. Impersonation & Fraud</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.7 Content Violations</h3>
                 <p className="text-gray-700">
-                  Do NOT impersonate other users, vendors, or Bella Wedding AI staff. Do NOT create fake accounts or provide
-                  false information to deceive others.
+                  - Uploading pornographic, violent, or otherwise inappropriate content
+                </p>
+                <p className="text-gray-700">
+                  - Posting content that violates privacy rights or publicity rights
+                </p>
+                <p className="text-gray-700">
+                  - Sharing confidential information without authorization
+                </p>
+                <p className="text-gray-700">
+                  - Publishing false, misleading, or defamatory information
                 </p>
               </div>
 
-              <div className="bg-gray-100 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">8. Abuse of Platform Features</h3>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.8 System Abuse</h3>
                 <p className="text-gray-700">
-                  Do NOT abuse platform features, such as: creating multiple accounts to bypass limits, using bots/automation
-                  without permission, scraping data, overloading servers (DDoS), or circumventing payment systems.
+                  - Overloading our servers or causing excessive resource consumption
+                </p>
+                <p className="text-gray-700">
+                  - Attempting to access areas of the platform not intended for users
+                </p>
+                <p className="text-gray-700">
+                  - Interfering with other users' ability to use the platform
+                </p>
+                <p className="text-gray-700">
+                  - Using the platform in a manner that degrades performance for others
                 </p>
               </div>
             </div>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Consequences of Violations</h2>
-            <div className="bg-red-50 rounded-lg p-6">
-              <p className="font-bold text-gray-900 mb-3">We reserve the right to:</p>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li><strong>Issue warnings</strong> for first-time minor violations</li>
-                <li><strong>Suspend accounts</strong> temporarily for repeated violations</li>
-                <li><strong>Terminate accounts permanently</strong> for serious or repeated violations</li>
-                <li><strong>Remove content</strong> that violates this policy</li>
-                <li><strong>Report illegal activity</strong> to law enforcement</li>
-                <li><strong>Pursue legal action</strong> for damages caused by violations</li>
-              </ul>
-            </div>
-          </section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              3. Reporting Violations
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              If you become aware of any violation of this Policy, please report it immediately to our team.
+            </p>
 
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Reporting Violations</h2>
-            <div className="bg-champagne-50 rounded-lg p-6">
-              <p className="text-gray-700 mb-3">
-                If you see content or behavior that violates this policy, please report it to us:
+            <div className="bg-champagne-50 border border-champagne-200 rounded-lg p-6">
+              <h3 className="font-semibold text-gray-900 mb-3">How to Report:</h3>
+              <p className="text-gray-700 mb-2">
+                * Email: support@bellaweddingai.com
+              </p>
+              <p className="text-gray-700 mb-2">
+                * Subject Line: "AUP Violation Report"
+              </p>
+              <p className="text-gray-700 mb-2">
+                * Include: Detailed description, screenshots, user information, date/time
               </p>
               <p className="text-gray-700">
-                <strong>Email:</strong>{' '}
-                <a href="mailto:abuse@bellaweddingai.com" className="text-champagne-600 hover:text-champagne-700 underline">
-                  abuse@bellaweddingai.com
-                </a>
-              </p>
-              <p className="text-gray-700 mt-2">
-                Include: (1) Your account email, (2) URL of violating content/user, (3) Description of violation,
-                (4) Any relevant screenshots
+                * Response Time: We will investigate within 48 hours
               </p>
             </div>
           </section>
 
-          <section className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Severability</h2>
-            <p className="text-gray-700">
-              If any provision of this Acceptable Use Policy is found to be unlawful, void, or unenforceable, that provision
-              shall be severed and shall not affect the remaining provisions. This policy is part of our{' '}
-              <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">Terms of Service</Link>.
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              4. Enforcement Actions
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              We reserve the right to take the following actions in response to violations:
+            </p>
+
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                * Warning: First-time minor violations may receive a warning
+              </p>
+              <p className="text-gray-700">
+                * Temporary Suspension: Account access suspended for a specified period
+              </p>
+              <p className="text-gray-700">
+                * Permanent Termination: Account permanently closed without refund
+              </p>
+              <p className="text-gray-700">
+                * Content Removal: Offending content removed immediately
+              </p>
+              <p className="text-gray-700">
+                * Legal Action: Severe violations may result in legal proceedings
+              </p>
+              <p className="text-gray-700">
+                * Law Enforcement Reporting: Illegal activities reported to authorities
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              5. User Responsibilities
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              As a user of Bella Wedding AI, you are responsible for:
+            </p>
+
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                * Maintaining the security of your account credentials
+              </p>
+              <p className="text-gray-700">
+                * All activities that occur under your account
+              </p>
+              <p className="text-gray-700">
+                * Ensuring your use complies with all applicable laws
+              </p>
+              <p className="text-gray-700">
+                * Respecting the rights and privacy of other users
+              </p>
+              <p className="text-gray-700">
+                * Reporting security vulnerabilities or policy violations
+              </p>
+              <p className="text-gray-700">
+                * Keeping your contact information current
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              6. Vendor-Specific Rules
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Vendors listed in our directory must also comply with additional requirements:
+            </p>
+
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                * Provide accurate and up-to-date business information
+              </p>
+              <p className="text-gray-700">
+                * Maintain proper licensing and insurance as required by law
+              </p>
+              <p className="text-gray-700">
+                * Respond professionally to user inquiries
+              </p>
+              <p className="text-gray-700">
+                * Honor quoted prices and service descriptions
+              </p>
+              <p className="text-gray-700">
+                * Disclose any conflicts of interest
+              </p>
+              <p className="text-gray-700">
+                * Not solicit reviews or manipulate ratings
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              7. Monitoring and Investigation
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              We reserve the right to monitor user activity, investigate suspected violations, and access
+              user content when necessary to enforce this Policy or comply with legal obligations. We may
+              use automated tools and manual review processes to detect violations. Users consent to such
+              monitoring by using our platform.
             </p>
           </section>
 
-          <div className="text-center pt-8 border-t border-gray-200">
-            <Link href="/" className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors font-medium">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Link>
-          </div>
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              8. Changes to This Policy
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              We may update this Policy from time to time. Changes will be effective immediately upon posting
+              to our website. Your continued use of the platform after changes are posted constitutes acceptance
+              of the updated Policy. We will notify users of material changes via email or platform notification.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              9. Contact Information
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              For questions about this Acceptable Use Policy, please contact us:
+            </p>
+            <div className="bg-gray-50 rounded-lg p-6">
+              <p className="text-gray-700 mb-2">Email: legal@bellaweddingai.com</p>
+              <p className="text-gray-700 mb-2">Subject: Acceptable Use Policy Inquiry</p>
+              <p className="text-gray-700">Response Time: 3-5 business days</p>
+            </div>
+          </section>
+
+          <section className="bg-rose-50 border border-rose-200 rounded-lg p-6">
+            <p className="text-sm text-gray-600 italic">
+              WARNING: Violation of this Acceptable Use Policy may result in immediate account termination
+              and legal action. By using Bella Wedding AI, you acknowledge that you have read, understood,
+              and agree to be bound by this Policy.
+            </p>
+          </section>
+
         </div>
       </main>
 
       <footer className="bg-white border-t border-champagne-200 mt-12">
         <div className="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-600">
-          <p>© 2025 Bella Wedding AI. All rights reserved.</p>
+          <p>2025 Bella Wedding AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

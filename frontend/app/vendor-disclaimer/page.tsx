@@ -1,18 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { Store, ArrowLeft, AlertTriangle, ShieldAlert, UserX, DollarSign, FileText } from 'lucide-react';
+import { Store, ArrowLeft } from 'lucide-react';
 
 export default function VendorDisclaimerPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-champagne-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-champagne-200">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <Link
-            href="/"
-            className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors mb-4"
-          >
+          <Link href="/" className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
@@ -22,427 +18,512 @@ export default function VendorDisclaimerPage() {
               <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Vendor Directory Disclaimer
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Version 1.0 " Effective Date: January 17, 2025
-              </p>
+              <p className="text-sm text-gray-600 mt-1">Version 1.0 - Effective Date: January 17, 2025</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-8">
 
-          {/* Critical Notice */}
-          <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded">
-            <div className="flex items-start gap-3">
-              <ShieldAlert className="w-6 h-6 text-orange-600 flex-shrink-0 mt-1" />
-              <div>
-                <p className="font-bold text-gray-900 text-lg mb-2">
-                  IMPORTANT: Third-Party Vendor Directory
-                </p>
-                <p className="text-gray-700">
-                  Bella Wedding AI provides a vendor directory as a convenience to help you find wedding professionals.
-                  <strong> We are NOT responsible for the quality, reliability, or actions of third-party vendors.</strong>
-                  {' '}By using our vendor directory, you acknowledge and accept the risks and disclaimers described below.
-                </p>
-              </div>
-            </div>
-          </div>
+          <section className="bg-amber-50 border-l-4 border-amber-500 p-6">
+            <h2 className="text-xl font-bold text-amber-900 mb-3">
+              IMPORTANT: Read Before Using Vendor Directory
+            </h2>
+            <p className="text-amber-800 leading-relaxed">
+              Bella Wedding AI provides a vendor directory as a convenience to help you find wedding service
+              providers. However, we do NOT vet, endorse, guarantee, or assume responsibility for any vendors
+              listed. You must conduct your own due diligence before hiring any vendor.
+            </p>
+          </section>
 
-          {/* Introduction */}
           <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              1. Nature of Vendor Directory
+            </h2>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">1.1 Information Source Only</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Our vendor directory is an informational resource that aggregates publicly available
+                  information about wedding service providers. Vendors may be listed through:
+                </p>
+                <div className="space-y-2 mt-3">
+                  <p className="text-gray-700">* Self-registration by vendors</p>
+                  <p className="text-gray-700">* Data aggregation from public sources</p>
+                  <p className="text-gray-700">* AI-powered search and categorization</p>
+                  <p className="text-gray-700">* User submissions and recommendations</p>
+                  <p className="text-gray-700">* Third-party directory integrations</p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">1.2 No Vetting or Verification</h3>
+                <div className="bg-rose-50 border border-rose-200 rounded-lg p-6">
+                  <p className="text-rose-800 font-semibold mb-3">
+                    WE DO NOT VET OR VERIFY VENDORS
+                  </p>
+                  <p className="text-rose-800 leading-relaxed">
+                    Bella Wedding AI does NOT conduct background checks, verify credentials, check licenses,
+                    review portfolios, or otherwise vet vendors before listing them in our directory. Inclusion
+                    in our directory is NOT an endorsement or recommendation.
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">1.3 Independent Contractors</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  All vendors listed in our directory are independent businesses and contractors. They are NOT
+                  employees, agents, or partners of Bella Wedding AI. We have no control over their business
+                  practices, service quality, or conduct.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              2. No Endorsement or Recommendation
+            </h2>
+
+            <div className="space-y-4">
+              <div className="bg-gray-50 rounded-lg p-6 mb-4">
+                <h3 className="font-semibold text-gray-900 mb-3">What Listing Does NOT Mean:</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    [X] Listing does NOT mean we recommend or endorse the vendor
+                  </p>
+                  <p className="text-gray-700">
+                    [X] Listing does NOT mean we have verified the vendor's qualifications
+                  </p>
+                  <p className="text-gray-700">
+                    [X] Listing does NOT mean we guarantee the vendor's services or quality
+                  </p>
+                  <p className="text-gray-700">
+                    [X] Listing does NOT mean we have a business relationship with the vendor
+                  </p>
+                  <p className="text-gray-700">
+                    [X] Listing does NOT mean the vendor has paid us for placement (unless marked as "Sponsored")
+                  </p>
+                  <p className="text-gray-700">
+                    [X] Listing does NOT mean we have received positive reviews about the vendor
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.1 AI-Generated Recommendations</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Our AI may suggest vendors based on your preferences and requirements. However:
+                </p>
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    * AI suggestions are algorithmic matches, not quality endorsements
+                  </p>
+                  <p className="text-gray-700">
+                    * AI cannot assess vendor reliability, professionalism, or service quality
+                  </p>
+                  <p className="text-gray-700">
+                    * AI recommendations may be based on incomplete or outdated information
+                  </p>
+                  <p className="text-gray-700">
+                    * Always verify AI suggestions through your own research
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.2 Sponsored Listings</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Some vendors may pay for enhanced visibility or "Sponsored" placement in search results.
+                  Sponsored listings are clearly marked and do not indicate higher quality or our endorsement.
+                  Sponsorship is a paid advertising arrangement only.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              3. Your Due Diligence Responsibilities
+            </h2>
+
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-4">
+              <h3 className="font-semibold text-blue-900 mb-3">YOU MUST VERIFY VENDORS YOURSELF</h3>
+              <p className="text-blue-800 leading-relaxed">
+                Before hiring any vendor from our directory, you are solely responsible for conducting thorough
+                due diligence, verification, and background research. Do not rely solely on our directory
+                information or AI recommendations.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">3.1 Essential Verification Steps</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Before hiring any vendor, you should:
+                </p>
+
+                <div className="space-y-3">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">1. Verify Credentials and Licensing</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Check business licenses and permits</p>
+                      <p>* Verify professional certifications</p>
+                      <p>* Confirm membership in industry associations</p>
+                      <p>* Verify the business is registered and legitimate</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">2. Check Insurance Coverage</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Request proof of liability insurance</p>
+                      <p>* Verify insurance is current and adequate</p>
+                      <p>* Confirm coverage amounts match your needs</p>
+                      <p>* For high-risk services, consider additional coverage</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">3. Research Reviews and References</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Read reviews on multiple independent platforms</p>
+                      <p>* Contact previous clients for references</p>
+                      <p>* Check Better Business Bureau ratings</p>
+                      <p>* Search for complaints or legal issues</p>
+                      <p>* Be wary of vendors with no reviews or all perfect reviews</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">4. Review Portfolio and Samples</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Request recent work samples or portfolio</p>
+                      <p>* Attend tastings, view venues in person, etc.</p>
+                      <p>* Verify photos are their actual work, not stock images</p>
+                      <p>* Ask for references from recent events similar to yours</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">5. Conduct Interviews and Meetings</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Meet vendors in person or via video call</p>
+                      <p>* Ask detailed questions about their process and experience</p>
+                      <p>* Assess professionalism and communication style</p>
+                      <p>* Trust your instincts - if something feels wrong, walk away</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">6. Obtain and Review Contracts</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Get all agreements in writing before signing</p>
+                      <p>* Have a lawyer review contracts for major vendors</p>
+                      <p>* Understand cancellation policies and deposit terms</p>
+                      <p>* Clarify what happens if vendor fails to perform</p>
+                      <p>* Never pay in full upfront without strong protections</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">7. Verify Pricing and Payment Terms</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Get detailed written quotes</p>
+                      <p>* Compare pricing with multiple vendors</p>
+                      <p>* Understand all fees, charges, and potential overages</p>
+                      <p>* Use secure payment methods with buyer protection</p>
+                      <p>* Be suspicious of prices that seem too good to be true</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">8. Check for Red Flags</h4>
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <p>* Pressure tactics or urgent deadlines</p>
+                      <p>* Requests for cash-only payments</p>
+                      <p>* Unwillingness to provide contracts or references</p>
+                      <p>* Poor communication or unprofessional behavior</p>
+                      <p>* Negative reviews or complaints about similar issues</p>
+                      <p>* Refusal to meet in person or show work samples</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              4. Accuracy of Vendor Information
+            </h2>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">4.1 Information May Be Inaccurate</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Vendor directory information may be:
+                </p>
+                <div className="space-y-2">
+                  <p className="text-gray-700">* Outdated or no longer current</p>
+                  <p className="text-gray-700">* Incomplete or missing important details</p>
+                  <p className="text-gray-700">* Provided by vendors without verification</p>
+                  <p className="text-gray-700">* Inaccurate due to vendor error or misrepresentation</p>
+                  <p className="text-gray-700">* Changed since the vendor's last update</p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">4.2 No Guarantee of Availability</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Listings do not guarantee that a vendor is currently accepting clients, has availability
+                  for your date, or is still in business. Always contact vendors directly to confirm
+                  availability and current offerings.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">4.3 Pricing Information</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Any pricing information displayed is approximate, may be outdated, and should not be relied
+                  upon. Always obtain current written quotes directly from vendors. Actual prices may vary
+                  significantly based on your specific requirements, date, and location.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              5. Limitation of Liability
+            </h2>
+
+            <div className="bg-rose-50 border-l-4 border-rose-500 p-6 mb-4">
+              <h3 className="font-semibold text-rose-900 mb-3">WE ARE NOT LIABLE FOR VENDOR ISSUES</h3>
+              <p className="text-rose-800 leading-relaxed">
+                To the maximum extent permitted by law, Bella Wedding AI is NOT responsible or liable for any
+                issues, disputes, damages, or losses arising from your interactions with or use of vendors
+                listed in our directory.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">5.1 What We Are NOT Liable For</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  We are NOT responsible for:
+                </p>
+
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    * Vendor quality, performance, or professionalism
+                  </p>
+                  <p className="text-gray-700">
+                    * Vendors who fail to show up, cancel, or don't perform as promised
+                  </p>
+                  <p className="text-gray-700">
+                    * Disputes between you and vendors
+                  </p>
+                  <p className="text-gray-700">
+                    * Poor service quality or results below your expectations
+                  </p>
+                  <p className="text-gray-700">
+                    * Vendor fraud, theft, or criminal activity
+                  </p>
+                  <p className="text-gray-700">
+                    * Breach of contract by vendors
+                  </p>
+                  <p className="text-gray-700">
+                    * Damages to property or injury caused by vendors
+                  </p>
+                  <p className="text-gray-700">
+                    * Financial losses from vendor failures or cancellations
+                  </p>
+                  <p className="text-gray-700">
+                    * Inaccurate vendor information or misrepresentation
+                  </p>
+                  <p className="text-gray-700">
+                    * Vendor pricing disputes or unexpected charges
+                  </p>
+                  <p className="text-gray-700">
+                    * Vendor bankruptcy or business closure
+                  </p>
+                  <p className="text-gray-700">
+                    * Any other issues arising from vendor relationships
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">5.2 Your Sole Recourse</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  If you have issues with a vendor, your dispute is with the vendor directly, not with Bella
+                  Wedding AI. You must resolve disputes, seek refunds, or pursue legal action against the
+                  vendor, not us. We are not a party to your vendor contracts.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">5.3 No Mediation or Dispute Resolution</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  We do not mediate disputes between users and vendors, nor do we provide dispute resolution
+                  services. Contact the vendor directly, or seek legal counsel if needed.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              6. User Reviews and Ratings
+            </h2>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">6.1 User-Generated Content</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Reviews and ratings in our vendor directory are user-generated content. We do not verify
+                  the accuracy of reviews, and reviews may be biased, fake, or manipulated. Do not rely
+                  solely on our platform's reviews when evaluating vendors.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">6.2 Review Multiple Sources</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Always check vendor reviews across multiple independent platforms (Google, Yelp, WeddingWire,
+                  The Knot, etc.) to get a comprehensive view of vendor reputation.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">6.3 Fake Reviews</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  While we attempt to prevent fake reviews, vendors may post fake positive reviews or
+                  competitors may post fake negative reviews. Use critical thinking when evaluating reviews.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              7. Reporting Vendor Issues
+            </h2>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">7.1 How to Report Problems</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  If you experience serious issues with a vendor from our directory, please report it:
+                </p>
+
+                <div className="bg-champagne-50 rounded-lg p-4">
+                  <p className="text-gray-700 mb-2">Email: vendors@bellaweddingai.com</p>
+                  <p className="text-gray-700 mb-2">Subject: Vendor Issue Report</p>
+                  <p className="text-gray-700 mb-4">Include:</p>
+                  <div className="space-y-1 ml-4">
+                    <p className="text-gray-700">* Vendor name and contact information</p>
+                    <p className="text-gray-700">* Detailed description of the issue</p>
+                    <p className="text-gray-700">* Supporting documentation (contracts, emails, etc.)</p>
+                    <p className="text-gray-700">* Date of incident</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">7.2 What We May Do</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    * Investigate serious complaints about vendors
+                  </p>
+                  <p className="text-gray-700">
+                    * Remove vendors with multiple serious complaints
+                  </p>
+                  <p className="text-gray-700">
+                    * Add warning labels to vendor profiles
+                  </p>
+                  <p className="text-gray-700">
+                    * Ban vendors who engage in fraud or illegal activity
+                  </p>
+                </div>
+
+                <p className="text-gray-700 leading-relaxed mt-3">
+                  However, removal of a vendor from our directory does not constitute compensation, does not
+                  resolve your dispute, and does not make us liable for vendor issues.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              8. Vendor Responsibilities
+            </h2>
+
+            <div className="space-y-3">
+              <p className="text-gray-700 leading-relaxed mb-3">
+                Vendors listed in our directory are solely responsible for:
+              </p>
+
+              <div className="space-y-2">
+                <p className="text-gray-700">* Accuracy of their profile information</p>
+                <p className="text-gray-700">* Compliance with all applicable laws and regulations</p>
+                <p className="text-gray-700">* Maintaining proper licenses, permits, and insurance</p>
+                <p className="text-gray-700">* Honoring contracts and commitments to clients</p>
+                <p className="text-gray-700">* Providing services as advertised</p>
+                <p className="text-gray-700">* Professional and ethical business conduct</p>
+                <p className="text-gray-700">* Resolving client disputes and complaints</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              9. Changes to This Disclaimer
+            </h2>
             <p className="text-gray-700 leading-relaxed">
-              This Vendor Directory Disclaimer explains the relationship between Bella Wedding AI, the vendors listed in
-              our directory, and you (the user). This disclaimer is part of our{' '}
-              <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">
-                Terms of Service
-              </Link>.
+              We may update this Vendor Directory Disclaimer at any time. Changes will be posted on this page
+              with a revised "Effective Date." Your continued use of the vendor directory after changes
+              constitutes acceptance of the updated disclaimer.
             </p>
           </section>
 
-          {/* Table of Contents */}
-          <section className="bg-champagne-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-champagne-600" />
-              Table of Contents
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              10. Contact Information
             </h2>
-            <ol className="list-decimal list-inside space-y-2 text-champagne-700">
-              <li><a href="#section-1" className="hover:underline">Vendor Directory Explained</a></li>
-              <li><a href="#section-2" className="hover:underline">We Are NOT a Vendor Marketplace</a></li>
-              <li><a href="#section-3" className="hover:underline">No Vetting, Endorsement, or Guarantee</a></li>
-              <li><a href="#section-4" className="hover:underline">Your Responsibilities</a></li>
-              <li><a href="#section-5" className="hover:underline">Vendor Listings & Accuracy</a></li>
-              <li><a href="#section-6" className="hover:underline">Pricing, Availability & Bookings</a></li>
-              <li><a href="#section-7" className="hover:underline">Disputes with Vendors</a></li>
-              <li><a href="#section-8" className="hover:underline">Limitation of Liability</a></li>
-            </ol>
+            <div className="bg-champagne-50 rounded-lg p-6">
+              <p className="text-gray-700 mb-4">For vendor directory questions or to report issues:</p>
+              <p className="text-gray-700 mb-2">Email: vendors@bellaweddingai.com</p>
+              <p className="text-gray-700 mb-2">Subject: Vendor Directory Inquiry</p>
+              <p className="text-gray-700">Response Time: 3-5 business days</p>
+            </div>
           </section>
 
-          {/* Section 1: Vendor Directory Explained */}
-          <section id="section-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              1. Vendor Directory Explained
-            </h2>
-            <p className="text-gray-700 mb-4">
-              Bella Wedding AI provides a vendor directory where wedding professionals (photographers, venues, caterers, DJs,
-              florists, etc.) can create profiles and connect with couples planning weddings.
+          <section className="bg-amber-50 border-l-4 border-amber-500 p-6">
+            <p className="text-sm text-gray-700 font-semibold mb-3">
+              FINAL WARNING:
             </p>
-            <div className="bg-blue-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">What the Vendor Directory Does:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li>Allows vendors to create free or paid profiles showcasing their services</li>
-                <li>Lets couples search for vendors by category, location, and style</li>
-                <li>Facilitates initial contact between couples and vendors through our platform</li>
-                <li>Provides a centralized place to browse vendor portfolios and reviews (if available)</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 2: We Are NOT a Vendor Marketplace */}
-          <section id="section-2">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <UserX className="w-6 h-6 text-red-600" />
-              2. We Are NOT a Vendor Marketplace
-            </h2>
-            <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded mb-4">
-              <p className="font-bold text-gray-900 mb-2">
-                Bella Wedding AI is NOT a Marketplace or Booking Platform
-              </p>
-              <p className="text-gray-700">
-                We <strong>do NOT</strong> facilitate payments, handle bookings, or act as an intermediary in transactions
-                between you and vendors. We simply provide a directory for discovery and initial contact. All contracts,
-                payments, and agreements are <strong>directly between you and the vendor</strong>.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">We Do NOT:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li>Process payments for vendor services (you pay vendors directly)</li>
-                <li>Create or enforce contracts between you and vendors</li>
-                <li>Hold escrow or act as a payment processor</li>
-                <li>Mediate disputes or provide arbitration services</li>
-                <li>Guarantee vendor performance, quality, or availability</li>
-                <li>Provide insurance or bonding for vendor services</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 3: No Vetting, Endorsement, or Guarantee */}
-          <section id="section-3">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <AlertTriangle className="w-6 h-6 text-orange-600" />
-              3. No Vetting, Endorsement, or Guarantee
-            </h2>
-
-            <div className="space-y-4">
-              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2">We Do NOT Vet or Background Check Vendors</h3>
-                <p className="text-gray-700">
-                  Vendors in our directory are <strong>self-registered</strong>. We do NOT perform background checks,
-                  verify credentials, check references, or validate vendor claims. Vendors provide their own information,
-                  and we do NOT verify its accuracy.
-                </p>
-              </div>
-
-              <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2">Listing Does NOT Equal Endorsement</h3>
-                <p className="text-gray-700">
-                  The presence of a vendor in our directory does <strong>NOT constitute an endorsement, recommendation,
-                  or guarantee</strong> by Bella Wedding AI. We do NOT vouch for the quality, reliability, professionalism,
-                  or legitimacy of any vendor.
-                </p>
-              </div>
-
-              <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-                <h3 className="font-bold text-gray-900 mb-2">No Guarantee of Quality or Performance</h3>
-                <p className="text-gray-700">
-                  We make <strong>NO GUARANTEES</strong> about:
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4 mt-2">
-                  <li>The quality of vendor services</li>
-                  <li>Whether vendors will fulfill their obligations</li>
-                  <li>Vendor professionalism, reliability, or reputation</li>
-                  <li>Whether vendors are properly licensed, insured, or bonded</li>
-                  <li>Vendor pricing, availability, or contract terms</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 4: Your Responsibilities */}
-          <section id="section-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              4. Your Responsibilities When Hiring Vendors
-            </h2>
-            <p className="text-gray-700 mb-4">
-              <strong>You are solely responsible</strong> for vetting, selecting, and contracting with vendors. By using
-              our vendor directory, you agree to take the following precautions:
-            </p>
-
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded space-y-3">
-              <div>
-                <h3 className="font-bold text-gray-900 mb-1">1. Conduct Your Own Due Diligence</h3>
-                <p className="text-gray-700">
-                  <strong>Research vendors thoroughly</strong> before hiring them. Check online reviews, ask for references,
-                  verify credentials, and confirm they are licensed/insured if required by local law.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-1">2. Verify Vendor Information</h3>
-                <p className="text-gray-700">
-                  Do NOT assume vendor profile information is accurate. <strong>Verify all details</strong> (pricing,
-                  availability, services, experience) directly with the vendor before making decisions.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-1">3. Read and Understand Contracts</h3>
-                <p className="text-gray-700">
-                  <strong>Always get a written contract</strong> from vendors. Read it carefully, understand cancellation
-                  policies, and consider having an attorney review it for expensive services.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-1">4. Confirm Insurance and Licensing</h3>
-                <p className="text-gray-700">
-                  Ask vendors for proof of liability insurance and any required licenses or certifications. This is especially
-                  important for venues, caterers, and transportation providers.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-1">5. Use Secure Payment Methods</h3>
-                <p className="text-gray-700">
-                  Pay vendors using secure, traceable methods (credit card, check, PayPal). <strong>Avoid cash or wire
-                  transfers</strong> to vendors you haven't thoroughly vetted. Never pay the full amount upfront.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-1">6. Meet Vendors in Person or Video Call</h3>
-                <p className="text-gray-700">
-                  Whenever possible, meet vendors in person or via video call before signing contracts. This helps verify
-                  their legitimacy and professionalism.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 5: Vendor Listings & Accuracy */}
-          <section id="section-5">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              5. Vendor Listings & Accuracy of Information
-            </h2>
-            <p className="text-gray-700 mb-4">
-              Vendor profiles and listings are created and managed by the vendors themselves. We do NOT verify the accuracy
-              of vendor-provided information.
-            </p>
-
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Vendor Information May Be Inaccurate or Outdated:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li><strong>Portfolio Photos:</strong> Vendors upload their own photos, which we do NOT verify as authentic
-                or owned by them</li>
-                <li><strong>Pricing:</strong> Displayed prices may be outdated, estimates, or not include all fees.
-                Always get written quotes directly from vendors</li>
-                <li><strong>Availability:</strong> Vendor availability shown on profiles may not be real-time. Confirm
-                availability directly with the vendor</li>
-                <li><strong>Reviews:</strong> Reviews may be biased, fake, or manipulated. Use independent review platforms
-                (Google, Yelp, The Knot) for additional perspectives</li>
-                <li><strong>Credentials:</strong> Vendors may claim certifications, licenses, or experience that we have
-                NOT verified. Verify credentials independently</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 6: Pricing, Availability & Bookings */}
-          <section id="section-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <DollarSign className="w-6 h-6 text-green-600" />
-              6. Pricing, Availability & Bookings
-            </h2>
-
-            <div className="space-y-4">
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">Pricing is NOT Guaranteed</h3>
-                <p className="text-gray-700">
-                  Prices displayed in vendor profiles are <strong>estimates only</strong> and NOT binding quotes. Actual
-                  prices may vary based on your specific needs, date, location, and other factors. <strong>Always get a
-                  written quote</strong> from the vendor before committing.
-                </p>
-              </div>
-
-              <div className="bg-orange-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">Availability is NOT Real-Time</h3>
-                <p className="text-gray-700">
-                  Vendor calendars and availability shown on our platform may <strong>NOT be updated in real-time</strong>.
-                  A vendor showing as "available" may have already been booked. <strong>Always confirm availability
-                  directly</strong> with the vendor.
-                </p>
-              </div>
-
-              <div className="bg-red-50 rounded-lg p-4">
-                <h3 className="font-bold text-gray-900 mb-2">We Do NOT Process Bookings or Payments</h3>
-                <p className="text-gray-700">
-                  All bookings, contracts, deposits, and payments are handled <strong>directly between you and the vendor</strong>.
-                  We are NOT involved in the transaction. If you pay a vendor and they fail to deliver, <strong>we are NOT
-                  liable</strong> for refunds or damages.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 7: Disputes with Vendors */}
-          <section id="section-7">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              7. Disputes with Vendors
-            </h2>
-            <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded mb-4">
-              <p className="font-bold text-gray-900 mb-2">
-                We Are NOT Responsible for Vendor Disputes
-              </p>
-              <p className="text-gray-700">
-                If you have a dispute with a vendor (poor service, no-show, contract violation, fraud, etc.), <strong>you
-                must resolve it directly with the vendor</strong>. Bella Wedding AI is NOT a party to your agreement with
-                vendors and does NOT mediate, arbitrate, or resolve disputes.
-              </p>
-            </div>
-
-            <div className="bg-yellow-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">What to Do If You Have a Problem with a Vendor:</h3>
-              <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
-                <li>Contact the vendor directly to resolve the issue</li>
-                <li>Review your contract for dispute resolution procedures</li>
-                <li>If unresolved, consult an attorney or small claims court</li>
-                <li>File a complaint with your local Better Business Bureau (BBB) or consumer protection agency</li>
-                <li>Dispute credit card charges if applicable (if you paid by credit card)</li>
-                <li>Report suspected fraud to local law enforcement</li>
-              </ol>
-              <p className="text-gray-700 mt-4">
-                <strong>Note:</strong> You may report problematic vendors to us at{' '}
-                <a href="mailto:support@bellaweddingai.com" className="text-champagne-600 hover:text-champagne-700 underline">
-                  support@bellaweddingai.com
-                </a>, and we may investigate and remove vendors who violate our{' '}
-                <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">
-                  Terms of Service
-                </Link>. However, we do NOT provide refunds or compensation for vendor disputes.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 8: Limitation of Liability */}
-          <section id="section-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              8. Limitation of Liability
-            </h2>
-
-            <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded mb-4">
-              <p className="font-bold text-gray-900 mb-2 uppercase">
-                Disclaimer of Warranties
-              </p>
-              <p className="text-gray-700">
-                The vendor directory is provided <strong>"AS IS"</strong> and <strong>"AS AVAILABLE"</strong> without
-                warranties of any kind. We do NOT warrant that vendor information is accurate, complete, or up-to-date.
-              </p>
-            </div>
-
-            <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded mb-4">
-              <p className="font-bold text-gray-900 mb-2 uppercase">
-                Limitation of Liability
-              </p>
-              <p className="text-gray-700 mb-3">
-                <strong>We are NOT liable</strong> for any damages, losses, or harm arising from your use of or reliance
-                on our vendor directory or your interactions with vendors. This includes but is not limited to:
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                <li>Vendor fraud, scams, or misrepresentation</li>
-                <li>Poor quality vendor services or no-shows</li>
-                <li>Vendor contract violations or breaches</li>
-                <li>Lost deposits, payments, or financial losses</li>
-                <li>Emotional distress, ruined weddings, or missed events</li>
-                <li>Injuries, property damage, or other harm caused by vendors</li>
-                <li>Inaccurate vendor information (pricing, availability, credentials)</li>
-              </ul>
-              <p className="text-gray-700 mt-3">
-                Our maximum liability is limited to the amount you paid for your subscription, up to $100, as stated in
-                our{' '}
-                <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">
-                  Terms of Service
-                </Link>.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-6">
-              <p className="font-bold text-gray-900 mb-2">Your Use is at Your Own Risk</p>
-              <p className="text-gray-700">
-                By using the vendor directory, you acknowledge and agree that:
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4 mt-2">
-                <li>You understand vendors are third parties NOT controlled by Bella Wedding AI</li>
-                <li>You will conduct your own due diligence before hiring vendors</li>
-                <li>You assume all risks when contracting with vendors</li>
-                <li>Bella Wedding AI is NOT liable for vendor actions, performance, or disputes</li>
-                <li>You will NOT hold us responsible for vendor-related issues</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Severability Clause */}
-          <section className="bg-gray-50 rounded-lg p-6 mt-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">
-              Severability
-            </h2>
-            <p className="text-gray-700">
-              If any provision of this Vendor Directory Disclaimer is found to be unlawful, void, or unenforceable, that
-              provision shall be severed from this disclaimer and shall not affect the validity and enforceability of the
-              remaining provisions. This disclaimer is part of and incorporated into our{' '}
-              <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">
-                Terms of Service
-              </Link>.
+            <p className="text-sm text-gray-700">
+              By using the Bella Wedding AI vendor directory, you acknowledge that you have read, understood,
+              and agree to this Vendor Directory Disclaimer. You understand that vendor listings are provided
+              "as-is" without warranty, that we do not vet or endorse vendors, and that you are solely
+              responsible for conducting due diligence before hiring any vendor. You agree to hold Bella
+              Wedding AI harmless from any disputes, damages, or losses arising from vendor relationships.
             </p>
           </section>
 
-          {/* Contact */}
-          <section className="bg-champagne-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">
-              Questions About Vendors?
-            </h2>
-            <p className="text-gray-700">
-              If you have questions about our vendor directory or need to report a problematic vendor, please contact us at{' '}
-              <a href="mailto:support@bellaweddingai.com" className="text-champagne-600 hover:text-champagne-700 underline">
-                support@bellaweddingai.com
-              </a>.
-            </p>
-          </section>
-
-          {/* Back to Home Link */}
-          <div className="text-center pt-8 border-t border-gray-200">
-            <Link
-              href="/"
-              className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors font-medium"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Link>
-          </div>
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t border-champagne-200 mt-12">
         <div className="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-600">
-          <p>© 2025 Bella Wedding AI. All rights reserved.</p>
-          <div className="flex justify-center gap-4 mt-2 flex-wrap">
-            <Link href="/terms" className="text-champagne-600 hover:text-champagne-700">Terms of Service</Link>
-            <Link href="/privacy" className="text-champagne-600 hover:text-champagne-700">Privacy Policy</Link>
-            <Link href="/ai-disclaimer" className="text-champagne-600 hover:text-champagne-700">AI Disclaimer</Link>
-            <Link href="/vendor-disclaimer" className="text-champagne-600 hover:text-champagne-700">Vendor Disclaimer</Link>
-          </div>
+          <p>2025 Bella Wedding AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

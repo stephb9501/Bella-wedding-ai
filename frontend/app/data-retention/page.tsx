@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Database, ArrowLeft, Trash2, Clock, Shield } from 'lucide-react';
+import { Database, ArrowLeft } from 'lucide-react';
 
 export default function DataRetentionPage() {
   return (
@@ -16,9 +16,9 @@ export default function DataRetentionPage() {
             <Database className="w-8 h-8 text-champagne-600" />
             <div>
               <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Data Retention & Deletion Policy
+                Data Retention Policy
               </h1>
-              <p className="text-sm text-gray-600 mt-1">Version 1.0 " Effective Date: January 17, 2025</p>
+              <p className="text-sm text-gray-600 mt-1">Version 1.0 - Effective Date: January 17, 2025</p>
             </div>
           </div>
         </div>
@@ -26,197 +26,489 @@ export default function DataRetentionPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-8">
+
           <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              1. Introduction
+            </h2>
             <p className="text-gray-700 leading-relaxed">
-              This Data Retention & Deletion Policy explains how long we retain your personal information and how we delete
-              it when no longer needed. This policy is part of our{' '}
-              <Link href="/privacy" className="text-champagne-600 hover:text-champagne-700 underline">Privacy Policy</Link>{' '}
-              and <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">Terms of Service</Link>.
+              This Data Retention Policy explains how long Bella Wedding AI retains your personal data, what
+              happens to your data when you delete your account, and how to request data deletion. We retain
+              data only as long as necessary to provide services, comply with legal obligations, resolve
+              disputes, and enforce our agreements.
             </p>
           </section>
 
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-            <div className="flex items-start gap-3">
-              <Clock className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <p className="font-bold text-gray-900 mb-2">We Only Keep Data as Long as Necessary</p>
-                <p className="text-gray-700">
-                  We retain personal information only as long as needed for the purposes described in our Privacy Policy,
-                  or as required by law. When data is no longer needed, we securely delete it.
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              2. Data Retention Periods
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              We retain different types of data for varying periods based on legal requirements, business needs,
+              and the nature of the information:
+            </p>
+
+            <div className="space-y-6">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.1 Active Account Data</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  While your account is active, we retain all data necessary to provide our services:
                 </p>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Account Information</p>
+                      <p className="text-gray-700 text-sm">Retention: Duration of active account</p>
+                      <p className="text-gray-700 text-sm">
+                        Includes: Email, name, password hash, profile settings, preferences
+                      </p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Wedding Planning Data</p>
+                      <p className="text-gray-700 text-sm">Retention: Duration of active account</p>
+                      <p className="text-gray-700 text-sm">
+                        Includes: Guest lists, timelines, budgets, checklists, notes, vendor contacts
+                      </p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Uploaded Media</p>
+                      <p className="text-gray-700 text-sm">Retention: Duration of active account</p>
+                      <p className="text-gray-700 text-sm">
+                        Includes: Photos, videos, documents, inspiration images
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-gray-900">AI Conversation History</p>
+                      <p className="text-gray-700 text-sm">Retention: Duration of active account</p>
+                      <p className="text-gray-700 text-sm">
+                        Includes: Chat logs, AI recommendations, conversation context
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.2 Subscription and Payment Data</h3>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Payment Records</p>
+                      <p className="text-gray-700 text-sm">Retention: 7 years after last transaction</p>
+                      <p className="text-gray-700 text-sm">Reason: Tax and accounting compliance, fraud prevention</p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Billing Information</p>
+                      <p className="text-gray-700 text-sm">Retention: Until account deletion + 90 days</p>
+                      <p className="text-gray-700 text-sm">Reason: Process refunds, resolve billing disputes</p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Invoices and Receipts</p>
+                      <p className="text-gray-700 text-sm">Retention: 7 years</p>
+                      <p className="text-gray-700 text-sm">Reason: Legal and tax requirements</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-gray-900">Subscription History</p>
+                      <p className="text-gray-700 text-sm">Retention: 3 years after account deletion</p>
+                      <p className="text-gray-700 text-sm">Reason: Business analytics, dispute resolution</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.3 Usage and Analytics Data</h3>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Activity Logs</p>
+                      <p className="text-gray-700 text-sm">Retention: 90 days</p>
+                      <p className="text-gray-700 text-sm">Includes: Login times, feature usage, page views</p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Analytics Data (Aggregated)</p>
+                      <p className="text-gray-700 text-sm">Retention: Indefinitely (anonymized)</p>
+                      <p className="text-gray-700 text-sm">Reason: Product improvement, trend analysis</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-gray-900">Error and Crash Reports</p>
+                      <p className="text-gray-700 text-sm">Retention: 1 year</p>
+                      <p className="text-gray-700 text-sm">Reason: Bug fixing, platform stability</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.4 Communications and Support</h3>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Support Tickets</p>
+                      <p className="text-gray-700 text-sm">Retention: 3 years after resolution</p>
+                      <p className="text-gray-700 text-sm">Reason: Quality assurance, trend analysis</p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Email Communications</p>
+                      <p className="text-gray-700 text-sm">Retention: 2 years</p>
+                      <p className="text-gray-700 text-sm">Reason: Reference, dispute resolution</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-gray-900">Feedback and Surveys</p>
+                      <p className="text-gray-700 text-sm">Retention: 5 years (may be anonymized)</p>
+                      <p className="text-gray-700 text-sm">Reason: Product development, service improvement</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.5 Legal and Compliance Data</h3>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Legal Hold Data</p>
+                      <p className="text-gray-700 text-sm">Retention: Duration of legal matter + 1 year</p>
+                      <p className="text-gray-700 text-sm">Reason: Litigation, investigations, subpoenas</p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Compliance Records</p>
+                      <p className="text-gray-700 text-sm">Retention: As required by applicable law</p>
+                      <p className="text-gray-700 text-sm">Reason: Regulatory compliance (GDPR, CCPA, etc.)</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-gray-900">Terms Acceptance Records</p>
+                      <p className="text-gray-700 text-sm">Retention: 7 years after account deletion</p>
+                      <p className="text-gray-700 text-sm">Reason: Proof of agreement, dispute resolution</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">2.6 Marketing and Advertising Data</h3>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Email Marketing Lists</p>
+                      <p className="text-gray-700 text-sm">Retention: Until unsubscribe + 30 days</p>
+                      <p className="text-gray-700 text-sm">Reason: Honor unsubscribe requests, prevent re-addition</p>
+                    </div>
+
+                    <div className="border-b border-gray-200 pb-2">
+                      <p className="font-semibold text-gray-900">Advertising Conversion Data</p>
+                      <p className="text-gray-700 text-sm">Retention: 2 years</p>
+                      <p className="text-gray-700 text-sm">Reason: Campaign effectiveness, ROI analysis</p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-gray-900">Cookie Data</p>
+                      <p className="text-gray-700 text-sm">Retention: As specified in Cookie Policy</p>
+                      <p className="text-gray-700 text-sm">Reason: See Cookie Policy for details</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Retention Periods</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              3. Account Deletion Procedures
+            </h2>
+
+            <div className="bg-rose-50 border-l-4 border-rose-500 p-6 mb-4">
+              <h3 className="font-semibold text-rose-900 mb-3">Important: Account Deletion is Permanent</h3>
+              <p className="text-rose-800 leading-relaxed">
+                When you delete your account, most of your data is permanently deleted and cannot be recovered.
+                Please export any important data before deletion.
+              </p>
+            </div>
+
             <div className="space-y-4">
-              <div className="bg-green-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Active Accounts (While You Use the Platform):</h3>
-                <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                  <li><strong>Account Information:</strong> Retained while your account is active</li>
-                  <li><strong>Wedding Plans, Photos, Checklists:</strong> Retained while your account is active</li>
-                  <li><strong>Guest Lists & RSVPs:</strong> Retained while your account is active</li>
-                  <li><strong>Vendor Messages:</strong> Retained while your account is active</li>
-                </ul>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">3.1 How to Delete Your Account</h3>
+
+                <div className="bg-gray-50 rounded-lg p-4 mb-3">
+                  <p className="font-semibold text-gray-900 mb-2">Option 1: Self-Service Deletion</p>
+                  <div className="space-y-2">
+                    <p className="text-gray-700">1. Log into your account</p>
+                    <p className="text-gray-700">2. Go to Settings -> Account -> Delete Account</p>
+                    <p className="text-gray-700">3. Confirm deletion by entering your password</p>
+                    <p className="text-gray-700">4. Click "Permanently Delete Account"</p>
+                    <p className="text-gray-700">5. You will receive a confirmation email</p>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="font-semibold text-gray-900 mb-2">Option 2: Email Request</p>
+                  <div className="space-y-2">
+                    <p className="text-gray-700">Email: privacy@bellaweddingai.com</p>
+                    <p className="text-gray-700">Subject: Account Deletion Request</p>
+                    <p className="text-gray-700">Include: Your account email and reason for deletion (optional)</p>
+                    <p className="text-gray-700">Processing Time: 5-10 business days</p>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-yellow-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Inactive Accounts:</h3>
-                <p className="text-gray-700 mb-2">
-                  If you do NOT log in for <strong>3 years</strong>, your account is considered inactive. We will:
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">3.2 What Gets Deleted Immediately</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Upon account deletion, the following data is deleted within 48 hours:
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                  <li>Send you an email warning 30 days before deletion</li>
-                  <li>If you do not respond, delete your account and all associated data</li>
-                  <li>Exception: Payment records and consent logs are retained for legal compliance (see below)</li>
-                </ul>
+                <div className="space-y-2">
+                  <p className="text-gray-700">* Your account profile and login credentials</p>
+                  <p className="text-gray-700">* Wedding planning data (guest lists, timelines, budgets)</p>
+                  <p className="text-gray-700">* Uploaded photos, videos, and documents</p>
+                  <p className="text-gray-700">* AI conversation history</p>
+                  <p className="text-gray-700">* Saved vendor favorites and notes</p>
+                  <p className="text-gray-700">* Personal preferences and settings</p>
+                </div>
               </div>
 
-              <div className="bg-red-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Deleted Accounts:</h3>
-                <p className="text-gray-700 mb-2">
-                  When you delete your account (or we delete it for inactivity):
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">3.3 What is Retained After Deletion</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Some data is retained for legal, security, or business purposes:
                 </p>
-                <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                  <li><strong>30 Days:</strong> Most data (photos, guest lists, wedding plans) is permanently deleted from
-                  production databases within 30 days</li>
-                  <li><strong>90 Days:</strong> Backup copies are purged from disaster recovery systems within 90 days</li>
-                  <li><strong>CDN Cache:</strong> Cached images on CDNs may persist for up to 30 days</li>
-                  <li><strong>Exceptions:</strong> Payment records, consent logs, and legal holds (see below) are retained longer</li>
-                </ul>
+
+                <div className="bg-amber-50 border border-amber-300 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div>
+                      <p className="font-semibold text-amber-900">Financial Records (7 years)</p>
+                      <p className="text-amber-800 text-sm">
+                        Payment history, invoices, tax records - required by law
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-amber-900">Support Communications (3 years)</p>
+                      <p className="text-amber-800 text-sm">
+                        Ticket history, email correspondence - for quality assurance
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-amber-900">Legal Hold Data (Duration of matter)</p>
+                      <p className="text-amber-800 text-sm">
+                        Data subject to legal proceedings, investigations, or disputes
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-amber-900">Aggregated Analytics (Indefinite)</p>
+                      <p className="text-amber-800 text-sm">
+                        Anonymized, non-identifiable usage statistics
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold text-amber-900">Security Logs (90 days)</p>
+                      <p className="text-amber-800 text-sm">
+                        Login attempts, security events - for fraud prevention
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-blue-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Payment Records:</h3>
-                <p className="text-gray-700">
-                  <strong>Retained for 7 years</strong> after the transaction date (required for tax compliance, accounting,
-                  and dispute resolution under IRS and payment processor regulations).
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">3.4 Grace Period (30 Days)</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  After you request account deletion, we provide a 30-day grace period:
                 </p>
-                <p className="text-gray-700 mt-2">
-                  <strong>Includes:</strong> Transaction IDs, amounts, dates, subscription history. Does NOT include full
-                  credit card numbers (we do not store themStripe does).
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    * Your account is deactivated but data is not yet deleted
+                  </p>
+                  <p className="text-gray-700">
+                    * You cannot log in or access your account during this period
+                  </p>
+                  <p className="text-gray-700">
+                    * You can cancel deletion by contacting support within 30 days
+                  </p>
+                  <p className="text-gray-700">
+                    * After 30 days, deletion is permanent and cannot be reversed
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              4. Data Export Before Deletion
+            </h2>
+
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-4">
+              <h3 className="font-semibold text-blue-900 mb-3">RECOMMENDED: Export Your Data First</h3>
+              <p className="text-blue-800 leading-relaxed">
+                Before deleting your account, we strongly recommend exporting your wedding planning data.
+                Once deletion is complete, we cannot recover your information.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">How to Export Your Data:</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-700">1. Log into your account</p>
+                  <p className="text-gray-700">2. Go to Settings -> Privacy -> Download My Data</p>
+                  <p className="text-gray-700">3. Select data categories to export</p>
+                  <p className="text-gray-700">4. Choose format: CSV, JSON, or ZIP archive</p>
+                  <p className="text-gray-700">5. Click "Request Data Export"</p>
+                  <p className="text-gray-700">6. Receive download link via email (within 48 hours)</p>
+                  <p className="text-gray-700">7. Download expires after 7 days</p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">What You Can Export:</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-700">* Guest lists and contact information (CSV)</p>
+                  <p className="text-gray-700">* Timeline and checklist data (CSV, PDF)</p>
+                  <p className="text-gray-700">* Budget spreadsheets (CSV, Excel)</p>
+                  <p className="text-gray-700">* Vendor information and notes (CSV)</p>
+                  <p className="text-gray-700">* Uploaded photos and videos (ZIP)</p>
+                  <p className="text-gray-700">* Account information and settings (JSON)</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              5. Inactive Account Policy
+            </h2>
+
+            <div className="space-y-4">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">5.1 Account Inactivity Definition</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  An account is considered inactive if there has been no login activity for 24 consecutive months.
                 </p>
               </div>
 
-              <div className="bg-purple-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Consent Logs:</h3>
-                <p className="text-gray-700">
-                  <strong>Retained indefinitely</strong> (required for GDPR/CCPA compliance to prove you consented to our
-                  policies at the time of signup).
-                </p>
-                <p className="text-gray-700 mt-2">
-                  <strong>Includes:</strong> Which policies you agreed to, version numbers, timestamps, IP addresses.
-                </p>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">5.2 Inactive Account Process</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-700">* After 18 months of inactivity: Warning email sent</p>
+                  <p className="text-gray-700">* After 22 months of inactivity: Final warning email sent</p>
+                  <p className="text-gray-700">* After 24 months of inactivity: Account scheduled for deletion</p>
+                  <p className="text-gray-700">* 30-day notice period before final deletion</p>
+                  <p className="text-gray-700">* Log in at any time to prevent deletion</p>
+                </div>
               </div>
 
-              <div className="bg-orange-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Support Tickets & Communications:</h3>
-                <p className="text-gray-700">
-                  <strong>Retained for 3 years</strong> after the last message (for customer service quality, dispute
-                  resolution, and legal compliance).
-                </p>
-              </div>
-
-              <div className="bg-pink-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Legal Holds:</h3>
-                <p className="text-gray-700">
-                  If we receive a valid legal request (subpoena, court order, government request), we may retain your data
-                  longer than the standard retention periods until the legal matter is resolved.
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-3">5.3 Paid Subscription Exception</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Accounts with active paid subscriptions will not be deleted for inactivity, regardless of
+                  login frequency. However, we recommend logging in periodically to ensure account security.
                 </p>
               </div>
             </div>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Trash2 className="w-6 h-6 text-red-600" />
-              How to Delete Your Data
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              6. Backup and Disaster Recovery
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              We maintain backup copies of your data for disaster recovery purposes:
+            </p>
+
+            <div className="space-y-3">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Backup Retention</h3>
+                <p className="text-gray-700">
+                  Backups are retained for 30 days and then permanently deleted. Deleted account data in backups
+                  is purged within 30 days of account deletion.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Backup Security</h3>
+                <p className="text-gray-700">
+                  Backups are encrypted, access-controlled, and stored in secure facilities separate from
+                  production systems.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              7. Your Data Rights
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              You have the following rights regarding your data:
+            </p>
+
+            <div className="space-y-2">
+              <p className="text-gray-700">* Right to Access: Request a copy of your personal data</p>
+              <p className="text-gray-700">* Right to Rectification: Correct inaccurate or incomplete data</p>
+              <p className="text-gray-700">* Right to Deletion: Request deletion of your data</p>
+              <p className="text-gray-700">* Right to Restriction: Limit how we process your data</p>
+              <p className="text-gray-700">* Right to Portability: Receive your data in a portable format</p>
+              <p className="text-gray-700">* Right to Object: Object to certain types of processing</p>
+            </div>
+
+            <p className="text-gray-700 leading-relaxed mt-4">
+              To exercise these rights, contact: privacy@bellaweddingai.com
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              8. Changes to This Policy
+            </h2>
+            <p className="text-gray-700 leading-relaxed">
+              We may update this Data Retention Policy to reflect changes in our practices or legal requirements.
+              Updates will be posted on this page with a revised "Effective Date." Material changes will be
+              communicated via email. Continued use of our services after changes constitutes acceptance of the
+              updated policy.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              9. Contact Information
             </h2>
             <div className="bg-champagne-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Option 1: Delete Your Account (Recommended)</h3>
-              <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
-                <li>Log in to your Bella Wedding AI account</li>
-                <li>Go to <strong>Account Settings ’ Privacy & Data</strong></li>
-                <li>Click <strong>"Delete My Account"</strong></li>
-                <li>Confirm deletion</li>
-              </ol>
-              <p className="text-gray-700 mt-3">
-                <strong>What gets deleted:</strong> All wedding plans, photos, guest lists, messages, profile information,
-                and preferences (within 30-90 days as described above).
+              <p className="text-gray-700 mb-4">
+                For questions about data retention or to request data deletion:
               </p>
-              <p className="text-gray-700 mt-2">
-                <strong>What is NOT deleted:</strong> Payment records (7 years), consent logs (indefinite), legal holds.
-              </p>
-            </div>
-
-            <div className="bg-blue-50 rounded-lg p-6 mt-4">
-              <h3 className="font-bold text-gray-900 mb-3">Option 2: Request Data Deletion (GDPR/CCPA Right)</h3>
-              <p className="text-gray-700 mb-2">
-                If you are in the EU (GDPR) or California (CCPA), you can request deletion of specific data categories:
-              </p>
-              <p className="text-gray-700">
-                Email: <a href="mailto:privacy@bellaweddingai.com" className="text-champagne-600 hover:text-champagne-700 underline">
-                privacy@bellaweddingai.com</a>
-              </p>
-              <p className="text-gray-700 mt-2">
-                <strong>Subject Line:</strong> "Data Deletion Request" (or "GDPR Deletion Request" / "CCPA Deletion Request")
-              </p>
-              <p className="text-gray-700 mt-2">
-                <strong>Include:</strong> Your account email, specific data you want deleted
-              </p>
-              <p className="text-gray-700 mt-3">
-                <strong>Response Time:</strong> We will respond within <strong>30 days</strong> (GDPR) or <strong>45 days</strong>
-                {' '}(CCPA) and complete the deletion request within the same timeframe.
-              </p>
-              <p className="text-gray-700 mt-3 text-sm">
-                <strong>Note:</strong> We may retain data required by law (payment records, consent logs, legal holds) even
-                after a deletion request.
-              </p>
+              <p className="text-gray-700 mb-2">Email: privacy@bellaweddingai.com</p>
+              <p className="text-gray-700 mb-2">Subject: Data Retention Inquiry</p>
+              <p className="text-gray-700">Response Time: 3-5 business days</p>
             </div>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Shield className="w-6 h-6 text-champagne-600" />
-              Secure Data Deletion Methods
-            </h2>
-            <div className="bg-gray-50 rounded-lg p-6">
-              <p className="text-gray-700 mb-3">
-                When we delete data, we use industry-standard secure deletion methods:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li><strong>Database Records:</strong> Permanently deleted from production databases (not just marked as deleted)</li>
-                <li><strong>File Storage:</strong> Files (photos, documents) are overwritten and removed from storage buckets</li>
-                <li><strong>Backups:</strong> Deleted data is purged from backups within 90 days</li>
-                <li><strong>CDN Cache:</strong> Cached content is invalidated and expires within 30 days</li>
-                <li><strong>Third-Party Services:</strong> We instruct third-party processors (Stripe, OpenAI, etc.) to delete
-                your data per their retention policies</li>
-              </ul>
-            </div>
-          </section>
-
-          <section className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Severability</h2>
-            <p className="text-gray-700">
-              If any provision of this Data Retention Policy is found to be unlawful, void, or unenforceable, that provision
-              shall be severed and shall not affect the remaining provisions. This policy is part of our{' '}
-              <Link href="/privacy" className="text-champagne-600 hover:text-champagne-700 underline">Privacy Policy</Link>.
-            </p>
-          </section>
-
-          <div className="text-center pt-8 border-t border-gray-200">
-            <Link href="/" className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors font-medium">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Link>
-          </div>
         </div>
       </main>
 
       <footer className="bg-white border-t border-champagne-200 mt-12">
         <div className="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-600">
-          <p>© 2025 Bella Wedding AI. All rights reserved.</p>
+          <p>2025 Bella Wedding AI. All rights reserved.</p>
         </div>
       </footer>
     </div>

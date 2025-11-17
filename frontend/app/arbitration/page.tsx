@@ -1,18 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { Scale, ArrowLeft, AlertTriangle, Users, FileX, Clock, FileText } from 'lucide-react';
+import { Scale, ArrowLeft } from 'lucide-react';
 
 export default function ArbitrationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-champagne-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-champagne-200">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <Link
-            href="/"
-            className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors mb-4"
-          >
+          <Link href="/" className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
@@ -22,396 +18,402 @@ export default function ArbitrationPage() {
               <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Arbitration & Dispute Resolution
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Version 1.0 " Effective Date: January 17, 2025
-              </p>
+              <p className="text-sm text-gray-600 mt-1">Version 1.0 - Effective Date: January 17, 2025</p>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-8">
 
-          {/* Critical Notice */}
-          <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-orange-600 flex-shrink-0 mt-1" />
-              <div>
-                <p className="font-bold text-gray-900 text-lg mb-2">
-                  IMPORTANT: Binding Arbitration Agreement
-                </p>
-                <p className="text-gray-700">
-                  By using Bella Wedding AI, you agree to resolve disputes through <strong>binding individual arbitration</strong>
-                  {' '}rather than court. You also <strong>waive your right to a jury trial</strong> and <strong>waive your
-                  right to participate in class action lawsuits</strong>. Please read this carefully, as it significantly
-                  affects your legal rights.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Introduction */}
-          <section>
-            <p className="text-gray-700 leading-relaxed">
-              This Arbitration & Dispute Resolution policy explains how disputes between you and Bella Wedding AI must be
-              resolved. This policy is part of our{' '}
-              <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">
-                Terms of Service
-              </Link>.
+          <section className="bg-amber-50 border-l-4 border-amber-500 p-6">
+            <h2 className="text-xl font-bold text-amber-900 mb-3">
+              IMPORTANT: Binding Arbitration Agreement
+            </h2>
+            <p className="text-amber-800 leading-relaxed">
+              This Arbitration Agreement contains important provisions that affect your legal rights. By using
+              Bella Wedding AI, you agree to resolve disputes through binding individual arbitration instead of
+              court proceedings. You have the right to opt out within 30 days of account creation.
             </p>
           </section>
 
-          {/* Table of Contents */}
-          <section className="bg-champagne-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-champagne-600" />
-              Table of Contents
-            </h2>
-            <ol className="list-decimal list-inside space-y-2 text-champagne-700">
-              <li><a href="#section-1" className="hover:underline">Agreement to Arbitrate</a></li>
-              <li><a href="#section-2" className="hover:underline">Arbitration Rules & Procedures</a></li>
-              <li><a href="#section-3" className="hover:underline">Class Action Waiver</a></li>
-              <li><a href="#section-4" className="hover:underline">Exceptions to Arbitration</a></li>
-              <li><a href="#section-5" className="hover:underline">30-Day Opt-Out Right</a></li>
-              <li><a href="#section-6" className="hover:underline">Governing Law & Venue</a></li>
-              <li><a href="#section-7" className="hover:underline">Severability</a></li>
-            </ol>
-          </section>
-
-          {/* Section 1: Agreement to Arbitrate */}
-          <section id="section-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Scale className="w-6 h-6 text-champagne-600" />
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               1. Agreement to Arbitrate
             </h2>
-            <p className="text-gray-700 mb-4">
-              You and Bella Wedding AI agree that any dispute, claim, or controversy arising out of or relating to your use
-              of the platform or these Terms shall be resolved through <strong>binding individual arbitration</strong>
-              {' '}rather than in court, except as provided in Section 4 below.
+            <p className="text-gray-700 leading-relaxed mb-4">
+              You and Bella Wedding AI agree that any dispute, claim, or controversy arising out of or relating
+              to these Terms, your use of the platform, or the breach, termination, enforcement, interpretation,
+              or validity thereof (collectively, "Disputes") will be resolved through binding arbitration, except
+              as specified in Section 5 below.
             </p>
 
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-              <h3 className="font-bold text-gray-900 mb-2">What This Means:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li>Disputes will be resolved by a <strong>neutral arbitrator</strong>, not a judge or jury</li>
-                <li>Arbitration is typically <strong>faster and less expensive</strong> than court litigation</li>
-                <li>The arbitrator's decision is <strong>binding and final</strong> (limited appeal rights)</li>
-                <li>You <strong>give up your right to a jury trial</strong></li>
-                <li>You <strong>give up your right to participate in a class action lawsuit</strong></li>
-              </ul>
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-semibold text-gray-900 mb-3">This Agreement Covers:</h3>
+              <div className="space-y-2">
+                <p className="text-gray-700">
+                  * All claims arising from or relating to your use of Bella Wedding AI
+                </p>
+                <p className="text-gray-700">
+                  * Claims regarding billing, payments, refunds, or subscriptions
+                </p>
+                <p className="text-gray-700">
+                  * Claims related to data privacy, security, or breaches
+                </p>
+                <p className="text-gray-700">
+                  * Claims involving AI-generated content or recommendations
+                </p>
+                <p className="text-gray-700">
+                  * Claims regarding vendor interactions or directory listings
+                </p>
+                <p className="text-gray-700">
+                  * Contract disputes and interpretation disagreements
+                </p>
+                <p className="text-gray-700">
+                  * Claims based in contract, tort, statute, fraud, misrepresentation, or other legal theory
+                </p>
+              </div>
             </div>
           </section>
 
-          {/* Section 2: Arbitration Rules & Procedures */}
-          <section id="section-2">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              2. Arbitration Rules & Procedures
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              2. Arbitration Rules and Forum
             </h2>
-            <p className="text-gray-700 mb-4">
-              Arbitration will be conducted according to the following rules:
-            </p>
 
             <div className="space-y-4">
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Arbitration Provider</h3>
-                <p className="text-gray-700">
-                  Arbitration will be administered by the <strong>American Arbitration Association (AAA)</strong> under
-                  its <strong>Consumer Arbitration Rules</strong>, or by <strong>JAMS</strong> if AAA is unavailable.
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.1 Arbitration Provider</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Arbitration will be administered by the American Arbitration Association (AAA) under its
+                  Consumer Arbitration Rules (the "AAA Rules") then in effect, as modified by this Arbitration
+                  Agreement. The AAA Rules are available at www.adr.org or by calling 1-800-778-7879.
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4 mt-2">
-                  <li><strong>AAA Rules:</strong>{' '}
-                    <a href="https://www.adr.org/consumer" target="_blank" rel="noopener noreferrer" className="text-champagne-600 hover:text-champagne-700 underline">
-                      www.adr.org/consumer
-                    </a>
-                  </li>
-                  <li><strong>JAMS Rules:</strong>{' '}
-                    <a href="https://www.jamsadr.com" target="_blank" rel="noopener noreferrer" className="text-champagne-600 hover:text-champagne-700 underline">
-                      www.jamsadr.com
-                    </a>
-                  </li>
-                </ul>
               </div>
 
-              <div className="bg-blue-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Arbitration Format</h3>
-                <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                  <li><strong>Individual Arbitration Only:</strong> Each party files their own claim. No class arbitrations.</li>
-                  <li><strong>Location:</strong> Arbitration will be conducted in the county where you reside (if in the U.S.)
-                  or via video conference</li>
-                  <li><strong>Written or In-Person:</strong> For claims under $10,000, arbitration may be conducted by
-                  written submission, phone, or video conference at your option</li>
-                  <li><strong>In-Person Hearing:</strong> For claims over $10,000, either party may request an in-person hearing</li>
-                </ul>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.2 Arbitration Procedure</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  The arbitration will be conducted by a single neutral arbitrator appointed in accordance with
+                  the AAA Rules. The arbitrator will have exclusive authority to:
+                </p>
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    * Resolve any dispute regarding the interpretation or application of this Agreement
+                  </p>
+                  <p className="text-gray-700">
+                    * Determine the arbitrability of any claim
+                  </p>
+                  <p className="text-gray-700">
+                    * Award damages and other relief
+                  </p>
+                  <p className="text-gray-700">
+                    * Issue orders, including for injunctive relief
+                  </p>
+                </div>
               </div>
 
-              <div className="bg-green-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Arbitration Costs</h3>
-                <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                  <li><strong>Filing Fees:</strong> We will pay all AAA/JAMS filing fees for claims under $75,000</li>
-                  <li><strong>Arbitrator Fees:</strong> Each party pays their own attorney fees, unless the arbitrator awards
-                  fees to the prevailing party or as required by law</li>
-                  <li><strong>Small Claims:</strong> If your claim is under $10,000 and you follow the procedures, we will
-                  reimburse your filing fees</li>
-                </ul>
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.3 Location and Format</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Unless you and Bella Wedding AI agree otherwise, arbitration hearings will take place in
+                  the county (or parish) where you reside. For claims under $10,000, the arbitration may be
+                  conducted through written submissions only, by telephone, or by videoconference at your option.
+                </p>
               </div>
 
-              <div className="bg-yellow-50 rounded-lg p-6">
-                <h3 className="font-bold text-gray-900 mb-3">Arbitrator's Powers</h3>
-                <p className="text-gray-700 mb-2">
-                  The arbitrator has the authority to:
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.4 Arbitration Fees</h3>
+                <p className="text-gray-700 leading-relaxed mb-3">
+                  Payment of all filing, administration, and arbitrator fees will be governed by the AAA Rules:
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                  <li>Award the same damages and relief as a court (including injunctive relief)</li>
-                  <li>Award attorney's fees and costs as allowed by law or agreement</li>
-                  <li>Issue a written decision explaining the factual and legal basis for the award</li>
-                </ul>
-                <p className="text-gray-700 mt-2">
-                  The arbitrator <strong>may NOT</strong>:
+                <div className="space-y-2">
+                  <p className="text-gray-700">
+                    * For claims under $75,000: Bella Wedding AI will pay all AAA filing, administration, and
+                    arbitrator fees
+                  </p>
+                  <p className="text-gray-700">
+                    * For claims over $75,000: Fees will be allocated according to AAA Rules
+                  </p>
+                  <p className="text-gray-700">
+                    * If arbitrator finds claim frivolous: You may be required to reimburse fees
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">2.5 Attorney Fees</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  Each party will be responsible for their own attorney fees unless the arbitrator awards
+                  attorney fees to the prevailing party as permitted by applicable law or the AAA Rules.
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4 mt-1">
-                  <li>Award relief that exceeds what an individual could obtain in court</li>
-                  <li>Award relief that affects other users who are not parties to the arbitration</li>
-                  <li>Consolidate multiple claims or conduct class arbitration</li>
-                </ul>
               </div>
             </div>
           </section>
 
-          {/* Section 3: Class Action Waiver */}
-          <section id="section-3">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <FileX className="w-6 h-6 text-red-600" />
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               3. Class Action Waiver
             </h2>
-            <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-              <p className="font-bold text-gray-900 mb-2 uppercase">
-                You Waive Your Right to Participate in Class Actions
-              </p>
-              <p className="text-gray-700 mb-3">
-                You and Bella Wedding AI agree that all disputes must be brought on an <strong>individual basis only</strong>.
-                You <strong>waive your right</strong> to:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li><strong>Participate in class action lawsuits</strong> (in court or arbitration)</li>
-                <li><strong>Act as a class representative or class member</strong> in any class proceeding</li>
-                <li><strong>Join multiple claims</strong> with other users in a single arbitration (consolidation)</li>
-                <li><strong>Participate in representative actions</strong> (e.g., on behalf of the general public or other users)</li>
-              </ul>
-              <p className="text-gray-700 mt-3">
-                <strong>Example:</strong> If 100 users have the same complaint, they must each file their own individual
-                arbitration. They cannot join together in a single class action lawsuit or class arbitration.
+
+            <div className="bg-rose-50 border border-rose-200 rounded-lg p-6 mb-4">
+              <h3 className="font-semibold text-rose-900 mb-3">NO CLASS ACTIONS OR REPRESENTATIVE PROCEEDINGS</h3>
+              <p className="text-rose-800 leading-relaxed">
+                YOU AND BELLA WEDDING AI AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR
+                ITS INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS,
+                CONSOLIDATED, OR REPRESENTATIVE PROCEEDING.
               </p>
             </div>
 
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded mt-4">
-              <p className="font-bold text-gray-900 mb-2">
-                Severability of Class Action Waiver
-              </p>
-              <p className="text-gray-700">
-                If a court or arbitrator determines that the class action waiver is unenforceable for a particular claim
-                or cause of action, then <strong>that claim must be severed</strong> from the arbitration and brought in
-                court, while all other claims remain in arbitration.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 4: Exceptions to Arbitration */}
-          <section id="section-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              4. Exceptions to Arbitration
-            </h2>
-            <p className="text-gray-700 mb-4">
-              Notwithstanding the arbitration agreement above, either party may bring the following claims in court without
-              arbitration:
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Unless both you and Bella Wedding AI agree otherwise in writing, the arbitrator may not:
             </p>
 
-            <div className="bg-blue-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">You May Sue in Court For:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li><strong>Small Claims Court:</strong> Claims that qualify for small claims court (typically under $10,000,
-                depending on your state) may be brought in small claims court instead of arbitration</li>
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                * Consolidate more than one person's claims
+              </p>
+              <p className="text-gray-700">
+                * Preside over any form of class or representative proceeding
+              </p>
+              <p className="text-gray-700">
+                * Award relief to anyone other than the individual parties
+              </p>
+            </div>
 
-                <li><strong>Intellectual Property Claims:</strong> Claims related to intellectual property infringement
-                (copyright, trademark, patent, trade secret violations)</li>
+            <p className="text-gray-700 leading-relaxed mt-4">
+              If a court decides that applicable law precludes enforcement of any of this paragraph's limitations
+              as to a particular claim or request for relief, then that claim or request must be severed from the
+              arbitration and brought in court, while any remaining claims will proceed in arbitration.
+            </p>
+          </section>
 
-                <li><strong>Injunctive Relief:</strong> Either party may seek injunctive or other equitable relief in court
-                to prevent actual or threatened infringement or misappropriation of intellectual property rights</li>
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              4. Pre-Arbitration Dispute Resolution
+            </h2>
 
-                <li><strong>State-Specific Exemptions:</strong> If you live in a state that prohibits mandatory arbitration
-                for certain claims (e.g., New Jersey, California for certain employment-related claims), those exemptions apply</li>
-              </ul>
+            <div className="bg-champagne-50 border border-champagne-300 rounded-lg p-6">
+              <h3 className="font-semibold text-gray-900 mb-3">Mandatory Informal Resolution Process</h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Before initiating arbitration, you must first give us an opportunity to resolve the dispute
+                informally by sending a written notice of your claim to:
+              </p>
+
+              <div className="bg-white rounded p-4 mb-4">
+                <p className="text-gray-700">Bella Wedding AI</p>
+                <p className="text-gray-700">Legal Department - Dispute Resolution</p>
+                <p className="text-gray-700">Email: disputes@bellaweddingai.com</p>
+              </div>
+
+              <h3 className="font-semibold text-gray-900 mb-3">Notice Requirements:</h3>
+              <div className="space-y-2 mb-4">
+                <p className="text-gray-700">* Your name and contact information</p>
+                <p className="text-gray-700">* Account email address</p>
+                <p className="text-gray-700">* Detailed description of the dispute</p>
+                <p className="text-gray-700">* Specific relief sought</p>
+                <p className="text-gray-700">* Amount of damages claimed (if applicable)</p>
+              </div>
+
+              <h3 className="font-semibold text-gray-900 mb-3">Resolution Timeline:</h3>
+              <div className="space-y-2">
+                <p className="text-gray-700">* We will respond within 30 days of receiving your notice</p>
+                <p className="text-gray-700">* Both parties will negotiate in good faith for 60 days</p>
+                <p className="text-gray-700">* If unresolved after 60 days, either party may initiate arbitration</p>
+              </div>
             </div>
           </section>
 
-          {/* Section 5: 30-Day Opt-Out Right */}
-          <section id="section-5">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Clock className="w-6 h-6 text-green-600" />
-              5. Your Right to Opt Out (30 Days)
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              5. Exceptions to Arbitration
             </h2>
-            <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded">
-              <p className="font-bold text-gray-900 mb-2">
-                You Have 30 Days to Opt Out of Arbitration
-              </p>
-              <p className="text-gray-700 mb-3">
-                If you do NOT want to be bound by the arbitration agreement, you may <strong>opt out within 30 days</strong>
-                {' '}of creating your account by sending a written notice to:
-              </p>
-              <div className="bg-white rounded p-4 ml-4 mb-3">
-                <p className="font-bold text-gray-900">Bella Wedding AI</p>
-                <p className="text-gray-700">Attn: Arbitration Opt-Out</p>
-                <p className="text-gray-700">[Your Business Address]</p>
-                <p className="text-gray-700">[City, State, ZIP]</p>
-                <p className="text-gray-700 mt-2">
-                  <strong>Or email:</strong>{' '}
-                  <a href="mailto:legal@bellaweddingai.com" className="text-champagne-600 hover:text-champagne-700 underline">
-                    legal@bellaweddingai.com
-                  </a>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Notwithstanding the foregoing, the following disputes are NOT subject to arbitration:
+            </p>
+
+            <div className="space-y-3">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">5.1 Small Claims Court</h3>
+                <p className="text-gray-700">
+                  Either party may bring an individual action in small claims court if the claim qualifies
+                  and remains in small claims court.
                 </p>
               </div>
-              <p className="text-gray-700 mb-2">
-                Your opt-out notice must include:
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">5.2 Intellectual Property Claims</h3>
+                <p className="text-gray-700">
+                  Claims involving intellectual property rights (patents, copyrights, trademarks, trade secrets)
+                  may be brought in court.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">5.3 Injunctive Relief</h3>
+                <p className="text-gray-700">
+                  Either party may seek injunctive or other equitable relief in court to prevent actual or
+                  threatened infringement or misappropriation of intellectual property rights.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">5.4 Government Actions</h3>
+                <p className="text-gray-700">
+                  Actions brought by government entities or regulators are not subject to arbitration.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              6. Opt-Out Right (30-Day Window)
+            </h2>
+
+            <div className="bg-green-50 border-l-4 border-green-500 p-6">
+              <h3 className="font-semibold text-green-900 mb-3">YOU HAVE THE RIGHT TO OPT OUT</h3>
+              <p className="text-green-800 leading-relaxed mb-4">
+                You may opt out of this Arbitration Agreement within 30 days of creating your account by
+                sending a written opt-out notice to the address below.
               </p>
-              <ul className="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                <li>Your full name</li>
-                <li>Email address associated with your account</li>
-                <li>Statement: "I opt out of the arbitration agreement"</li>
-                <li>Date of opt-out notice</li>
-              </ul>
-              <p className="text-gray-700 mt-3">
-                <strong>Important:</strong> If you opt out, you can still use Bella Wedding AI, but disputes will be
-                resolved in court (not arbitration). All other terms of the Terms of Service still apply.
+
+              <div className="bg-white rounded-lg p-4 mb-4">
+                <h4 className="font-semibold text-gray-900 mb-2">How to Opt Out:</h4>
+                <p className="text-gray-700 mb-2">Send email to: optout@bellaweddingai.com</p>
+                <p className="text-gray-700 mb-2">Subject Line: "Arbitration Opt-Out"</p>
+                <p className="text-gray-700 mb-4">Include:</p>
+                <div className="space-y-1 ml-4">
+                  <p className="text-gray-700">* Your full name</p>
+                  <p className="text-gray-700">* Account email address</p>
+                  <p className="text-gray-700">* Account creation date</p>
+                  <p className="text-gray-700">* Statement: "I opt out of the Arbitration Agreement"</p>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-300 rounded p-4">
+                <p className="text-amber-800 font-semibold mb-2">IMPORTANT DEADLINES:</p>
+                <p className="text-amber-800">
+                  * Opt-out must be received within 30 days of account creation
+                </p>
+                <p className="text-amber-800">
+                  * Late opt-out requests will NOT be honored
+                </p>
+                <p className="text-amber-800">
+                  * Opt-out is permanent and cannot be reversed
+                </p>
+              </div>
+
+              <p className="text-green-800 leading-relaxed mt-4">
+                If you opt out, you retain the right to pursue claims in court. Your opt-out will not affect
+                any other terms of our agreement with you.
               </p>
             </div>
           </section>
 
-          {/* Section 6: Governing Law & Venue */}
-          <section id="section-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              6. Governing Law & Legal Venue
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              7. Governing Law and Venue
             </h2>
-            <p className="text-gray-700 mb-4">
-              If a dispute is NOT subject to arbitration (either because you opted out, the claim is exempt, or arbitration
-              is unenforceable), the following applies:
+
+            <div className="space-y-3">
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">7.1 Governing Law</h3>
+                <p className="text-gray-700">
+                  This Arbitration Agreement and any arbitration proceeding will be governed by the Federal
+                  Arbitration Act (FAA), 9 U.S.C. Section 1, et seq., and federal arbitration law, not state
+                  arbitration law.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">7.2 Judicial Review</h3>
+                <p className="text-gray-700">
+                  Any court proceeding to enforce this Arbitration Agreement or to confirm, modify, or vacate
+                  an arbitration award may be brought in any court of competent jurisdiction.
+                </p>
+              </div>
+
+              <div className="border-l-4 border-champagne-500 pl-4">
+                <h3 className="font-semibold text-gray-900 mb-2">7.3 Severability</h3>
+                <p className="text-gray-700">
+                  If any portion of this Arbitration Agreement is found to be unenforceable or unlawful, the
+                  remainder of this Agreement will remain in full force and effect.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              8. Arbitration Award and Enforcement
+            </h2>
+            <p className="text-gray-700 leading-relaxed mb-4">
+              The arbitrator's decision will be final and binding, except for limited review rights under the FAA:
             </p>
 
-            <div className="bg-blue-50 rounded-lg p-6 mb-4">
-              <h3 className="font-bold text-gray-900 mb-3">Governing Law</h3>
+            <div className="space-y-2">
               <p className="text-gray-700">
-                These Terms and any disputes will be governed by the laws of the <strong>State of [Your State]</strong>
-                {' '}(without regard to conflict of law principles). Federal law applies where applicable (e.g., copyright,
-                trademark).
+                * The arbitrator may award the same damages and relief as a court
               </p>
-            </div>
-
-            <div className="bg-purple-50 rounded-lg p-6 mb-4">
-              <h3 className="font-bold text-gray-900 mb-3">Exclusive Venue (Where Lawsuits Are Filed)</h3>
               <p className="text-gray-700">
-                Any lawsuit that is NOT arbitrated must be filed in the <strong>state or federal courts located in
-                [Your County], [Your State]</strong>. You consent to the exclusive jurisdiction and venue of these courts.
+                * The arbitrator must follow applicable law and these Terms
               </p>
-              <p className="text-gray-700 mt-2">
-                <strong>Exception:</strong> If you live in a state that does not allow mandatory venue clauses (e.g.,
-                Montana, Idaho for consumer contracts), you may file suit in your home state.
+              <p className="text-gray-700">
+                * The arbitrator must issue a written decision with findings of fact and law
               </p>
-            </div>
-
-            <div className="bg-yellow-50 rounded-lg p-6">
-              <h3 className="font-bold text-gray-900 mb-3">State-Specific Provisions</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-                <li><strong>California Residents:</strong> You may have additional rights under the California Consumer
-                Privacy Act (CCPA) and California Civil Code § 1789.3. See our{' '}
-                  <Link href="/privacy" className="text-champagne-600 hover:text-champagne-700 underline">
-                    Privacy Policy
-                  </Link>.</li>
-
-                <li><strong>New York Residents:</strong> New York law applies to residents of New York for consumer
-                protection matters.</li>
-
-                <li><strong>New Jersey Residents:</strong> New Jersey may not enforce arbitration clauses for certain
-                consumer claims. If prohibited, arbitration does not apply.</li>
-
-                <li><strong>Montana Residents:</strong> Montana law prohibits mandatory venue outside Montana for
-                consumer contracts. Lawsuits may be filed in Montana state or federal court.</li>
-              </ul>
+              <p className="text-gray-700">
+                * The arbitration award may be entered as a judgment in any court of competent jurisdiction
+              </p>
+              <p className="text-gray-700">
+                * Limited grounds for appeal exist under the FAA (fraud, corruption, misconduct)
+              </p>
             </div>
           </section>
 
-          {/* Section 7: Severability */}
-          <section id="section-7">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              7. Severability of Arbitration Provisions
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              9. Confidentiality
             </h2>
-            <div className="bg-gray-50 rounded-lg p-6">
-              <p className="text-gray-700">
-                If any part of this arbitration agreement is found to be unenforceable, the remaining provisions will
-                continue to apply. Specifically:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4 mt-3">
-                <li>If the <strong>class action waiver</strong> is unenforceable, then any class claims must be litigated
-                in court (not arbitration), while individual claims remain in arbitration</li>
-
-                <li>If the <strong>entire arbitration agreement</strong> is unenforceable, then all disputes will be
-                resolved in court under Section 6 (Governing Law & Venue)</li>
-
-                <li>If a particular provision is unenforceable, it will be <strong>modified to the minimum extent
-                necessary</strong> to make it enforceable, or severed entirely if modification is not possible</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Severability Clause */}
-          <section className="bg-gray-50 rounded-lg p-6 mt-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">
-              Severability
-            </h2>
-            <p className="text-gray-700">
-              If any provision of this Arbitration & Dispute Resolution policy is found to be unlawful, void, or
-              unenforceable, that provision shall be severed from this policy and shall not affect the validity and
-              enforceability of the remaining provisions. This policy is part of and incorporated into our{' '}
-              <Link href="/terms" className="text-champagne-600 hover:text-champagne-700 underline">
-                Terms of Service
-              </Link>.
+            <p className="text-gray-700 leading-relaxed">
+              All aspects of the arbitration proceeding, including the hearing and any documents filed, will
+              be confidential. Neither party may disclose the existence, content, or results of any arbitration
+              without the prior written consent of both parties, except as required by law or to enforce the
+              arbitration award.
             </p>
           </section>
 
-          {/* Contact */}
-          <section className="bg-champagne-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">
-              Questions About Arbitration?
+          <section>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              10. Changes to This Agreement
             </h2>
-            <p className="text-gray-700">
-              If you have questions about arbitration or want to opt out, please contact us at{' '}
-              <a href="mailto:legal@bellaweddingai.com" className="text-champagne-600 hover:text-champagne-700 underline">
-                legal@bellaweddingai.com
-              </a>.
+            <p className="text-gray-700 leading-relaxed">
+              We may modify this Arbitration Agreement at any time. Changes will be effective 30 days after
+              posting on our website. Your continued use of Bella Wedding AI after the effective date constitutes
+              acceptance of the modified agreement. Material changes will be communicated via email. You may
+              opt out of material changes by following the opt-out process in Section 6 within 30 days of
+              notification.
             </p>
           </section>
 
-          {/* Back to Home Link */}
-          <div className="text-center pt-8 border-t border-gray-200">
-            <Link
-              href="/"
-              className="inline-flex items-center text-champagne-600 hover:text-champagne-700 transition-colors font-medium"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Link>
-          </div>
+          <section className="bg-rose-50 border-l-4 border-rose-500 p-6">
+            <p className="text-sm text-gray-700 font-semibold mb-3">
+              ACKNOWLEDGMENT:
+            </p>
+            <p className="text-sm text-gray-700">
+              BY USING BELLA WEDDING AI, YOU ACKNOWLEDGE THAT YOU HAVE READ AND UNDERSTOOD THIS ARBITRATION
+              AGREEMENT AND AGREE TO BE BOUND BY ITS TERMS. YOU UNDERSTAND THAT YOU ARE GIVING UP YOUR RIGHT
+              TO GO TO COURT AND HAVE A JURY TRIAL. YOU MAY OPT OUT WITHIN 30 DAYS AS DESCRIBED IN SECTION 6.
+            </p>
+          </section>
+
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t border-champagne-200 mt-12">
         <div className="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-600">
-          <p>© 2025 Bella Wedding AI. All rights reserved.</p>
-          <div className="flex justify-center gap-4 mt-2 flex-wrap">
-            <Link href="/terms" className="text-champagne-600 hover:text-champagne-700">Terms of Service</Link>
-            <Link href="/privacy" className="text-champagne-600 hover:text-champagne-700">Privacy Policy</Link>
-            <Link href="/arbitration" className="text-champagne-600 hover:text-champagne-700">Arbitration</Link>
-          </div>
+          <p>2025 Bella Wedding AI. All rights reserved.</p>
         </div>
       </footer>
     </div>
