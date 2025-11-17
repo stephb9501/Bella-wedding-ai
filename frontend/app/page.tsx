@@ -143,47 +143,57 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-gradient-to-br from-champagne-50 to-rose-50 py-8">
         {/* Hero Image Background with Border */}
-        <div className="max-w-7xl mx-auto px-4 pt-6">
-          <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-white">
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage: "url('/wedding-photos/deltalow-560.jpg')",
-                backgroundPosition: 'center 40%'
+                backgroundPosition: 'center 25%'
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/75"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/70"></div>
             </div>
 
-            <div className="relative max-w-5xl mx-auto px-4 py-16 text-center">
-          <div className="mb-6 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
+            <div className="relative max-w-5xl mx-auto px-4 py-12 text-center">
+          <div className="mb-4 max-w-3xl mx-auto">
+            <div className="mb-6">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
+                  <Heart className="w-7 h-7 text-white" />
+                </div>
+                <h1 className="text-3xl font-serif font-bold bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
+                  Bella Wedding AI
+                </h1>
+              </div>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
               Your Dream Wedding,
               <br />
               <span className="bg-gradient-to-r from-champagne-600 to-rose-600 bg-clip-text text-transparent">
                 Perfectly Planned
               </span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
               Everything you need to plan the perfect wedding – guest management, budgeting, timelines, and AI-powered insights. All in one elegant platform.
             </p>
           </div>
 
           {!loading && (
-            <div className="flex gap-4 justify-center mb-8">
+            <div className="flex gap-4 justify-center mb-6">
               {!isLoggedIn ? (
                 <>
                   <button
                     onClick={() => router.push('/auth')}
-                    className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+                    className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-600"
                   >
                     Get Started Free
                   </button>
                   <button
                     onClick={() => router.push('/auth')}
-                    className="px-8 py-3 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-200"
+                    className="px-8 py-3 bg-white hover:bg-gray-50 text-gray-900 font-bold rounded-lg shadow-lg transition border-2 border-gray-300"
                   >
                     Sign In
                   </button>
@@ -191,7 +201,7 @@ export default function HomePage() {
               ) : (
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+                  className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-600"
                 >
                   Go to Dashboard
                 </button>
@@ -200,18 +210,18 @@ export default function HomePage() {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto">
+          <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             <div>
-              <div className="text-2xl font-bold text-champagne-600 mb-1">15+ Features</div>
-              <div className="text-sm text-gray-600">All-in-One Platform</div>
+              <div className="text-xl font-bold text-champagne-600 mb-1">15+ Features</div>
+              <div className="text-xs text-gray-600">All-in-One Platform</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-rose-600 mb-1">AI-Powered</div>
-              <div className="text-sm text-gray-600">Smart Planning</div>
+              <div className="text-xl font-bold text-rose-600 mb-1">AI-Powered</div>
+              <div className="text-xs text-gray-600">Smart Planning</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600 mb-1">Free to Start</div>
-              <div className="text-sm text-gray-600">No Credit Card</div>
+              <div className="text-xl font-bold text-purple-600 mb-1">Free to Start</div>
+              <div className="text-xs text-gray-600">No Credit Card</div>
             </div>
           </div>
             </div>
@@ -238,32 +248,34 @@ export default function HomePage() {
       </section>
 
       {/* Features Grid */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className="text-center mb-8">
-          <h3 className="text-3xl font-serif font-bold text-gray-900 mb-3">
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">
             Everything You Need
           </h3>
-          <p className="text-lg text-gray-600">
+          <p className="text-base text-gray-600">
             Powerful tools to make wedding planning effortless
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div
                 key={index}
                 onClick={() => router.push(feature.href)}
-                className="bg-white rounded-xl p-5 shadow-md hover:shadow-xl transition cursor-pointer group"
+                className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition cursor-pointer group flex items-start gap-3"
               >
-                <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition`}>
-                  <Icon className="w-6 h-6 text-white" />
+                <div className={`w-10 h-10 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition`}>
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="text-lg font-bold text-gray-900 mb-1">{feature.title}</h4>
-                <p className="text-sm text-gray-600">{feature.description}</p>
-                <div className="mt-3 text-champagne-600 text-sm font-medium group-hover:translate-x-2 transition inline-block">
-                  Explore →
+                <div className="flex-1">
+                  <h4 className="text-base font-bold text-gray-900 mb-1">{feature.title}</h4>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                </div>
+                <div className="text-champagne-600 text-sm font-medium group-hover:translate-x-1 transition">
+                  →
                 </div>
               </div>
             );
@@ -323,7 +335,7 @@ export default function HomePage() {
           <div className="text-center mt-8">
             <button
               onClick={() => router.push('/vendor-register')}
-              className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+              className="px-8 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105 border-2 border-champagne-600"
             >
               Join as a Vendor
             </button>
@@ -332,23 +344,23 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden py-12">
+      <section className="relative overflow-hidden py-20">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center center'
+            backgroundPosition: 'center 20%'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/70 to-black/80"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <blockquote className="text-xl md:text-2xl font-serif text-white mb-4 leading-relaxed">
+          <blockquote className="text-lg md:text-xl font-serif text-white mb-3 leading-relaxed">
             "Bella Wedding AI made planning our dream wedding so much easier. Everything we needed in one beautiful place!"
           </blockquote>
-          <p className="text-base text-champagne-200 font-medium">
-            <Heart className="w-4 h-4 inline-block mr-2 text-champagne-400" />
+          <p className="text-sm text-champagne-200 font-medium">
+            <Heart className="w-4 h-4 inline-block mr-1 text-champagne-400" />
             Happy Bride
           </p>
         </div>
@@ -413,8 +425,7 @@ export default function HomePage() {
               <h5 className="font-bold text-gray-900 mb-3">For Vendors</h5>
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li><a href="/vendor-register" className="hover:text-champagne-600">Vendor Sign Up</a></li>
-                <li><a href="/vendors" className="hover:text-champagne-600">Browse Vendors</a></li>
-                <li><a href="/vendor-pricing" className="hover:text-champagne-600">Pricing</a></li>
+                <li><a href="/vendor-pricing" className="hover:text-champagne-600">Pricing & Plans</a></li>
               </ul>
             </div>
           </div>

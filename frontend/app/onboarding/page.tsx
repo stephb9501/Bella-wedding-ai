@@ -72,20 +72,29 @@ export default function OnboardingPage() {
       }
 
       // Create or update couple profile
+      const profileData: any = {
+        bride_id: user.id,
+        partner_one_name: formData.partnerOneName,
+        partner_two_name: formData.partnerTwoName || null,
+        wedding_date: formData.weddingDate,
+        created_at: new Date().toISOString(),
+      };
+
+      // Only add phone if provided (column may not exist yet)
+      if (formData.phoneNumber) {
+        profileData.phone_number = formData.phoneNumber;
+      }
+
       const { error } = await supabase
         .from('couples')
-        .upsert({
-          bride_id: user.id,
-          partner_one_name: formData.partnerOneName,
-          partner_two_name: formData.partnerTwoName || null,
-          wedding_date: formData.weddingDate,
-          phone_number: formData.phoneNumber || null,
-          created_at: new Date().toISOString(),
-        }, {
+        .upsert(profileData, {
           onConflict: 'bride_id'
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Profile save error:', error);
+        throw error;
+      }
 
       showMessage('✓ Profile created! Redirecting to dashboard...', 'success');
 
