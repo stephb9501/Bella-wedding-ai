@@ -188,12 +188,17 @@ export default function SubscriptionPage() {
       }
 
       // Paid plan - redirect to Stripe checkout
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const response = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           priceId: plan.priceId,
           userType,
+          userId: user.id,
+          planId: plan.id,
         }),
       });
 

@@ -7,10 +7,10 @@ export async function POST(request: NextRequest) {
   if (authError) return authError;
 
   try {
-    const { priceId, userType } = await request.json();
+    const { priceId, userType, userId, planId } = await request.json();
 
-    if (!priceId) {
-      return NextResponse.json({ error: 'Missing priceId' }, { status: 400 });
+    if (!priceId || !userId || !planId) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const successUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
@@ -24,7 +24,9 @@ export async function POST(request: NextRequest) {
       success_url: successUrl + '/settings/subscription?success=true',
       cancel_url: successUrl + '/settings/subscription?canceled=true',
       metadata: {
+        userId,
         userType: userType || 'bride',
+        planId,
       },
     });
 
