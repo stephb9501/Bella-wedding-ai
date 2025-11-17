@@ -43,9 +43,14 @@ export default function AuthPage() {
       showMessage('✓ Sign in successful! Redirecting...', 'success');
       setEmailSignIn('');
       setPasswordSignIn('');
-      // Redirect to dashboard after 1 second
+
+      // Get redirect URL from query params or default to dashboard
+      const params = new URLSearchParams(window.location.search);
+      const redirectUrl = params.get('redirect') || '/dashboard';
+
+      // Redirect after 1 second
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        window.location.href = redirectUrl;
       }, 1000);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Sign in failed. Please check your credentials.';
