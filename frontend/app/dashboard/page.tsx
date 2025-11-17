@@ -13,7 +13,7 @@ import { RegistryAggregator } from '@/components/RegistryAggregator';
 import { PhotoGallery } from '@/components/PhotoGallery';
 import { useAuth } from '@/lib/useAuth';
 import AuthWall from '@/components/AuthWall';
-import { signOut } from '@/lib/supabase';
+import { signOut, getCurrentUser, supabase } from '@/lib/supabase';
 
 interface DashboardStats {
   totalGuests: number;
@@ -288,30 +288,58 @@ export default function Dashboard() {
   ]);
 
   useEffect(() => {
-    // In a real app, fetch from API
-    const weddingDate = new Date('2025-06-15');
-    const today = new Date();
-    const daysUntil = Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-    setStats({
-      totalGuests: 150,
-      rsvpYes: 85,
-      rsvpNo: 15,
-      budget: 30000,
-      spent: 8500,
-      daysUntilWedding: daysUntil,
-      tasksCompleted: 12,
-      totalTasks: 42,
-    });
-
-    setCoupleData({
-      partnerOne: 'Sarah',
-      partnerTwo: 'Michael',
-      weddingDate: '2025-06-15',
-      weddingLocation: 'Riverside Manor',
-      tier: 'premium',
-    });
+    fetchUserProfile();
   }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const user = await getCurrentUser();
+
+      if (!user) {
+        return;
+      }
+
+      // Fetch couple profile from database
+      const { data: profile, error } = await supabase
+        .from('couples')
+        .select('partner_one_name, partner_two_name, wedding_date')
+        .eq('bride_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        // Use defaults if profile not found
+        return;
+      }
+
+      if (profile) {
+        const weddingDate = profile.wedding_date ? new Date(profile.wedding_date) : new Date('2025-06-15');
+        const today = new Date();
+        const daysUntil = Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        setStats({
+          totalGuests: 150,
+          rsvpYes: 85,
+          rsvpNo: 15,
+          budget: 30000,
+          spent: 8500,
+          daysUntilWedding: daysUntil,
+          tasksCompleted: 12,
+          totalTasks: 42,
+        });
+
+        setCoupleData({
+          partnerOne: profile.partner_one_name || 'You',
+          partnerTwo: profile.partner_two_name || 'Your Love',
+          weddingDate: profile.wedding_date || new Date().toISOString().split('T')[0],
+          weddingLocation: 'Dream Venue',
+          tier: 'standard',
+        });
+      }
+    } catch (error) {
+      console.error('Error in fetchUserProfile:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
