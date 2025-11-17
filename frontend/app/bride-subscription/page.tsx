@@ -2,17 +2,39 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Check, Crown, Sparkles, Users, Camera, Gift, MessageCircle } from 'lucide-react';
+import { Heart, Check, Crown, Sparkles, Users, Camera, Gift, MessageCircle, Star, Zap } from 'lucide-react';
 
 const BRIDE_TIERS = [
+  {
+    id: 'early-tester',
+    name: 'Early Tester',
+    price: 'FREE',
+    period: '',
+    originalPrice: '',
+    description: 'Limited spots! Help shape the future of wedding planning',
+    icon: Star,
+    color: 'from-amber-400 to-orange-600',
+    limited: true,
+    features: [
+      { text: '3 months completely FREE', included: true },
+      { text: 'All Premium features included', included: true },
+      { text: 'Help test new features before anyone else', included: true },
+      { text: 'Provide feedback to shape the platform', included: true },
+      { text: 'Priority support from our team', included: true },
+      { text: 'After 3 months: choose Standard or Premium', included: true },
+      { text: 'Limited spots available - first come, first served', included: true },
+    ]
+  },
   {
     id: 'standard',
     name: 'Standard',
     price: '$19.99',
     period: '/month',
+    originalPrice: '$39.99',
     description: 'Perfect for small weddings and DIY planning',
     icon: Heart,
     color: 'from-blue-400 to-blue-600',
+    blackFriday: true,
     features: [
       { text: 'Up to 75 guests', included: true },
       { text: 'Up to 30 photos', included: true },
@@ -30,10 +52,12 @@ const BRIDE_TIERS = [
     name: 'Premium',
     price: '$29.99',
     period: '/month',
+    originalPrice: '$59.99',
     description: 'Ideal for full planning with advanced AI tools',
     icon: Crown,
     color: 'from-purple-400 to-rose-600',
     popular: true,
+    blackFriday: true,
     features: [
       { text: 'Unlimited guests', included: true },
       { text: 'Up to 150 photos', included: true },
@@ -51,7 +75,7 @@ const BRIDE_TIERS = [
 
 export default function BrideSubscription() {
   const router = useRouter();
-  const [selectedTier, setSelectedTier] = useState('premium');
+  const [selectedTier, setSelectedTier] = useState('early-tester');
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
@@ -103,26 +127,40 @@ export default function BrideSubscription() {
         </div>
       </header>
 
+      {/* Black Friday Banner */}
+      <div className="bg-gradient-to-r from-black via-gray-900 to-black text-white py-4">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Zap className="w-6 h-6 text-yellow-400 animate-pulse" />
+            <h3 className="text-2xl font-bold">Black Friday Special</h3>
+            <Zap className="w-6 h-6 text-yellow-400 animate-pulse" />
+          </div>
+          <p className="text-lg">
+            <span className="font-bold text-yellow-400">50% OFF</span> for your first 3 months • Plus limited <span className="font-bold text-green-400">FREE</span> early tester spots!
+          </p>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="max-w-5xl mx-auto px-4 py-16 text-center">
-        <div className="mb-12">
-          <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
+      <section className="max-w-6xl mx-auto px-4 py-12 text-center">
+        <div className="mb-10">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
             Choose Your Perfect Plan
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Start planning your dream wedding with the tools and features that fit your needs
+            Start planning your dream wedding with tools designed to make every moment unforgettable
           </p>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-10">
           {BRIDE_TIERS.map((tier) => {
             const IconComponent = tier.icon;
             return (
               <div
                 key={tier.id}
                 onClick={() => setSelectedTier(tier.id)}
-                className={`relative bg-white rounded-3xl p-8 cursor-pointer transition-all transform hover:scale-105 ${
+                className={`relative bg-white rounded-3xl p-6 cursor-pointer transition-all transform hover:scale-105 ${
                   selectedTier === tier.id
                     ? 'ring-4 ring-champagne-500 shadow-2xl'
                     : 'shadow-lg hover:shadow-xl'
@@ -137,23 +175,57 @@ export default function BrideSubscription() {
                   </div>
                 )}
 
+                {tier.limited && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-bold px-6 py-2 rounded-full shadow-lg flex items-center gap-2 animate-pulse">
+                      <Star className="w-4 h-4" />
+                      LIMITED SPOTS
+                    </span>
+                  </div>
+                )}
+
+                {tier.blackFriday && (
+                  <div className="absolute -top-3 -right-3">
+                    <div className="bg-gradient-to-br from-red-600 to-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                      50% OFF
+                    </div>
+                  </div>
+                )}
+
                 <div className="mb-6">
                   <div className={`w-16 h-16 bg-gradient-to-br ${tier.color} rounded-2xl mx-auto mb-4 flex items-center justify-center transform transition-transform group-hover:rotate-12`}>
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
 
-                  <h3 className="text-3xl font-bold text-gray-900 mb-2">{tier.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4">{tier.description}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>
+                  <p className="text-gray-600 text-sm mb-4 min-h-[40px]">{tier.description}</p>
 
                   <div className="mb-6">
-                    <span className="text-5xl font-bold text-gray-900">{tier.price}</span>
-                    <span className="text-gray-600 text-lg">{tier.period}</span>
+                    {tier.originalPrice && (
+                      <div className="text-gray-400 text-lg line-through mb-1">
+                        {tier.originalPrice}{tier.period}
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-4xl font-bold text-gray-900">{tier.price}</span>
+                      <span className="text-gray-600 text-lg">{tier.period}</span>
+                    </div>
+                    {tier.blackFriday && (
+                      <div className="text-red-600 text-sm font-semibold mt-1">
+                        First 3 months • Then regular price
+                      </div>
+                    )}
+                    {tier.limited && (
+                      <div className="text-amber-600 text-sm font-semibold mt-1">
+                        3 months free • Then choose a plan
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <ul className="space-y-3 mb-8 text-left">
+                <ul className="space-y-2.5 mb-8 text-left">
                   {tier.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
+                    <li key={idx} className="flex items-start gap-2">
                       <Check className={`w-5 h-5 mt-0.5 flex-shrink-0 ${feature.included ? 'text-green-600' : 'text-gray-300'}`} />
                       <span className={`text-sm ${feature.included ? 'text-gray-700' : 'text-gray-400'}`}>
                         {feature.text}
@@ -178,7 +250,7 @@ export default function BrideSubscription() {
         <button
           onClick={handleSubscribe}
           disabled={loading}
-          className="px-12 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold text-lg rounded-xl shadow-lg transition transform hover:scale-105"
+          className="px-12 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-champagne-900 font-bold text-lg rounded-xl shadow-lg transition transform hover:scale-105 border-2 border-champagne-700"
         >
           {loading ? 'Processing...' : `Start with ${BRIDE_TIERS.find(t => t.id === selectedTier)?.name}`}
         </button>
@@ -189,10 +261,10 @@ export default function BrideSubscription() {
       </section>
 
       {/* Feature Comparison */}
-      <section className="bg-white py-16">
+      <section className="bg-white py-12">
         <div className="max-w-6xl mx-auto px-4">
-          <h3 className="text-3xl font-serif font-bold text-gray-900 text-center mb-12">
-            What's Included
+          <h3 className="text-3xl font-serif font-bold text-gray-900 text-center mb-10">
+            Everything You Need to Plan Your Perfect Day
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -224,20 +296,25 @@ export default function BrideSubscription() {
         </div>
       </section>
 
-      {/* FAQ or Trust Badges */}
-      <section className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <div className="grid grid-cols-3 gap-8">
-          <div>
-            <div className="text-4xl font-bold text-champagne-600 mb-2">1000+</div>
-            <div className="text-gray-600">Happy Brides</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-rose-600 mb-2">500+</div>
-            <div className="text-gray-600">Trusted Vendors</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-purple-600 mb-2">4.9★</div>
-            <div className="text-gray-600">Average Rating</div>
+      {/* Trust Section */}
+      <section className="max-w-4xl mx-auto px-4 py-12 text-center">
+        <div className="bg-gradient-to-r from-champagne-50 to-rose-50 rounded-2xl p-8">
+          <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">
+            Why Choose Bella Wedding AI?
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div>
+              <div className="text-3xl font-bold text-champagne-600 mb-2">AI-Powered</div>
+              <div className="text-gray-600 text-sm">Smart planning tools that learn your style</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-rose-600 mb-2">All-in-One</div>
+              <div className="text-gray-600 text-sm">Everything you need in one platform</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-purple-600 mb-2">Easy to Use</div>
+              <div className="text-gray-600 text-sm">Intuitive design, no learning curve</div>
+            </div>
           </div>
         </div>
       </section>
