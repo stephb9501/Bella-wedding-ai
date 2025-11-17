@@ -46,7 +46,7 @@ export default function AuthPage() {
 
       // Check if user has completed onboarding
       setTimeout(async () => {
-        const { default: { supabase } } = await import('@/lib/supabase');
+        const { supabase } = await import('@/lib/supabase');
         const { data: profile } = await supabase
           .from('couples')
           .select('partner_one_name')
