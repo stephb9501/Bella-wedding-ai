@@ -73,8 +73,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Prioritize featured/elite vendors
-    const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
-    vendors.sort((a, b) => (tierOrder[b.tier] || 0) - (tierOrder[a.tier] || 0));
+    const tierOrder: Record<string, number> = { elite: 4, featured: 3, premium: 2, free: 1 };
+    vendors.sort((a, b) => (tierOrder[b.tier as string] || 0) - (tierOrder[a.tier as string] || 0));
 
     return NextResponse.json(vendors);
   } catch (error: any) {
