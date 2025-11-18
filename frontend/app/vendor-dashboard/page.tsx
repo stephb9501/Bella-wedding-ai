@@ -111,7 +111,7 @@ export default function VendorDashboard() {
   };
 
   const handleFileUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0 || !profile) return;
+    if (!files || files.length === 0 || !profile || !vendorId) return;
 
     const tierLimit = TIER_LIMITS[profile.tier].photos;
     if (photos.length >= tierLimit) {
@@ -439,17 +439,17 @@ export default function VendorDashboard() {
         )}
 
         {/* Analytics Tab */}
-        {activeTab === 'analytics' && profile && (
+        {activeTab === 'analytics' && profile && vendorId && (
           <VendorAnalytics vendorId={vendorId} tier={profile.tier} />
         )}
 
         {/* Bookings Tab */}
-        {activeTab === 'bookings' && (
+        {activeTab === 'bookings' && vendorId && (
           <VendorBookings vendorId={vendorId} />
         )}
 
         {/* Reviews Tab */}
-        {activeTab === 'reviews' && (
+        {activeTab === 'reviews' && vendorId && (
           <VendorReviews vendorId={vendorId} />
         )}
       </div>
