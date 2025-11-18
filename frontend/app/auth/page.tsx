@@ -48,7 +48,7 @@ export default function AuthPage() {
       setPasswordSignIn('');
 
       // Check if user is a vendor
-      const vendorCheck = await fetch(`/api/vendors?id=${user?.user?.id}`);
+      const vendorCheck = await fetch(`/api/vendors?id=${user.id}`);
       const isVendor = vendorCheck.ok;
 
       // Get redirect URL from query params or default based on user type
