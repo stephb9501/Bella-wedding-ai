@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
 import { VendorReviews } from '@/components/VendorReviews';
+import { supabase } from '@/lib/supabase';
 
 interface VendorProfile {
   id: string;
@@ -52,15 +53,38 @@ export default function VendorDashboard() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews'>('overview');
+  const [vendorId, setVendorId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // TODO: Get vendor ID from auth session
-  const vendorId = 'demo-vendor-123';
+  useEffect(() => {
+    const initializeDashboard = async () => {
+      try {
+        // Get the current authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+          // Not authenticated, redirect to login
+          router.push('/auth');
+          return;
+        }
+
+        // Set the vendor ID to the authenticated user's ID
+        setVendorId(user.id);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        router.push('/auth');
+      }
+    };
+
+    initializeDashboard();
+  }, [router]);
 
   useEffect(() => {
-    fetchProfile();
-    fetchPhotos();
-  }, []);
+    if (vendorId) {
+      fetchProfile();
+      fetchPhotos();
+    }
+  }, [vendorId]);
 
   const fetchProfile = async () => {
     try {
@@ -192,7 +216,13 @@ export default function VendorDashboard() {
             >
               Home
             </button>
-            <button className="text-gray-600 hover:text-gray-900">
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                router.push('/auth');
+              }}
+              className="text-gray-600 hover:text-gray-900"
+            >
               Logout
             </button>
           </div>
