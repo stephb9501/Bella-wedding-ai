@@ -2,12 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
-// Create Supabase admin client for auth operations
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 // Regular server client for database operations
 import { supabaseServer } from '@/lib/supabase-server';
 
@@ -72,6 +66,16 @@ export async function POST(request: NextRequest) {
 
     // Convert categories array to comma-separated string for storage
     const categoryString = Array.isArray(categoryValue) ? categoryValue.join(', ') : categoryValue;
+
+    // Create Supabase admin client inside function to avoid build-time errors
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.json({ error: 'Supabase configuration missing' }, { status: 500 });
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
     // Step 1: Create Supabase auth user (like bride registration)
     const { data: authData, error: signUpError } = await supabaseAdmin.auth.admin.createUser({
