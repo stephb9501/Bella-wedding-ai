@@ -254,7 +254,7 @@ export default function VendorDashboard() {
               Edit Profile
             </button>
             <button
-              onClick={() => router.push('/vendor-dashboard/upgrade')}
+              onClick={() => router.push('/vendor-pricing')}
               className="px-4 py-2 bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white font-medium rounded-lg transition"
             >
               Upgrade Plan
@@ -398,7 +398,7 @@ export default function VendorDashboard() {
                 Photo limit reached! Upgrade to {profile.tier === 'free' ? 'Premium' : profile.tier === 'premium' ? 'Featured' : 'Elite'} to upload more photos.
               </p>
               <button
-                onClick={() => router.push('/vendor-dashboard/upgrade')}
+                onClick={() => router.push('/vendor-pricing')}
                 className="mt-2 text-amber-600 hover:text-amber-700 font-medium"
               >
                 View Upgrade Options →
