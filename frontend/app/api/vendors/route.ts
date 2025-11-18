@@ -167,9 +167,13 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Vendors POST error:', error);
-    return NextResponse.json({ error: 'Failed to create vendor' }, { status: 500 });
+    // Return detailed error message for debugging
+    return NextResponse.json({
+      error: error.message || 'Failed to create vendor',
+      details: error.details || error.hint || undefined
+    }, { status: 500 });
   }
 }
 
