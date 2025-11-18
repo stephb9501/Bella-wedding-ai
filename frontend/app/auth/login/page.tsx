@@ -30,15 +30,23 @@ export default function LoginPage() {
       if (signInError) throw signInError;
 
       // Check if user is vendor or bride
-      const { data: userData } = await supabase
-        .from('vendors')
-        .select('id')
-        .eq('id', data.user?.id)
-        .single();
+      try {
+        const { data: userData, error: vendorCheckError } = await supabase
+          .from('vendors')
+          .select('id')
+          .eq('id', data.user?.id)
+          .single();
 
-      if (userData) {
-        router.push('/vendor-dashboard');
-      } else {
+        // If vendor record found, redirect to vendor dashboard
+        if (userData && !vendorCheckError) {
+          router.push('/vendor-dashboard');
+        } else {
+          // Default to bride dashboard
+          router.push('/dashboard');
+        }
+      } catch (vendorError) {
+        // If vendor check fails, default to bride dashboard
+        console.warn('Vendor check failed, defaulting to bride dashboard:', vendorError);
         router.push('/dashboard');
       }
     } catch (err: any) {
