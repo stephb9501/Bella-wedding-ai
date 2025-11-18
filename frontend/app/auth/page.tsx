@@ -39,14 +39,18 @@ export default function AuthPage() {
 
     setLoading(true);
     try {
-      await signIn(emailSignIn, passwordSignIn);
+      const { user } = await signIn(emailSignIn, passwordSignIn);
       showMessage('✓ Sign in successful! Redirecting...', 'success');
       setEmailSignIn('');
       setPasswordSignIn('');
 
-      // Get redirect URL from query params or default to dashboard
+      // Check if user is a vendor
+      const vendorCheck = await fetch(`/api/vendors?id=${user?.user?.id}`);
+      const isVendor = vendorCheck.ok;
+
+      // Get redirect URL from query params or default based on user type
       const params = new URLSearchParams(window.location.search);
-      const redirectUrl = params.get('redirect') || '/dashboard';
+      const redirectUrl = params.get('redirect') || (isVendor ? '/vendor-dashboard' : '/dashboard');
 
       // Redirect after 1 second
       setTimeout(() => {
