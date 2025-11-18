@@ -220,7 +220,7 @@ export default function SeatingChart() {
         <div className="mt-6 flex justify-end">
           <button
             onClick={() => alert('Seating chart saved! (Database integration coming soon)')}
-            className="px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white rounded-lg flex items-center gap-2 font-medium"
+            className="px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white rounded-lg flex items-center gap-2 font-medium"
           >
             <Save className="w-5 h-5" />
             Save Seating Chart

@@ -130,7 +130,7 @@ export default function BrideSubscription() {
               >
                 {tier.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-sm font-bold px-6 py-2 rounded-full shadow-lg flex items-center gap-2">
+                    <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-sm font-bold px-6 py-2 rounded-full shadow-lg flex items-center gap-2">
                       <Sparkles className="w-4 h-4" />
                       MOST POPULAR
                     </span>
@@ -178,7 +178,7 @@ export default function BrideSubscription() {
         <button
           onClick={handleSubscribe}
           disabled={loading}
-          className="px-12 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold text-lg rounded-xl shadow-lg transition transform hover:scale-105"
+          className="px-12 py-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold text-lg rounded-xl shadow-lg transition transform hover:scale-105"
         >
           {loading ? 'Processing...' : `Start with ${BRIDE_TIERS.find(t => t.id === selectedTier)?.name}`}
         </button>

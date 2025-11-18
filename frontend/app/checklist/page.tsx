@@ -285,7 +285,7 @@ export default function Checklist() {
             <div className="text-sm text-gray-600">Complete</div>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
               <div
-                className="bg-gradient-to-r from-champagne-500 to-rose-500 h-2 rounded-full transition-all"
+                className="bg-gradient-to-r from-champagne-400 to-rose-400 h-2 rounded-full transition-all"
                 style={{ width: `${progress}%` }}
               />
             </div>

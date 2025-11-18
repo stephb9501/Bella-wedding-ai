@@ -284,7 +284,7 @@ export default function Timeline() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className="bg-gradient-to-r from-champagne-500 to-rose-500 h-3 rounded-full transition-all"
+              className="bg-gradient-to-r from-champagne-400 to-rose-400 h-3 rounded-full transition-all"
               style={{ width: `${completionPercentage}%` }}
             />
           </div>

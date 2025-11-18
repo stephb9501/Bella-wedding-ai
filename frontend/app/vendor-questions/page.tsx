@@ -764,7 +764,7 @@ function VendorQuestionsContent() {
                     </button>
                     <button
                       onClick={handleDownload}
-                      className="px-4 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 text-white rounded-lg hover:from-champagne-600 hover:to-rose-600 flex items-center gap-2 font-medium"
+                      className="px-4 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 text-white rounded-lg hover:from-champagne-500 hover:to-rose-500 flex items-center gap-2 font-medium"
                     >
                       <Download className="w-4 h-4" />
                       Download
@@ -780,7 +780,7 @@ function VendorQuestionsContent() {
                   </div>
                   <div className="w-full bg-white rounded-full h-3 border border-gray-200">
                     <div
-                      className="bg-gradient-to-r from-champagne-500 to-rose-500 h-3 rounded-full transition-all"
+                      className="bg-gradient-to-r from-champagne-400 to-rose-400 h-3 rounded-full transition-all"
                       style={{ width: `${progress}%` }}
                     />
                   </div>

@@ -650,7 +650,7 @@ export default function Dashboard() {
               <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
                 Premium Plan Features
               </h4>
-              <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+              <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-xs px-3 py-1 rounded-full font-semibold">
                 $29.99/month
               </span>
             </div>
@@ -664,7 +664,7 @@ export default function Dashboard() {
                     className={`${card.color} border-2 border-champagne-300 rounded-xl p-6 hover:shadow-md transition text-left group relative`}
                   >
                     <div className="absolute top-3 right-3">
-                      <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs px-2 py-1 rounded font-medium">
+                      <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-xs px-2 py-1 rounded font-medium">
                         {card.tier}
                       </span>
                     </div>
