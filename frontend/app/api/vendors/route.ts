@@ -101,7 +101,6 @@ export async function POST(request: NextRequest) {
         id: authData.user.id, // Use Supabase auth ID, not custom ID
         business_name: businessName,
         email,
-        password: '', // Placeholder - Supabase auth handles actual password
         phone: phone || '',
         category: categoryString,
         city: city || '',
