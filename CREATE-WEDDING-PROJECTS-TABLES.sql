@@ -97,11 +97,28 @@ CREATE TABLE IF NOT EXISTS wedding_timeline (
   vendor_id UUID NOT NULL,
 
   time_slot TIME NOT NULL,
-  event_name VARCHAR(255) NOT NULL,
-  description TEXT,
+  activity VARCHAR(255) NOT NULL,
+  duration_minutes INTEGER,
   location VARCHAR(255),
-  duration INTEGER, -- minutes
   notes TEXT,
+
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Wedding info checklist (tracks what information vendor still needs from bride)
+CREATE TABLE IF NOT EXISTS wedding_info_checklist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID NOT NULL REFERENCES wedding_projects(id) ON DELETE CASCADE,
+  vendor_id UUID NOT NULL,
+
+  item_name VARCHAR(255) NOT NULL,
+  category VARCHAR(100), -- venue_details, guest_info, preferences, schedule, etc.
+  description TEXT,
+  is_completed BOOLEAN DEFAULT false,
+  priority VARCHAR(20) DEFAULT 'medium', -- low, medium, high, urgent
+  requested_date TIMESTAMPTZ DEFAULT NOW(),
+  completed_date TIMESTAMPTZ,
 
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -116,6 +133,7 @@ CREATE INDEX IF NOT EXISTS idx_project_tasks_project ON project_tasks(project_id
 CREATE INDEX IF NOT EXISTS idx_music_playlists_project ON music_playlists(project_id);
 CREATE INDEX IF NOT EXISTS idx_shot_lists_project ON shot_lists(project_id);
 CREATE INDEX IF NOT EXISTS idx_wedding_timeline_project ON wedding_timeline(project_id);
+CREATE INDEX IF NOT EXISTS idx_wedding_info_checklist_project ON wedding_info_checklist(project_id);
 
 -- Enable Row Level Security
 ALTER TABLE wedding_projects ENABLE ROW LEVEL SECURITY;
@@ -125,6 +143,7 @@ ALTER TABLE project_tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE music_playlists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shot_lists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE wedding_timeline ENABLE ROW LEVEL SECURITY;
+ALTER TABLE wedding_info_checklist ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies - Vendors can only access their own projects
 CREATE POLICY "Vendors can view their projects"
@@ -175,6 +194,12 @@ CREATE POLICY "Vendors can manage wedding timeline"
   USING (vendor_id = auth.uid())
   WITH CHECK (vendor_id = auth.uid());
 
+-- Wedding info checklist policies
+CREATE POLICY "Vendors can manage wedding info checklist"
+  ON wedding_info_checklist FOR ALL
+  USING (vendor_id = auth.uid())
+  WITH CHECK (vendor_id = auth.uid());
+
 -- Trigger to update timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -199,6 +224,26 @@ CREATE TRIGGER update_project_tasks_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+CREATE TRIGGER update_music_playlists_updated_at
+  BEFORE UPDATE ON music_playlists
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_shot_lists_updated_at
+  BEFORE UPDATE ON shot_lists
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_wedding_timeline_updated_at
+  BEFORE UPDATE ON wedding_timeline
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_wedding_info_checklist_updated_at
+  BEFORE UPDATE ON wedding_info_checklist
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
 -- =====================================================
 -- SUCCESS! Vendor client management tables created!
 -- =====================================================
@@ -209,4 +254,5 @@ CREATE TRIGGER update_project_tasks_updated_at
 -- - Music playlists (DJs)
 -- - Shot lists (Photographers)
 -- - Wedding day timeline
+-- - Wedding info checklist (track needed information)
 -- =====================================================
