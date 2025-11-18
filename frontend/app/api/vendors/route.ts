@@ -108,7 +108,6 @@ export async function POST(request: NextRequest) {
         state: state || '',
         description: description || '',
         tier: tier || 'free',
-        is_featured: tier === 'featured' || tier === 'elite',
       })
       .select();
 
