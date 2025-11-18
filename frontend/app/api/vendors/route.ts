@@ -106,7 +106,6 @@ export async function POST(request: NextRequest) {
         city: city || '',
         state: state || '',
         description: description || '',
-        tier: tier || 'free',
       })
       .select();
 
