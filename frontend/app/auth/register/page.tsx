@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Heart, Mail, Lock, Eye, EyeOff, User, Calendar } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { validatePassword } from '@/lib/password-validator';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,12 +22,22 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Real-time password validation
+    if (name === 'password' && value) {
+      const validation = validatePassword(value);
+      setPasswordErrors(validation.errors);
+    } else if (name === 'password' && !value) {
+      setPasswordErrors([]);
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -41,8 +52,11 @@ export default function RegisterPage() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+    // Validate password strength
+    const validation = validatePassword(formData.password);
+    if (!validation.isValid) {
+      setError(validation.errors[0]);
+      setPasswordErrors(validation.errors);
       setLoading(false);
       return;
     }
@@ -192,6 +206,16 @@ export default function RegisterPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+              {formData.password && passwordErrors.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  {passwordErrors.map((error, index) => (
+                    <p key={index} className="text-xs text-red-600">• {error}</p>
+                  ))}
+                </div>
+              )}
+              {formData.password && passwordErrors.length === 0 && (
+                <p className="mt-2 text-xs text-green-600">✓ Password meets all requirements</p>
+              )}
             </div>
 
             {/* Confirm Password */}

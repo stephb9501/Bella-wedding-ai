@@ -170,7 +170,11 @@ export default function VendorRegister() {
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to register');
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Vendor registration error:', errorData);
+        throw new Error(errorData.error || 'Failed to register');
+      }
 
       // Sign in the vendor after successful registration
       const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -178,11 +182,15 @@ export default function VendorRegister() {
         password: formData.password,
       });
 
-      if (signInError) throw signInError;
+      if (signInError) {
+        console.error('Auto-login error:', signInError);
+        throw signInError;
+      }
 
       // Redirect to vendor dashboard
       router.push('/vendor-dashboard');
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
