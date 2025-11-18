@@ -99,7 +99,7 @@ export default function VendorRegister() {
     email: '',
     password: '',
     phone: '',
-    category: '',
+    categories: [] as string[], // Changed to array for multiple selections
     city: '',
     state: '',
     description: '',
@@ -118,10 +118,26 @@ export default function VendorRegister() {
     }
   };
 
+  const handleCategoryToggle = (category: string) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter(c => c !== category)
+        : [...prev.categories, category]
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Validate at least one category is selected
+    if (formData.categories.length === 0) {
+      setError('Please select at least one category');
+      setLoading(false);
+      return;
+    }
 
     // Validate password strength
     const validation = validatePassword(formData.password);
@@ -373,21 +389,30 @@ export default function VendorRegister() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category *
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Categories * <span className="text-xs text-gray-500">(Select all that apply)</span>
                   </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    required
-                  >
-                    <option value="">Select a category</option>
+                  <div className="grid grid-cols-2 gap-3 p-4 border border-gray-300 rounded-lg bg-gray-50">
                     {CATEGORIES.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <label
+                        key={cat}
+                        className="flex items-center gap-2 cursor-pointer hover:bg-white p-2 rounded transition"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.categories.includes(cat)}
+                          onChange={() => handleCategoryToggle(cat)}
+                          className="w-4 h-4 text-champagne-600 border-gray-300 rounded focus:ring-champagne-500"
+                        />
+                        <span className="text-sm text-gray-700">{cat}</span>
+                      </label>
                     ))}
-                  </select>
+                  </div>
+                  {formData.categories.length > 0 && (
+                    <div className="mt-2 text-xs text-gray-600">
+                      Selected: {formData.categories.join(', ')}
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
