@@ -291,12 +291,12 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section */}
-      <section className="relative overflow-hidden py-24">
+      <section className="relative overflow-hidden py-24" style={{ minHeight: '600px' }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/wedding-photos/deltalow-108.jpg')",
-            backgroundPosition: 'center 30%'
+            backgroundImage: "url('/images/IMG_3942.JPG')",
+            backgroundPosition: 'center 50%'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/60 to-black/70"></div>
