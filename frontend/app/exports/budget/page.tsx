@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Printer, ArrowLeft } from 'lucide-react';
 
 export default function BudgetExport() {

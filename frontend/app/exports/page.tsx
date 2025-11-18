@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileDown, Printer, CheckSquare, Calendar, DollarSign, Users, FileText, Download } from 'lucide-react';
-import { createClientComponentClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useAuth } from '@/lib/useAuth';
 
 export default function ExportsPage() {
