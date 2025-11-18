@@ -388,6 +388,10 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
   const tierInfo = TIER_INFO[vendor.tier];
   const TierIcon = tierInfo.icon;
 
+  const handleCardClick = () => {
+    router.push(`/vendors/${vendor.id}`);
+  };
+
   // Map vendor category to vendor questions page category
   const getCategoryLink = (category: string) => {
     const categoryMap: Record<string, string> = {
@@ -450,7 +454,12 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
       <div className="p-6">
         <div className="flex items-start justify-between mb-3">
-          <h4 className="text-xl font-bold text-gray-900">{vendor.business_name}</h4>
+          <button
+            onClick={handleCardClick}
+            className="text-xl font-bold text-gray-900 hover:text-champagne-700 transition text-left"
+          >
+            {vendor.business_name}
+          </button>
           <div className={`flex items-center gap-1 px-2 py-1 ${tierInfo.bg} rounded`}>
             <TierIcon className={`w-4 h-4 ${tierInfo.color}`} />
           </div>
