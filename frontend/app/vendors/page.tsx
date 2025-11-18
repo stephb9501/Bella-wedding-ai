@@ -45,6 +45,9 @@ export default function Vendors() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [sortBy, setSortBy] = useState<'tier' | 'rating' | 'views'>('tier');
+  const [filterRating, setFilterRating] = useState(0);
+  const [filterTier, setFilterTier] = useState<string>('All');
 
   useEffect(() => {
     fetchVendors();
@@ -52,7 +55,7 @@ export default function Vendors() {
 
   useEffect(() => {
     filterVendors();
-  }, [selectedCategory, searchQuery, vendors]);
+  }, [selectedCategory, searchQuery, vendors, sortBy, filterRating, filterTier]);
 
   const fetchVendors = async () => {
     try {
@@ -70,10 +73,22 @@ export default function Vendors() {
   const filterVendors = () => {
     let filtered = vendors;
 
+    // Category filter
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(v => v.category === selectedCategory);
     }
 
+    // Tier filter
+    if (filterTier !== 'All') {
+      filtered = filtered.filter(v => v.tier === filterTier.toLowerCase());
+    }
+
+    // Rating filter
+    if (filterRating > 0) {
+      filtered = filtered.filter(v => v.average_rating !== null && v.average_rating >= filterRating);
+    }
+
+    // Search query
     if (searchQuery) {
       filtered = filtered.filter(v =>
         v.business_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -82,9 +97,19 @@ export default function Vendors() {
       );
     }
 
-    // Sort by tier: elite > featured > premium > free
-    const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
-    filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
+    // Sort vendors
+    if (sortBy === 'tier') {
+      const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
+      filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
+    } else if (sortBy === 'rating') {
+      filtered.sort((a, b) => {
+        const ratingA = a.average_rating || 0;
+        const ratingB = b.average_rating || 0;
+        return ratingB - ratingA;
+      });
+    } else if (sortBy === 'views') {
+      filtered.sort((a, b) => (b.profile_views || 0) - (a.profile_views || 0));
+    }
 
     setFilteredVendors(filtered);
   };
@@ -163,7 +188,7 @@ export default function Vendors() {
         </div>
 
         {/* Category Filter */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex overflow-x-auto gap-2 pb-2">
             {CATEGORIES.map(category => (
               <button
@@ -179,6 +204,119 @@ export default function Vendors() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Advanced Filters */}
+        <div className="mb-8 bg-white rounded-xl p-6 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Sort By */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Sort By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'tier' | 'rating' | 'views')}
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+              >
+                <option value="tier">Tier (Premium First)</option>
+                <option value="rating">Highest Rated</option>
+                <option value="views">Most Viewed</option>
+              </select>
+            </div>
+
+            {/* Tier Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tier
+              </label>
+              <select
+                value={filterTier}
+                onChange={(e) => setFilterTier(e.target.value)}
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+              >
+                <option value="All">All Tiers</option>
+                <option value="Elite">Elite</option>
+                <option value="Featured">Featured</option>
+                <option value="Premium">Premium</option>
+                <option value="Free">Free</option>
+              </select>
+            </div>
+
+            {/* Rating Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Minimum Rating
+              </label>
+              <select
+                value={filterRating}
+                onChange={(e) => setFilterRating(Number(e.target.value))}
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+              >
+                <option value="0">Any Rating</option>
+                <option value="4.5">4.5+ Stars</option>
+                <option value="4.0">4.0+ Stars</option>
+                <option value="3.5">3.5+ Stars</option>
+                <option value="3.0">3.0+ Stars</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Active Filters Display */}
+          {(selectedCategory !== 'All' || filterTier !== 'All' || filterRating > 0 || searchQuery) && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-medium text-gray-600">Active filters:</span>
+                {selectedCategory !== 'All' && (
+                  <button
+                    onClick={() => setSelectedCategory('All')}
+                    className="px-3 py-1 bg-champagne-100 text-champagne-800 rounded-full text-sm font-medium hover:bg-champagne-200 transition flex items-center gap-1"
+                  >
+                    {selectedCategory}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {filterTier !== 'All' && (
+                  <button
+                    onClick={() => setFilterTier('All')}
+                    className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition flex items-center gap-1"
+                  >
+                    {filterTier}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {filterRating > 0 && (
+                  <button
+                    onClick={() => setFilterRating(0)}
+                    className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium hover:bg-amber-200 transition flex items-center gap-1"
+                  >
+                    {filterRating}+ Stars
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition flex items-center gap-1"
+                  >
+                    "{searchQuery}"
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setFilterTier('All');
+                    setFilterRating(0);
+                    setSearchQuery('');
+                  }}
+                  className="px-3 py-1 text-gray-600 hover:text-gray-900 text-sm font-medium underline"
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {loading ? (
