@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Check, Eye, EyeOff } from 'lucide-react';
 import { validatePassword } from '@/lib/password-validator';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const VENDOR_TIERS = [
   {
@@ -88,6 +89,7 @@ const CATEGORIES = [
 
 export default function VendorRegister() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [step, setStep] = useState(1);
   const [selectedTier, setSelectedTier] = useState('featured');
   const [loading, setLoading] = useState(false);
@@ -160,6 +162,14 @@ export default function VendorRegister() {
       });
 
       if (!response.ok) throw new Error('Failed to register');
+
+      // Sign in the vendor after successful registration
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (signInError) throw signInError;
 
       // Redirect to vendor dashboard
       router.push('/vendor-dashboard');
