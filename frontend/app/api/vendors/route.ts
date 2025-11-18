@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: Create vendor profile in database using auth user ID
-    const { data, error } = await supabaseServer
+    const { data, error} = await supabaseServer
       .from('vendors')
       .insert({
         id: authData.user.id, // Use Supabase auth ID, not custom ID
@@ -106,6 +106,13 @@ export async function POST(request: NextRequest) {
         city: city || '',
         state: state || '',
         description: description || '',
+        tier: tier || 'free',
+        subscription_tier: tier || 'free',
+        photo_count: 0,
+        message_count_this_month: 0,
+        booking_requests: 0,
+        profile_views: 0,
+        is_featured: tier === 'featured' || tier === 'elite',
       })
       .select();
 
