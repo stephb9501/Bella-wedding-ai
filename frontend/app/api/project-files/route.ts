@@ -52,6 +52,19 @@ export async function GET(request: NextRequest) {
       .eq('booking_id', bookingId)
       .single();
 
+    // Get storage usage/limits for this vendor
+    let usageInfo = null;
+    if (userId) {
+      const { data: usage } = await supabaseServer
+        .from('vendor_storage_usage')
+        .select('*')
+        .eq('vendor_id', userId)
+        .eq('booking_id', bookingId)
+        .single();
+
+      usageInfo = usage;
+    }
+
     return NextResponse.json({
       success: true,
       files: data || [],
@@ -62,7 +75,8 @@ export async function GET(request: NextRequest) {
         invoice_count: 0,
         signed_documents: 0,
         pending_signatures: 0
-      }
+      },
+      usage: usageInfo
     });
   } catch (error) {
     console.error('Get files error:', error);
@@ -88,10 +102,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Validate file size (50MB max)
+    // Validate file size (50MB max per file)
     const maxSize = 50 * 1024 * 1024; // 50MB
     if (file.size > maxSize) {
       return NextResponse.json({ error: 'File size exceeds 50MB limit' }, { status: 400 });
+    }
+
+    // Check if vendor can upload to this booking (tier limits)
+    const { data: limitCheck, error: limitError } = await supabaseServer
+      .rpc('can_upload_file_to_booking', {
+        p_vendor_id: userId,
+        p_booking_id: bookingId,
+        p_file_size_bytes: file.size
+      });
+
+    if (limitError) {
+      console.error('Limit check error:', limitError);
+      // Allow upload if check fails (don't block on technical error)
+    } else if (limitCheck && !limitCheck.can_upload) {
+      return NextResponse.json({
+        error: limitCheck.message || 'Upload limit reached',
+        limit_info: {
+          reason: limitCheck.reason,
+          current_file_count: limitCheck.current_file_count,
+          file_limit: limitCheck.file_limit,
+          current_storage_mb: limitCheck.current_storage_mb,
+          storage_limit_mb: limitCheck.storage_limit_mb,
+          vendor_tier: limitCheck.vendor_tier
+        }
+      }, { status: 403 });
     }
 
     // Create storage path
