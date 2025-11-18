@@ -232,7 +232,7 @@ export default function AuthPage() {
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
             font-weight: 600;
-            color: #bbb;
+            color: #666;
             cursor: pointer;
             transition: all 0.3s ease;
             padding: 5px 0;
