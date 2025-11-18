@@ -10,7 +10,7 @@ import { VendorReviews } from '@/components/VendorReviews';
 
 interface VendorProfile {
   id: string;
-  businessName: string;
+  business_name: string;
   email: string;
   phone: string;
   category: string;
@@ -204,7 +204,7 @@ export default function VendorDashboard() {
         <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">{profile.businessName}</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">{profile.business_name}</h2>
               <p className="text-gray-600">{profile.category} • {profile.city}, {profile.state}</p>
             </div>
 

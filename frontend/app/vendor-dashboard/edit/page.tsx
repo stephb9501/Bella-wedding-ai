@@ -12,7 +12,7 @@ const CATEGORIES = [
 
 interface VendorProfile {
   id: string;
-  businessName: string;
+  business_name: string;
   email: string;
   phone: string;
   categories: string[]; // Now an array
@@ -30,7 +30,7 @@ export default function EditVendorProfile() {
   const [success, setSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
-    businessName: '',
+    business_name: '',
     email: '',
     phone: '',
     categories: [] as string[],
@@ -53,7 +53,7 @@ export default function EditVendorProfile() {
       const data: VendorProfile = await response.json();
 
       setFormData({
-        businessName: data.businessName,
+        business_name: data.business_name,
         email: data.email,
         phone: data.phone,
         categories: Array.isArray(data.categories) ? data.categories : [data.categories], // Handle old single category
@@ -173,8 +173,8 @@ export default function EditVendorProfile() {
               </label>
               <input
                 type="text"
-                name="businessName"
-                value={formData.businessName}
+                name="business_name"
+                value={formData.business_name}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
                 required
