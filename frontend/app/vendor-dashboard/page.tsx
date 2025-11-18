@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote } from 'lucide-react';
+import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote, Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
@@ -52,7 +52,7 @@ export default function VendorDashboard() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'clients' | 'reviews'>('overview');
   const [vendorId, setVendorId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -302,6 +302,13 @@ export default function VendorDashboard() {
           >
             <Calendar className="w-5 h-5" />
             Bookings
+          </button>
+          <button
+            onClick={() => router.push('/vendor-dashboard/clients')}
+            className="flex-1 py-4 px-6 font-medium text-gray-600 hover:bg-gray-50 transition flex items-center justify-center gap-2"
+          >
+            <Briefcase className="w-5 h-5" />
+            Clients
           </button>
           <button
             onClick={() => setActiveTab('reviews')}
