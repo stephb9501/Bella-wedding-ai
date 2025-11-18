@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase-server';
-import { randomBytes } from 'crypto';
-import bcrypt from 'bcryptjs';
+import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
-function generateVendorId(): string {
-  return `vendor_${randomBytes(12).toString('hex')}`;
-}
+// Create Supabase admin client for auth operations
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+// Regular server client for database operations
+import { supabaseServer } from '@/lib/supabase-server';
 
 // Helper function to get tier pricing
 function getTierPricing(tier: string): string {
@@ -67,21 +70,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const vendorId = generateVendorId();
-
-    // Hash password before storing (10 rounds for security)
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // Convert categories array to comma-separated string for storage
     const categoryString = Array.isArray(categoryValue) ? categoryValue.join(', ') : categoryValue;
 
+    // Step 1: Create Supabase auth user (like bride registration)
+    const { data: authData, error: signUpError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true, // Auto-confirm email
+      user_metadata: {
+        business_name: businessName,
+        is_vendor: true,
+      },
+    });
+
+    if (signUpError) throw signUpError;
+
+    if (!authData.user) {
+      throw new Error('Failed to create vendor auth user');
+    }
+
+    // Step 2: Create vendor profile in database using auth user ID
     const { data, error } = await supabaseServer
       .from('vendors')
       .insert({
-        id: vendorId,
+        id: authData.user.id, // Use Supabase auth ID, not custom ID
         business_name: businessName,
         email,
-        password: hashedPassword,
         phone: phone || '',
         category: categoryString,
         city: city || '',
@@ -96,7 +111,11 @@ export async function POST(request: NextRequest) {
       })
       .select();
 
-    if (error) throw error;
+    if (error) {
+      // If vendor profile creation fails, delete the auth user to keep things clean
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      throw error;
+    }
 
     // Send admin notification email
     try {
@@ -122,7 +141,7 @@ export async function POST(request: NextRequest) {
                 <p><strong>Description:</strong> ${description || 'None provided'}</p>
               </div>
               <p><a href="https://bellaweddingai.com/admin/dashboard" style="background: #E11D48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">View in Admin Dashboard</a></p>
-              <p style="color: #666; font-size: 12px; margin-top: 20px;">Vendor ID: ${vendorId}</p>
+              <p style="color: #666; font-size: 12px; margin-top: 20px;">Vendor ID: ${authData.user.id}</p>
             </div>
           `,
         });
@@ -132,7 +151,17 @@ export async function POST(request: NextRequest) {
       console.error('Failed to send vendor notification email:', emailError);
     }
 
-    return NextResponse.json(data?.[0] || {}, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        vendor: {
+          id: authData.user.id,
+          email: authData.user.email,
+          business_name: businessName,
+        }
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Vendors POST error:', error);
     return NextResponse.json({ error: 'Failed to create vendor' }, { status: 500 });
