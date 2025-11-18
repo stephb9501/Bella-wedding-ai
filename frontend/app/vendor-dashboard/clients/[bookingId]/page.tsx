@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import {
   Heart, Calendar, User, Mail, Phone, MapPin, DollarSign, ArrowLeft,
   FileText, CheckSquare, Clock, Music, Camera, Plus, Save, X,
-  ListChecks, Trash2, AlertCircle
+  ListChecks, Trash2, AlertCircle, Settings, Check
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
@@ -84,6 +84,23 @@ interface ShotList {
 
 type ToolType = 'checklist' | 'playlists' | 'shotlists';
 
+interface RoleDefinition {
+  role_name: string;
+  role_display_name: string;
+  parent_category: string;
+  tools_enabled: string[];
+}
+
+interface VendorRoles {
+  selected_roles: string[];
+  enabled_tools: string[];
+  export_preferences: {
+    include_timeline: boolean;
+    include_checklist: boolean;
+    include_role_specific: boolean;
+  };
+}
+
 export default function WeddingProject() {
   const router = useRouter();
   const params = useParams();
@@ -99,6 +116,11 @@ export default function WeddingProject() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'tasks' | 'timeline' | 'tools' | 'checklist'>('overview');
   const [activeTool, setActiveTool] = useState<ToolType>('checklist');
+
+  // Role-based tool access
+  const [vendorRoles, setVendorRoles] = useState<VendorRoles | null>(null);
+  const [availableRoles, setAvailableRoles] = useState<{ [category: string]: RoleDefinition[] }>({});
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
 
   // New note form
   const [showNewNote, setShowNewNote] = useState(false);
@@ -146,6 +168,7 @@ export default function WeddingProject() {
   useEffect(() => {
     if (bookingId) {
       fetchProjectData();
+      fetchVendorRoles();
     }
   }, [bookingId]);
 
@@ -317,6 +340,76 @@ export default function WeddingProject() {
     setShotLists(shotLists.filter(s => s.id !== id));
   };
 
+  const fetchVendorRoles = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Fetch available role definitions
+      const rolesResponse = await fetch(`/api/wedding-vendor-roles?vendor_id=${user.id}&get_definitions=true`);
+      if (rolesResponse.ok) {
+        const rolesData = await rolesResponse.json();
+        setAvailableRoles(rolesData.role_definitions || {});
+      }
+
+      // Fetch vendor's selected roles for this wedding
+      const vendorRolesResponse = await fetch(`/api/wedding-vendor-roles?booking_id=${bookingId}&vendor_id=${user.id}`);
+      if (vendorRolesResponse.ok) {
+        const vendorRolesData = await vendorRolesResponse.json();
+        setVendorRoles(vendorRolesData);
+      }
+    } catch (error) {
+      console.error('Error fetching vendor roles:', error);
+    }
+  };
+
+  const handleUpdateRoles = async (selectedRoles: string[]) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const response = await fetch('/api/wedding-vendor-roles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          booking_id: bookingId,
+          vendor_id: user.id,
+          selected_roles: selectedRoles
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setVendorRoles({
+          selected_roles: selectedRoles,
+          enabled_tools: data.enabled_tools || [],
+          export_preferences: vendorRoles?.export_preferences || {
+            include_timeline: true,
+            include_checklist: true,
+            include_role_specific: true
+          }
+        });
+        setShowRoleSelector(false);
+      }
+    } catch (error) {
+      console.error('Error updating vendor roles:', error);
+    }
+  };
+
+  const toggleRole = (roleName: string) => {
+    const currentRoles = vendorRoles?.selected_roles || [];
+    const newRoles = currentRoles.includes(roleName)
+      ? currentRoles.filter(r => r !== roleName)
+      : [...currentRoles, roleName];
+    handleUpdateRoles(newRoles);
+  };
+
+  // Check if a tool is enabled based on selected roles
+  const isToolEnabled = (toolName: string): boolean => {
+    if (!vendorRoles) return true; // Show all by default if not set
+    return vendorRoles.enabled_tools.includes(toolName);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
@@ -331,11 +424,19 @@ export default function WeddingProject() {
 
   const weddingDate = new Date(client.wedding_date);
   const daysUntilWedding = Math.ceil((weddingDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-  const vendorCategory = client.vendors?.category || '';
 
-  // Determine which tools to show based on vendor category
-  const showPlaylists = vendorCategory.toLowerCase().includes('dj') || vendorCategory.toLowerCase().includes('music');
-  const showShotLists = vendorCategory.toLowerCase().includes('photo') || vendorCategory.toLowerCase().includes('video');
+  // Determine which tools to show based on vendor's selected roles for this wedding
+  const showPlaylists = isToolEnabled('music_playlists');
+  const showShotLists = isToolEnabled('shot_lists');
+  const showCateringMenu = isToolEnabled('catering_menu');
+  const showFloralDesigns = isToolEnabled('floral_designs');
+  const showVenueLogistics = isToolEnabled('venue_logistics');
+  const showCakeDesigns = isToolEnabled('cake_designs');
+  const showBeautySchedules = isToolEnabled('beauty_schedules');
+  const showTransportation = isToolEnabled('transportation_plans');
+  const showCeremonyScripts = isToolEnabled('ceremony_scripts');
+  const showStationery = isToolEnabled('stationery_orders');
+  const showRentals = isToolEnabled('rental_orders');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
@@ -411,6 +512,87 @@ export default function WeddingProject() {
               )}
             </div>
           </div>
+
+          {/* Compact Role Selector */}
+          <div className="mt-3 flex items-center gap-2">
+            <button
+              onClick={() => setShowRoleSelector(!showRoleSelector)}
+              className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition"
+            >
+              <Settings className="w-3 h-3" />
+              <span>My Roles for This Wedding</span>
+              {vendorRoles && vendorRoles.selected_roles.length > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 bg-champagne-600 text-white text-xs rounded-full">
+                  {vendorRoles.selected_roles.length}
+                </span>
+              )}
+            </button>
+
+            {vendorRoles && vendorRoles.selected_roles.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {vendorRoles.selected_roles.map((role) => {
+                  const roleInfo = Object.values(availableRoles)
+                    .flat()
+                    .find(r => r.role_name === role);
+                  return roleInfo ? (
+                    <span
+                      key={role}
+                      className="px-2 py-0.5 bg-champagne-100 text-champagne-700 text-xs rounded-full"
+                    >
+                      {roleInfo.role_display_name}
+                    </span>
+                  ) : null;
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Role Selector Dropdown */}
+          {showRoleSelector && (
+            <div className="mt-2 p-4 bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-gray-900">Select Your Roles for This Wedding</h3>
+                <button
+                  onClick={() => setShowRoleSelector(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="text-xs text-gray-600 mb-3">
+                Different weddings may require different services. Select all roles you're providing for this wedding to see only relevant tools.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Object.entries(availableRoles).map(([category, roles]) => (
+                  <div key={category} className="space-y-1">
+                    <h4 className="text-xs font-bold text-gray-500 uppercase">{category}</h4>
+                    {roles.map((role) => {
+                      const isSelected = vendorRoles?.selected_roles.includes(role.role_name);
+                      return (
+                        <button
+                          key={role.role_name}
+                          onClick={() => toggleRole(role.role_name)}
+                          className={`w-full text-left px-2 py-1.5 text-xs rounded transition flex items-center gap-2 ${
+                            isSelected
+                              ? 'bg-champagne-600 text-white'
+                              : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
+                          <div className={`w-3 h-3 rounded border flex items-center justify-center flex-shrink-0 ${
+                            isSelected ? 'bg-white border-white' : 'border-gray-300'
+                          }`}>
+                            {isSelected && <Check className="w-2 h-2 text-champagne-600" />}
+                          </div>
+                          <span>{role.role_display_name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
