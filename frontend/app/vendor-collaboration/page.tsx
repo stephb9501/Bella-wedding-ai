@@ -103,7 +103,7 @@ export default function VendorCollaboration() {
             </button>
             <button
               onClick={() => router.push('/vendors')}
-              className="px-4 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-medium rounded-lg transition"
+              className="px-4 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-medium rounded-lg transition"
             >
               View Marketplace
             </button>
@@ -305,7 +305,7 @@ function BookingCard({ booking, onUpdateStatus, onMessage }: {
         <div className="mt-4 pt-4 border-t border-gray-200">
           <button
             onClick={() => onMessage(booking)}
-            className="w-full px-4 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg transition flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg transition flex items-center justify-center gap-2"
           >
             <MessageCircle className="w-5 h-5" />
             Open Chat

@@ -321,7 +321,7 @@ export default function GuestResponse() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition shadow-md"
+              className="w-full bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition shadow-md"
             >
               {submitting ? 'Submitting...' : 'Submit Response'}
             </button>

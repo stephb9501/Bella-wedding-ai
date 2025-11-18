@@ -273,7 +273,7 @@ export default function SubscriptionPage() {
                 }`}
               >
                 {plan.badge && (
-                  <div className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-center py-2 px-4 text-sm font-bold">
+                  <div className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-center py-2 px-4 text-sm font-bold">
                     {plan.badge}
                   </div>
                 )}
@@ -304,7 +304,7 @@ export default function SubscriptionPage() {
                     className={`w-full py-3 px-4 rounded-lg font-bold transition ${
                       isCurrent
                         ? 'bg-gray-200 text-gray-600 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white shadow-md'
+                        : 'bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white shadow-md'
                     }`}
                   >
                     {upgrading === plan.id ? (

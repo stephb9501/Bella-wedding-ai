@@ -31,7 +31,7 @@ export default function AuthWall({ featureName, previewContent, fullLock = false
           <div className="space-y-3">
             <button
               onClick={() => router.push('/auth')}
-              className="w-full px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+              className="w-full px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
             >
               Sign Up Free
             </button>
@@ -79,7 +79,7 @@ export default function AuthWall({ featureName, previewContent, fullLock = false
 
           <button
             onClick={() => router.push('/auth')}
-            className="w-full px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
+            className="w-full px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg shadow-lg transition transform hover:scale-105"
           >
             Sign Up Free
           </button>

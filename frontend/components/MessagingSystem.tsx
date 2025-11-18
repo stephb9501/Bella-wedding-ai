@@ -106,7 +106,7 @@ export function MessagingSystem({
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setMinimized(false)}
-          className="bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white rounded-full p-4 shadow-2xl flex items-center gap-3 transition"
+          className="bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white rounded-full p-4 shadow-2xl flex items-center gap-3 transition"
         >
           <MessageCircle className="w-6 h-6" />
           <span className="font-bold">Chat with {recipientName}</span>
@@ -123,7 +123,7 @@ export function MessagingSystem({
   return (
     <div className="fixed bottom-6 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-gray-200">
       {/* Header */}
-      <div className="bg-gradient-to-r from-champagne-500 to-rose-500 px-6 py-4 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-champagne-400 to-rose-400 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
             <MessageCircle className="w-6 h-6 text-white" />
@@ -179,7 +179,7 @@ export function MessagingSystem({
                   <div
                     className={`max-w-[75%] rounded-2xl px-4 py-3 ${
                       isCurrentUser
-                        ? 'bg-gradient-to-r from-champagne-500 to-rose-500 text-white'
+                        ? 'bg-gradient-to-r from-champagne-400 to-rose-400 text-white'
                         : 'bg-white text-gray-900 border border-gray-200'
                     }`}
                   >
@@ -217,7 +217,7 @@ export function MessagingSystem({
           <button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="px-5 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-300 disabled:to-gray-300 text-white rounded-xl transition flex items-center justify-center"
+            className="px-5 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-300 disabled:to-gray-300 text-white rounded-xl transition flex items-center justify-center"
           >
             <Send className="w-5 h-5" />
           </button>

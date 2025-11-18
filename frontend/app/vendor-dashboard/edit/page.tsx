@@ -301,7 +301,7 @@ export default function EditVendorProfile() {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition flex items-center justify-center gap-2"
             >
               <Save className="w-5 h-5" />
               {saving ? 'Saving...' : 'Save Changes'}

@@ -58,9 +58,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { businessName, email, password, phone, category, city, state, description, tier } = body;
+    const { businessName, email, password, phone, categories, city, state, description, tier } = body;
 
-    if (!businessName || !email || !password || !category) {
+    // Support both single category (old) and multiple categories (new)
+    const categoryValue = categories || body.category;
+
+    if (!businessName || !email || !password || !categoryValue) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -68,6 +71,9 @@ export async function POST(request: NextRequest) {
 
     // Hash password before storing (10 rounds for security)
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Convert categories array to comma-separated string for storage
+    const categoryString = Array.isArray(categoryValue) ? categoryValue.join(', ') : categoryValue;
 
     const { data, error } = await supabaseServer
       .from('vendors')
@@ -77,7 +83,7 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         phone: phone || '',
-        category,
+        category: categoryString,
         city: city || '',
         state: state || '',
         description: description || '',
@@ -110,7 +116,7 @@ export async function POST(request: NextRequest) {
                 <p><strong>Business Name:</strong> ${businessName}</p>
                 <p><strong>Email:</strong> ${email}</p>
                 <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-                <p><strong>Category:</strong> ${category}</p>
+                <p><strong>Categories:</strong> ${categoryString}</p>
                 <p><strong>Location:</strong> ${location}</p>
                 <p><strong>Tier:</strong> ${tier || 'free'} (${getTierPricing(tier || 'free')})</p>
                 <p><strong>Description:</strong> ${description || 'None provided'}</p>

@@ -159,7 +159,7 @@ export function ReviewForm({ userId, vendorId, vendorName, onSuccess }: Props) {
       <button
         type="submit"
         disabled={submitting || rating === 0}
-        className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md flex items-center justify-center gap-2"
+        className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md flex items-center justify-center gap-2"
       >
         {submitting ? (
           <>

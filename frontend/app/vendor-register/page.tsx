@@ -241,7 +241,7 @@ export default function VendorRegister() {
                 >
                   {tier.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-xs font-bold px-3 py-1 rounded-full">
                         BEST VALUE
                       </span>
                     </div>
@@ -281,7 +281,7 @@ export default function VendorRegister() {
             <div className="text-center">
               <button
                 onClick={() => setStep(2)}
-                className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition"
+                className="px-8 py-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg shadow-lg transition"
               >
                 Continue to Registration
               </button>
@@ -482,7 +482,7 @@ export default function VendorRegister() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
                 >
                   {loading ? 'Creating Account...' : 'Create Account'}
                 </button>

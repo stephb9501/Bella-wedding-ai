@@ -111,7 +111,7 @@ export default function Vendors() {
             </button>
             <button
               onClick={() => router.push('/vendor-register')}
-              className="px-4 py-2 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-medium rounded-lg transition"
+              className="px-4 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-medium rounded-lg transition"
             >
               I'm a Vendor
             </button>
@@ -405,7 +405,7 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-champagne-500 to-rose-500 px-8 py-6 flex items-center justify-between">
+        <div className="sticky top-0 bg-gradient-to-r from-champagne-400 to-rose-400 px-8 py-6 flex items-center justify-between">
           <div>
             <h3 className="text-2xl font-bold text-white mb-1">Connect with {vendor.business_name}</h3>
             <p className="text-champagne-50 text-sm">{vendor.category} • {vendor.city}, {vendor.state}</p>
@@ -508,7 +508,7 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
               >
                 {loading ? 'Sending...' : 'Send Request'}
               </button>

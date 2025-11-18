@@ -300,7 +300,7 @@ Bob Johnson,bob@example.com,555-9999,declined,false,,3,College friend`;
       <button
         onClick={handleImport}
         disabled={!file || importing}
-        className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md"
+        className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md"
       >
         {importing ? 'Importing...' : 'Import Guests'}
       </button>
