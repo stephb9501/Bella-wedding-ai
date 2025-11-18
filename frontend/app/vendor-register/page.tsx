@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Check } from 'lucide-react';
+import { Heart, Check, Eye, EyeOff } from 'lucide-react';
 import { validatePassword } from '@/lib/password-validator';
 
 const VENDOR_TIERS = [
@@ -93,6 +93,7 @@ export default function VendorRegister() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     businessName: '',
@@ -352,14 +353,23 @@ export default function VendorRegister() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Password *
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full px-4 pr-12 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
                   {formData.password && (
                     <div className={`mt-2 p-3 rounded-lg text-xs ${
                       passwordErrors.length === 0 ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'
