@@ -12,8 +12,10 @@ CREATE TABLE IF NOT EXISTS wedding_projects (
   vendor_id UUID NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
   bride_id UUID NOT NULL,
 
-  -- Project status
+  -- Project status and lifecycle
   status VARCHAR(50) DEFAULT 'active', -- active, completed, archived
+  archived_at TIMESTAMPTZ,
+  auto_delete_at TIMESTAMPTZ, -- Auto-delete 90 days after archive
 
   -- Metadata
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -124,6 +126,22 @@ CREATE TABLE IF NOT EXISTS wedding_info_checklist (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Vendor suggestions (feature requests, bug reports, improvements)
+CREATE TABLE IF NOT EXISTS vendor_suggestions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  vendor_id UUID NOT NULL REFERENCES vendors(id) ON DELETE CASCADE,
+  vendor_email VARCHAR(255),
+  vendor_name VARCHAR(255),
+
+  category VARCHAR(100) NOT NULL, -- feature_request, bug_report, improvement, other
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  priority VARCHAR(20) DEFAULT 'medium', -- low, medium, high
+  status VARCHAR(50) DEFAULT 'submitted', -- submitted, reviewing, implemented, declined
+
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_wedding_projects_vendor ON wedding_projects(vendor_id);
 CREATE INDEX IF NOT EXISTS idx_wedding_projects_booking ON wedding_projects(booking_id);
@@ -134,6 +152,8 @@ CREATE INDEX IF NOT EXISTS idx_music_playlists_project ON music_playlists(projec
 CREATE INDEX IF NOT EXISTS idx_shot_lists_project ON shot_lists(project_id);
 CREATE INDEX IF NOT EXISTS idx_wedding_timeline_project ON wedding_timeline(project_id);
 CREATE INDEX IF NOT EXISTS idx_wedding_info_checklist_project ON wedding_info_checklist(project_id);
+CREATE INDEX IF NOT EXISTS idx_vendor_suggestions_vendor ON vendor_suggestions(vendor_id);
+CREATE INDEX IF NOT EXISTS idx_vendor_suggestions_status ON vendor_suggestions(status);
 
 -- Enable Row Level Security
 ALTER TABLE wedding_projects ENABLE ROW LEVEL SECURITY;
@@ -144,6 +164,7 @@ ALTER TABLE music_playlists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shot_lists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE wedding_timeline ENABLE ROW LEVEL SECURITY;
 ALTER TABLE wedding_info_checklist ENABLE ROW LEVEL SECURITY;
+ALTER TABLE vendor_suggestions ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies - Vendors can only access their own projects
 CREATE POLICY "Vendors can view their projects"
@@ -200,6 +221,15 @@ CREATE POLICY "Vendors can manage wedding info checklist"
   USING (vendor_id = auth.uid())
   WITH CHECK (vendor_id = auth.uid());
 
+-- Vendor suggestions policies
+CREATE POLICY "Vendors can create suggestions"
+  ON vendor_suggestions FOR INSERT
+  WITH CHECK (vendor_id = auth.uid());
+
+CREATE POLICY "Vendors can view their own suggestions"
+  ON vendor_suggestions FOR SELECT
+  USING (vendor_id = auth.uid());
+
 -- Trigger to update timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -255,4 +285,6 @@ CREATE TRIGGER update_wedding_info_checklist_updated_at
 -- - Shot lists (Photographers)
 -- - Wedding day timeline
 -- - Wedding info checklist (track needed information)
+-- - Project archival with 90-day auto-delete
+-- - Vendor suggestions and feedback system
 -- =====================================================
