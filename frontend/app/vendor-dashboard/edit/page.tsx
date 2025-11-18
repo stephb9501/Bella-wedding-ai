@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Save, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const CATEGORIES = [
   'Venue', 'Catering', 'Photography', 'Videography', 'Florist',
@@ -28,6 +29,7 @@ export default function EditVendorProfile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [vendorId, setVendorId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     business_name: '',
@@ -39,12 +41,34 @@ export default function EditVendorProfile() {
     description: '',
   });
 
-  // TODO: Get vendor ID from auth session
-  const vendorId = 'demo-vendor-123';
+  useEffect(() => {
+    const initializeEdit = async () => {
+      try {
+        // Get the current authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+          // Not authenticated, redirect to login
+          router.push('/auth');
+          return;
+        }
+
+        // Set the vendor ID to the authenticated user's ID
+        setVendorId(user.id);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        router.push('/auth');
+      }
+    };
+
+    initializeEdit();
+  }, [router]);
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    if (vendorId) {
+      fetchProfile();
+    }
+  }, [vendorId]);
 
   const fetchProfile = async () => {
     try {
@@ -84,6 +108,12 @@ export default function EditVendorProfile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!vendorId) {
+      setError('Not authenticated');
+      return;
+    }
+
     setSaving(true);
     setError('');
     setSuccess(false);
