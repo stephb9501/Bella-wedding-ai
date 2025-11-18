@@ -23,13 +23,28 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     const city = searchParams.get('city');
 
-    let query = supabaseServer.from('vendors').select('*');
+    // Build query with vendor_photos relationship
+    let query = supabaseServer.from('vendors').select(`
+      *,
+      vendor_photos!vendor_photos_vendor_id_fkey (
+        photo_url,
+        created_at
+      )
+    `);
 
     if (id) {
       query = query.eq('id', id);
       const { data, error } = await query.single();
       if (error) throw error;
-      return NextResponse.json(data);
+
+      // Add first_photo_url from the photos array
+      const vendorWithPhoto = {
+        ...data,
+        first_photo_url: data.vendor_photos?.[0]?.photo_url || null,
+        vendor_photos: undefined, // Remove the nested array
+      };
+
+      return NextResponse.json(vendorWithPhoto);
     }
 
     if (category) {
@@ -45,7 +60,15 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await query;
     if (error) throw error;
-    return NextResponse.json(data || []);
+
+    // Transform data to include first_photo_url
+    const vendorsWithPhotos = (data || []).map(vendor => ({
+      ...vendor,
+      first_photo_url: vendor.vendor_photos?.[0]?.photo_url || null,
+      vendor_photos: undefined, // Remove the nested array
+    }));
+
+    return NextResponse.json(vendorsWithPhotos);
   } catch (error) {
     console.error('Vendors GET error:', error);
     return NextResponse.json({ error: 'Failed to fetch vendors' }, { status: 500 });

@@ -21,6 +21,7 @@ interface Vendor {
   review_count: number;
   email: string;
   phone: string;
+  first_photo_url: string | null;
 }
 
 const CATEGORIES = [
@@ -411,23 +412,37 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
   return (
     <div className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden ${featured ? 'ring-2 ring-purple-300' : ''}`}>
-      {/* Photo Placeholder */}
-      <div className="h-48 bg-gradient-to-br from-champagne-200 to-rose-200 relative">
-        {vendor.photo_count > 0 ? (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-            {/* TODO: Show actual first photo */}
+      {/* Photo */}
+      <div className="h-48 bg-gradient-to-br from-champagne-200 to-rose-200 relative overflow-hidden">
+        {vendor.first_photo_url ? (
+          <Image
+            src={vendor.first_photo_url}
+            alt={vendor.business_name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : vendor.photo_count > 0 ? (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-400 bg-gradient-to-br from-champagne-100 to-rose-100">
             <p className="text-sm">{vendor.photo_count} photos</p>
           </div>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-            <p className="text-sm">No photos yet</p>
+            <Heart className="w-12 h-12 opacity-30" />
           </div>
         )}
         {featured && (
-          <div className="absolute top-3 right-3">
-            <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+          <div className="absolute top-3 right-3 z-10">
+            <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
               <Crown className="w-3 h-3" />
               FEATURED
+            </span>
+          </div>
+        )}
+        {vendor.photo_count > 1 && vendor.first_photo_url && (
+          <div className="absolute bottom-3 right-3 z-10">
+            <span className="bg-black/60 text-white text-xs font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+              +{vendor.photo_count - 1} more
             </span>
           </div>
         )}
