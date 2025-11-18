@@ -361,8 +361,12 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
+    bride_name: '',
+    email: '',
+    phone: '',
     wedding_date: '',
     venue_location: '',
+    budget_range: '',
     message: '',
   });
 
@@ -388,8 +392,12 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
         body: JSON.stringify({
           bride_id: brideId,
           vendor_id: vendor.id,
+          bride_name: formData.bride_name,
+          email: formData.email,
+          phone: formData.phone,
           wedding_date: formData.wedding_date,
           venue_location: formData.venue_location,
+          budget_range: formData.budget_range,
           message: formData.message,
         }),
       });
@@ -444,6 +452,48 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
             </p>
 
             <div className="space-y-5">
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Jane Smith"
+                    value={formData.bride_name}
+                    onChange={(e) => setFormData({ ...formData, bride_name: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="jane@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                  />
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="(555) 123-4567"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                />
+              </div>
+
               {/* Wedding Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -471,13 +521,32 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
                 />
               </div>
 
+              {/* Budget Range */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Budget Range
+                </label>
+                <select
+                  value={formData.budget_range}
+                  onChange={(e) => setFormData({ ...formData, budget_range: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                >
+                  <option value="">Select a budget range</option>
+                  <option value="Under $1,000">Under $1,000</option>
+                  <option value="$1,000 - $2,500">$1,000 - $2,500</option>
+                  <option value="$2,500 - $5,000">$2,500 - $5,000</option>
+                  <option value="$5,000 - $10,000">$5,000 - $10,000</option>
+                  <option value="$10,000+">$10,000+</option>
+                </select>
+              </div>
+
               {/* Message */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Message
                 </label>
                 <textarea
-                  placeholder="Tell them about your vision, guest count, budget range, or any specific requests..."
+                  placeholder="Tell them about your vision, guest count, or any specific requests..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={5}

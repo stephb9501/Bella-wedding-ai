@@ -31,10 +31,26 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
 
   try {
-    const { bride_id, vendor_id, wedding_date, venue_location, message } = await request.json();
+    const { bride_id, vendor_id, wedding_date, venue_location, message, bride_name, email, phone, budget_range } = await request.json();
 
     if (!bride_id || !vendor_id) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Get bride info from auth if not provided
+    let brideName = bride_name;
+    let brideEmail = email;
+
+    if (!brideName || !brideEmail) {
+      const { data: userData, error: userError } = await supabaseServer.auth.admin.getUserById(bride_id);
+      if (userData?.user) {
+        brideEmail = brideEmail || userData.user.email || '';
+        brideName = brideName || userData.user.user_metadata?.full_name || brideEmail.split('@')[0];
+      }
+    }
+
+    if (!brideEmail || !brideName) {
+      return NextResponse.json({ error: 'Bride name and email are required' }, { status: 400 });
     }
 
     // Check if booking already exists
@@ -49,21 +65,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Already connected with this vendor' }, { status: 400 });
     }
 
-    // Get vendor category for permissions
-    const { data: vendor } = await supabaseServer
-      .from('vendors')
-      .select('category')
-      .eq('id', vendor_id)
-      .single();
-
     const { data, error } = await supabaseServer
       .from('vendor_bookings')
       .insert({
         bride_id,
         vendor_id,
-        vendor_category: vendor?.category || '',
+        bride_name: brideName,
+        email: brideEmail,
+        phone: phone || null,
         wedding_date: wedding_date || null,
-        venue_location: venue_location || '',
+        venue: venue_location || '',
+        budget_range: budget_range || null,
         message: message || '',
         status: 'pending',
       })
