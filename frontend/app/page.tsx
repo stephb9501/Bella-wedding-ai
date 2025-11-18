@@ -346,7 +346,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonial Section with Photo */}
-      <section className="relative overflow-hidden" style={{ minHeight: '600px' }}>
+      <section className="relative overflow-hidden py-24" style={{ minHeight: '600px' }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
