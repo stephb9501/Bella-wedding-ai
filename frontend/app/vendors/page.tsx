@@ -17,6 +17,8 @@ interface Vendor {
   photo_count: number;
   profile_views: number;
   is_featured: boolean;
+  average_rating: number | null;
+  review_count: number;
   email: string;
   phone: string;
 }
@@ -314,8 +316,15 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
         <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-            <span>4.9</span>
+            {vendor.average_rating !== null ? (
+              <>
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="font-medium text-gray-900">{vendor.average_rating.toFixed(1)}</span>
+                <span className="text-gray-400">({vendor.review_count})</span>
+              </>
+            ) : (
+              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">New</span>
+            )}
           </div>
           <span>{vendor.profile_views || 0} views</span>
         </div>
