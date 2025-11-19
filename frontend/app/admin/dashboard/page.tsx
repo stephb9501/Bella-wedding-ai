@@ -295,6 +295,20 @@ export default function AdminDashboard() {
                     <div className="font-bold">⚠️ Incomplete Vendors</div>
                     <div className="text-sm opacity-90">Find & fix missing information</div>
                   </button>
+                  <button
+                    onClick={() => router.push('/admin/promotions')}
+                    className="w-full p-3 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white rounded-lg text-left transition"
+                  >
+                    <div className="font-bold">🎁 Promotional Spots</div>
+                    <div className="text-sm opacity-90">Manage free spots & discount codes</div>
+                  </button>
+                  <button
+                    onClick={() => router.push('/admin/features')}
+                    className="w-full p-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg text-left transition"
+                  >
+                    <div className="font-bold">✨ Platform Features</div>
+                    <div className="text-sm opacity-90">View all capabilities & documentation</div>
+                  </button>
                 </div>
               </div>
             </div>
