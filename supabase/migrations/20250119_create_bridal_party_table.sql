@@ -4,7 +4,7 @@
 
 CREATE TABLE IF NOT EXISTS bridal_party_members (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255),
   phone VARCHAR(50),
@@ -73,19 +73,19 @@ ALTER TABLE bridal_party_members ENABLE ROW LEVEL SECURITY;
 -- Policy: Users can only see their own bridal party members
 CREATE POLICY bridal_party_select_policy ON bridal_party_members
   FOR SELECT
-  USING (user_id = (SELECT id FROM users WHERE email = auth.email()));
+  USING (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 -- Policy: Users can insert their own bridal party members
 CREATE POLICY bridal_party_insert_policy ON bridal_party_members
   FOR INSERT
-  WITH CHECK (user_id = (SELECT id FROM users WHERE email = auth.email()));
+  WITH CHECK (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 -- Policy: Users can update their own bridal party members
 CREATE POLICY bridal_party_update_policy ON bridal_party_members
   FOR UPDATE
-  USING (user_id = (SELECT id FROM users WHERE email = auth.email()));
+  USING (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 -- Policy: Users can delete their own bridal_party members
 CREATE POLICY bridal_party_delete_policy ON bridal_party_members
   FOR DELETE
-  USING (user_id = (SELECT id FROM users WHERE email = auth.email()));
+  USING (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));

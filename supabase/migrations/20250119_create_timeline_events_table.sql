@@ -1,7 +1,7 @@
 -- Create timeline_events table for customizable wedding timelines
 CREATE TABLE IF NOT EXISTS timeline_events (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   event_name TEXT NOT NULL,
   event_date DATE NOT NULL,
   event_time TIME NOT NULL,
@@ -30,19 +30,19 @@ ALTER TABLE timeline_events ENABLE ROW LEVEL SECURITY;
 -- RLS Policies
 CREATE POLICY "Users can view their own timeline events"
   ON timeline_events FOR SELECT
-  USING (auth.uid() = user_id);
+  USING (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 CREATE POLICY "Users can create their own timeline events"
   ON timeline_events FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 CREATE POLICY "Users can update their own timeline events"
   ON timeline_events FOR UPDATE
-  USING (auth.uid() = user_id);
+  USING (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 CREATE POLICY "Users can delete their own timeline events"
   ON timeline_events FOR DELETE
-  USING (auth.uid() = user_id);
+  USING (user_id = (SELECT id FROM public.users WHERE email = auth.jwt()->>'email'));
 
 -- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_timeline_events_updated_at()

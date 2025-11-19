@@ -8,7 +8,7 @@
 -- Create vows table
 CREATE TABLE IF NOT EXISTS public.vows (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   partner_name VARCHAR(255) NOT NULL,
   how_met TEXT,
   favorite_memory TEXT,
