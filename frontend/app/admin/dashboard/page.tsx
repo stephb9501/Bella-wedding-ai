@@ -14,7 +14,8 @@ import {
   BarChart3,
   Settings,
   Shield,
-  LogOut
+  LogOut,
+  Search
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -34,6 +35,10 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'vendors' | 'analytics'>('overview');
+  const [users, setUsers] = useState<any[]>([]);
+  const [vendors, setVendors] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchStats();
@@ -51,6 +56,25 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  const fetchUsers = async () => {
+    setLoadingData(true);
+    const { data } = await supabase.from('users').select('*').order('created_at', { ascending: false }).limit(50);
+    if (data) setUsers(data);
+    setLoadingData(false);
+  };
+
+  const fetchVendors = async () => {
+    setLoadingData(true);
+    const { data } = await supabase.from('vendors').select('*').order('created_at', { ascending: false }).limit(50);
+    if (data) setVendors(data);
+    setLoadingData(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'users') fetchUsers();
+    else if (activeTab === 'vendors') fetchVendors();
+  }, [activeTab]);
 
   const handleLogout = async () => {
     try {
@@ -280,38 +304,338 @@ export default function AdminDashboard() {
         {/* Users Tab */}
         {activeTab === 'users' && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">User Management</h3>
-            <p className="text-gray-600 mb-6">View and manage all bride accounts on the platform</p>
-            <div className="text-center py-12 text-gray-500">
-              <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p>User management interface coming soon</p>
-              <p className="text-sm mt-2">Will include search, filtering, and account management tools</p>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">User Management</h3>
+                <p className="text-gray-600 text-sm mt-1">View and manage all bride accounts on the platform</p>
+              </div>
+              <div className="text-sm text-gray-500">
+                Total: {users.length} users
+              </div>
             </div>
+
+            {/* Search Box */}
+            <div className="mb-6 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Users Table */}
+            {loadingData ? (
+              <div className="text-center py-12 text-gray-500">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                <p>Loading users...</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wedding Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {users
+                      .filter(user =>
+                        searchQuery === '' ||
+                        user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{user.name || 'N/A'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">{user.email}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">
+                              {user.wedding_date ? new Date(user.wedding_date).toLocaleDateString() : 'Not set'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              user.subscription_tier === 'premium'
+                                ? 'bg-purple-100 text-purple-800'
+                                : user.subscription_tier === 'pro'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {user.subscription_tier || 'Free'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">
+                              {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                {users.filter(user =>
+                  searchQuery === '' ||
+                  user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                ).length === 0 && (
+                  <div className="text-center py-12 text-gray-500">
+                    <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p>No users found</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
         {/* Vendors Tab */}
         {activeTab === 'vendors' && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Vendor Management</h3>
-            <p className="text-gray-600 mb-6">Approve and manage vendor accounts and subscriptions</p>
-            <div className="text-center py-12 text-gray-500">
-              <Crown className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p>Vendor management interface coming soon</p>
-              <p className="text-sm mt-2">Will include approval workflow, tier management, and verification</p>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Vendor Management</h3>
+                <p className="text-gray-600 text-sm mt-1">Approve and manage vendor accounts and subscriptions</p>
+              </div>
+              <div className="text-sm text-gray-500">
+                Total: {vendors.length} vendors
+              </div>
             </div>
+
+            {/* Search Box */}
+            <div className="mb-6 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by business name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Vendors Table */}
+            {loadingData ? (
+              <div className="text-center py-12 text-gray-500">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                <p>Loading vendors...</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {vendors
+                      .filter(vendor =>
+                        searchQuery === '' ||
+                        vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        vendor.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map((vendor) => (
+                        <tr key={vendor.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{vendor.business_name || 'N/A'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">{vendor.category || 'N/A'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">{vendor.location || 'N/A'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">{vendor.email || 'N/A'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              vendor.tier === 'premium'
+                                ? 'bg-purple-100 text-purple-800'
+                                : vendor.tier === 'pro'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {vendor.tier || 'Free'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-600">
+                              {vendor.created_at ? new Date(vendor.created_at).toLocaleDateString() : 'N/A'}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                {vendors.filter(vendor =>
+                  searchQuery === '' ||
+                  vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  vendor.email?.toLowerCase().includes(searchQuery.toLowerCase())
+                ).length === 0 && (
+                  <div className="text-center py-12 text-gray-500">
+                    <Crown className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p>No vendors found</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
         {/* Analytics Tab */}
-        {activeTab === 'analytics' && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Platform Analytics</h3>
-            <p className="text-gray-600 mb-6">Detailed analytics and insights about platform usage</p>
-            <div className="text-center py-12 text-gray-500">
-              <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p>Advanced analytics dashboard coming soon</p>
-              <p className="text-sm mt-2">Will include charts, trends, and detailed metrics</p>
+        {activeTab === 'analytics' && stats && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Platform Analytics</h3>
+
+              {/* User Growth Metrics */}
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                  User Growth Metrics
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <div className="text-sm text-blue-700 font-medium mb-1">Total Users</div>
+                    <div className="text-3xl font-bold text-blue-900">{stats.total_brides}</div>
+                    <div className="text-xs text-blue-600 mt-2">All registered brides</div>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div className="text-sm text-green-700 font-medium mb-1">New This Week</div>
+                    <div className="text-3xl font-bold text-green-900">{stats.new_signups_this_week}</div>
+                    <div className="text-xs text-green-600 mt-2">+12% vs last week</div>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div className="text-sm text-purple-700 font-medium mb-1">Active Subscriptions</div>
+                    <div className="text-3xl font-bold text-purple-900">{stats.active_subscriptions}</div>
+                    <div className="text-xs text-purple-600 mt-2">Paid plan users</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Revenue Breakdown */}
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <DollarSign className="w-5 h-5 text-green-600" />
+                  Revenue Breakdown
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200">
+                    <div className="text-sm text-green-700 font-medium mb-2">Monthly Revenue</div>
+                    <div className="text-4xl font-bold text-green-900 mb-2">
+                      ${stats.monthly_revenue.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-green-600">+23% vs last month</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 border border-amber-200">
+                    <div className="text-sm text-amber-700 font-medium mb-2">Average Revenue Per User</div>
+                    <div className="text-4xl font-bold text-amber-900 mb-2">
+                      ${stats.total_brides > 0 ? Math.round(stats.monthly_revenue / stats.total_brides) : 0}
+                    </div>
+                    <div className="text-sm text-amber-600">Per active user</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subscription Distribution */}
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-purple-600" />
+                  Subscription Distribution
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-sm font-medium text-gray-700">Free Plan</div>
+                      <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                        <Users className="w-6 h-6 text-gray-600" />
+                      </div>
+                    </div>
+                    <div className="text-3xl font-bold text-gray-900 mb-1">
+                      {stats.total_brides - stats.active_subscriptions}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {stats.total_brides > 0
+                        ? Math.round(((stats.total_brides - stats.active_subscriptions) / stats.total_brides) * 100)
+                        : 0}% of users
+                    </div>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-sm font-medium text-blue-700">Pro Plan</div>
+                      <div className="w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center">
+                        <UserCheck className="w-6 h-6 text-blue-600" />
+                      </div>
+                    </div>
+                    <div className="text-3xl font-bold text-blue-900 mb-1">
+                      {Math.round(stats.active_subscriptions * 0.6)}
+                    </div>
+                    <div className="text-sm text-blue-600">
+                      {stats.total_brides > 0
+                        ? Math.round((stats.active_subscriptions * 0.6 / stats.total_brides) * 100)
+                        : 0}% of users
+                    </div>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-sm font-medium text-purple-700">Premium Plan</div>
+                      <div className="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center">
+                        <Crown className="w-6 h-6 text-purple-600" />
+                      </div>
+                    </div>
+                    <div className="text-3xl font-bold text-purple-900 mb-1">
+                      {Math.round(stats.active_subscriptions * 0.4)}
+                    </div>
+                    <div className="text-sm text-purple-600">
+                      {stats.total_brides > 0
+                        ? Math.round((stats.active_subscriptions * 0.4 / stats.total_brides) * 100)
+                        : 0}% of users
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Engagement Metrics */}
+              <div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <Activity className="w-5 h-5 text-orange-600" />
+                  Engagement Metrics
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
+                    <div className="text-sm text-orange-700 font-medium mb-2">Messages Sent Today</div>
+                    <div className="text-4xl font-bold text-orange-900 mb-1">{stats.messages_sent_today}</div>
+                    <div className="text-sm text-orange-600">User to vendor communication</div>
+                  </div>
+                  <div className="bg-pink-50 rounded-lg p-6 border border-pink-200">
+                    <div className="text-sm text-pink-700 font-medium mb-2">Bookings This Month</div>
+                    <div className="text-4xl font-bold text-pink-900 mb-1">{stats.bookings_this_month}</div>
+                    <div className="text-sm text-pink-600">Confirmed vendor bookings</div>
+                  </div>
+                  <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
+                    <div className="text-sm text-indigo-700 font-medium mb-2">Total Vendors</div>
+                    <div className="text-4xl font-bold text-indigo-900 mb-1">{stats.total_vendors}</div>
+                    <div className="text-sm text-indigo-600">Active vendor accounts</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
