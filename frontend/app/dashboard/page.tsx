@@ -6,7 +6,7 @@ import {
   Calendar, Users, DollarSign, Heart, MapPin, Camera,
   Sparkles, MessageCircle, Settings, LogOut, Menu, X,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
-  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList
+  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList, BookHeart
 } from 'lucide-react';
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
@@ -178,6 +178,17 @@ const DASHBOARD_CARDS = [
     color: 'bg-teal-50',
     iconColor: 'text-teal-600',
     href: '/seating',
+    status: 'premium',
+    tier: 'Premium'
+  },
+  {
+    id: 'vow-writer',
+    title: 'AI Vow Writer',
+    description: 'Create personalized wedding vows',
+    icon: BookHeart,
+    color: 'bg-fuchsia-50',
+    iconColor: 'text-fuchsia-600',
+    href: '/vow-writer',
     status: 'premium',
     tier: 'Premium'
   },
