@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Calendar, Clock, Users, Camera, Music, Utensils, Truck, Sparkles, CheckCircle, AlertCircle, MapPin, Plus, ChevronUp, ChevronDown, Trash2, Edit } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import { supabase } from '@/lib/supabase';
 
 type TimelineView = 'master' | 'bride' | 'groom' | 'vendors' | 'coordinator' | 'ceremony';
 
@@ -25,6 +27,23 @@ interface CeremonyEvent {
   description?: string;
   musicCue?: string;
   notes?: string;
+}
+
+interface TimelineEventDb {
+  id?: string;
+  user_id: string;
+  event_name: string;
+  event_date: string;
+  event_time: string;
+  location?: string;
+  description?: string;
+  category: string;
+  order_index: number;
+  notes?: string;
+  music_cue?: string;
+  assigned_to?: string[];
+  completed: boolean;
+  enabled: boolean;
 }
 
 const INITIAL_CEREMONY_EVENTS: CeremonyEvent[] = [
@@ -118,21 +137,246 @@ const MASTER_TIMELINE: TimelineItem[] = [
 
 export default function Timeline() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [activeView, setActiveView] = useState<TimelineView>('master');
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set());
   const [ceremonyEvents, setCeremonyEvents] = useState<CeremonyEvent[]>(INITIAL_CEREMONY_EVENTS);
   const [enabledItems, setEnabledItems] = useState<Set<string>>(new Set(MASTER_TIMELINE.map(item => item.time)));
   const [customTimes, setCustomTimes] = useState<Map<string, string>>(new Map());
   const [editingTime, setEditingTime] = useState<string | null>(null);
+  const [dbEvents, setDbEvents] = useState<TimelineEventDb[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Load timeline events from database
+  const loadTimelineEvents = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('timeline_events')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('order_index', { ascending: true });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setDbEvents(data);
+
+        // Restore state from database
+        const completed = new Set<string>();
+        const enabled = new Set<string>();
+        const times = new Map<string, string>();
+        const ceremonyEvs: CeremonyEvent[] = [];
+
+        data.forEach((event) => {
+          if (event.category === 'ceremony' && event.event_name.startsWith('CEREMONY_')) {
+            // This is a ceremony event
+            ceremonyEvs.push({
+              id: event.id || event.event_name,
+              order: event.order_index,
+              title: event.event_name.replace('CEREMONY_', ''),
+              description: event.description,
+              musicCue: event.music_cue,
+              notes: event.notes,
+            });
+          } else {
+            // This is a master timeline event
+            if (event.completed) {
+              completed.add(event.event_time);
+            }
+            if (event.enabled) {
+              enabled.add(event.event_time);
+            }
+            if (event.event_time !== event.event_name) {
+              times.set(event.event_name, event.event_time);
+            }
+          }
+        });
+
+        setCompletedItems(completed);
+        setEnabledItems(enabled);
+        setCustomTimes(times);
+
+        if (ceremonyEvs.length > 0) {
+          setCeremonyEvents(ceremonyEvs.sort((a, b) => a.order - b.order));
+        }
+      } else {
+        // No data in database, initialize with template
+        await initializeTemplateEvents();
+      }
+
+      setIsInitialized(true);
+    } catch (error) {
+      console.error('Error loading timeline events:', error);
+      setIsInitialized(true);
+    }
+  }, [user]);
+
+  // Initialize database with template events
+  const initializeTemplateEvents = async () => {
+    if (!user) return;
+
+    try {
+      const events: Omit<TimelineEventDb, 'id'>[] = [];
+
+      // Add master timeline events
+      MASTER_TIMELINE.forEach((item, index) => {
+        events.push({
+          user_id: user.id,
+          event_name: item.time, // Use time as identifier
+          event_date: new Date().toISOString().split('T')[0], // Today's date as placeholder
+          event_time: item.time,
+          description: item.description,
+          category: item.category,
+          order_index: index,
+          notes: item.notes,
+          music_cue: item.musicCue,
+          assigned_to: item.assignedTo || [],
+          completed: false,
+          enabled: true,
+        });
+      });
+
+      // Add ceremony events
+      INITIAL_CEREMONY_EVENTS.forEach((event) => {
+        events.push({
+          user_id: user.id,
+          event_name: `CEREMONY_${event.title}`,
+          event_date: new Date().toISOString().split('T')[0],
+          event_time: '4:00 PM', // Default ceremony time
+          description: event.description,
+          category: 'ceremony',
+          order_index: event.order,
+          notes: event.notes,
+          music_cue: event.musicCue,
+          assigned_to: [],
+          completed: false,
+          enabled: true,
+        });
+      });
+
+      const { data, error } = await supabase
+        .from('timeline_events')
+        .insert(events)
+        .select();
+
+      if (error) throw error;
+      if (data) setDbEvents(data);
+    } catch (error) {
+      console.error('Error initializing template events:', error);
+    }
+  };
+
+  // Save or update a timeline event
+  const saveTimelineEvent = async (eventData: Partial<TimelineEventDb> & { event_name: string }) => {
+    if (!user || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      // Find existing event by event_name (which is the time for master timeline events)
+      const existingEvent = dbEvents.find(e => e.event_name === eventData.event_name);
+
+      if (existingEvent) {
+        // Update existing event
+        const { error } = await supabase
+          .from('timeline_events')
+          .update(eventData)
+          .eq('id', existingEvent.id);
+
+        if (error) throw error;
+      } else {
+        // Create new event
+        const { data, error } = await supabase
+          .from('timeline_events')
+          .insert({
+            user_id: user.id,
+            event_date: new Date().toISOString().split('T')[0],
+            category: 'prep',
+            order_index: 0,
+            completed: false,
+            enabled: true,
+            ...eventData,
+            event_time: eventData.event_time || '12:00 PM',
+          })
+          .select();
+
+        if (error) throw error;
+        if (data) setDbEvents(prev => [...prev, ...data]);
+      }
+    } catch (error) {
+      console.error('Error saving timeline event:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Delete ceremony event
+  const deleteCeremonyEventFromDb = async (eventId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('timeline_events')
+        .delete()
+        .eq('id', eventId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setDbEvents(prev => prev.filter(e => e.id !== eventId));
+    } catch (error) {
+      console.error('Error deleting ceremony event:', error);
+    }
+  };
+
+  // Update ceremony event order
+  const updateCeremonyOrder = async (events: CeremonyEvent[]) => {
+    if (!user || isSaving) return;
+
+    setIsSaving(true);
+    try {
+      const updates = events.map((event, index) =>
+        supabase
+          .from('timeline_events')
+          .update({ order_index: index })
+          .eq('id', event.id)
+          .eq('user_id', user.id)
+      );
+
+      await Promise.all(updates);
+    } catch (error) {
+      console.error('Error updating ceremony order:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Load events on mount
+  useEffect(() => {
+    if (!authLoading && user) {
+      loadTimelineEvents();
+    }
+  }, [user, authLoading, loadTimelineEvents]);
 
   const toggleComplete = (time: string) => {
     setCompletedItems(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(time)) {
+      const isCompleted = newSet.has(time);
+
+      if (isCompleted) {
         newSet.delete(time);
       } else {
         newSet.add(time);
       }
+
+      // Auto-save to database
+      saveTimelineEvent({
+        event_name: time,
+        completed: !isCompleted,
+      });
+
       return newSet;
     });
   };
@@ -140,11 +384,20 @@ export default function Timeline() {
   const toggleEnabled = (time: string) => {
     setEnabledItems(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(time)) {
+      const isEnabled = newSet.has(time);
+
+      if (isEnabled) {
         newSet.delete(time);
       } else {
         newSet.add(time);
       }
+
+      // Auto-save to database
+      saveTimelineEvent({
+        event_name: time,
+        enabled: !isEnabled,
+      });
+
       return newSet;
     });
   };
@@ -153,6 +406,13 @@ export default function Timeline() {
     setCustomTimes(prev => {
       const newMap = new Map(prev);
       newMap.set(originalTime, newTime);
+
+      // Auto-save to database
+      saveTimelineEvent({
+        event_name: originalTime,
+        event_time: newTime,
+      });
+
       return newMap;
     });
     setEditingTime(null);
@@ -177,6 +437,9 @@ export default function Timeline() {
     });
 
     setCeremonyEvents(newEvents);
+
+    // Auto-save order to database
+    updateCeremonyOrder(newEvents);
   };
 
   const deleteCeremonyEvent = (id: string) => {
@@ -186,16 +449,55 @@ export default function Timeline() {
       event.order = idx + 1;
     });
     setCeremonyEvents(newEvents);
+
+    // Delete from database
+    deleteCeremonyEventFromDb(id);
+
+    // Update order for remaining events
+    updateCeremonyOrder(newEvents);
   };
 
-  const addCeremonyEvent = () => {
+  const addCeremonyEvent = async () => {
+    if (!user) return;
+
     const newEvent: CeremonyEvent = {
       id: Date.now().toString(),
       order: ceremonyEvents.length + 1,
       title: 'New Event',
       description: '',
     };
-    setCeremonyEvents([...ceremonyEvents, newEvent]);
+
+    const newEvents = [...ceremonyEvents, newEvent];
+    setCeremonyEvents(newEvents);
+
+    // Save to database
+    try {
+      const { data, error } = await supabase
+        .from('timeline_events')
+        .insert({
+          user_id: user.id,
+          event_name: `CEREMONY_${newEvent.title}`,
+          event_date: new Date().toISOString().split('T')[0],
+          event_time: '4:00 PM',
+          category: 'ceremony',
+          order_index: newEvent.order,
+          description: newEvent.description || '',
+          completed: false,
+          enabled: true,
+        })
+        .select();
+
+      if (error) throw error;
+
+      // Update the event ID with the database ID
+      if (data && data[0]) {
+        newEvent.id = data[0].id || newEvent.id;
+        setCeremonyEvents([...ceremonyEvents, newEvent]);
+        setDbEvents(prev => [...prev, data[0]]);
+      }
+    } catch (error) {
+      console.error('Error adding ceremony event:', error);
+    }
   };
 
   const filterByView = (timeline: TimelineItem[]) => {
@@ -225,6 +527,24 @@ export default function Timeline() {
 
   const filteredTimeline = filterByView(MASTER_TIMELINE);
   const completionPercentage = Math.round((completedItems.size / MASTER_TIMELINE.length) * 100);
+
+  // Show loading state while authenticating or initializing
+  if (authLoading || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 via-rose-50 to-champagne-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-champagne-200 border-t-champagne-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your timeline...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    router.push('/login');
+    return null;
+  }
 
   const categoryIcons = {
     ceremony: Calendar,
