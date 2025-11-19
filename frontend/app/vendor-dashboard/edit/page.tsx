@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Save, X } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const CATEGORIES = [
   'Venue', 'Catering', 'Photography', 'Videography', 'Florist',
@@ -25,6 +25,7 @@ interface VendorProfile {
 
 export default function EditVendorProfile() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');

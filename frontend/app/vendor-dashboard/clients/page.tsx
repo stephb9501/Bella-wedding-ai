@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Calendar, User, Mail, Phone, MapPin, DollarSign, ArrowRight, Search } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface Client {
   id: string;
@@ -20,6 +20,7 @@ interface Client {
 
 export default function VendorClients() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

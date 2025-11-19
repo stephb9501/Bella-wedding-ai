@@ -7,7 +7,7 @@ import {
   FileText, CheckSquare, Clock, Music, Camera, Plus, Save, X,
   ListChecks, Trash2, AlertCircle, Settings, Check
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface Client {
   id: string;
@@ -103,6 +103,7 @@ interface VendorRoles {
 
 export default function WeddingProject() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const params = useParams();
   const bookingId = params?.bookingId as string;
 
