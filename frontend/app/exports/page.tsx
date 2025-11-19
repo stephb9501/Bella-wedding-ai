@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileDown, Printer, CheckSquare, Calendar, DollarSign, Users, FileText, Download } from 'lucide-react';
