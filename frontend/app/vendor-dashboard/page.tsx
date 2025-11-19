@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote, Briefcase } from 'lucide-react';
+import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Calendar as CalendarIcon, Quote, Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
@@ -344,6 +344,105 @@ export default function VendorDashboard() {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <>
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          <button
+            onClick={() => router.push('/vendor-dashboard/leads')}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition text-left group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition">
+                <MessageCircle className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-sm text-blue-600 font-medium">Manage →</span>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Leads Management</h3>
+            <p className="text-gray-600 text-sm">
+              View and respond to inquiries from brides. Track conversations and conversions.
+            </p>
+          </button>
+
+          <button
+            onClick={() => router.push('/vendor-dashboard/bookings')}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition text-left group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition">
+                <CalendarIcon className="w-6 h-6 text-purple-600" />
+              </div>
+              <span className="text-sm text-purple-600 font-medium">Manage →</span>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Bookings Calendar</h3>
+            <p className="text-gray-600 text-sm">
+              Calendar view of all bookings. Add events and manage availability.
+            </p>
+          </button>
+
+          <button
+            onClick={() => router.push('/vendor-dashboard/portfolio')}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition text-left group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-pink-100 rounded-lg group-hover:bg-pink-200 transition">
+                <ImageIcon className="w-6 h-6 text-pink-600" />
+              </div>
+              <span className="text-sm text-pink-600 font-medium">Manage →</span>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Portfolio Manager</h3>
+            <p className="text-gray-600 text-sm">
+              Upload and organize photos. Set featured images and manage albums.
+            </p>
+          </button>
+
+          <button
+            onClick={() => router.push('/vendor-dashboard/analytics')}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition text-left group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-green-100 rounded-lg group-hover:bg-green-200 transition">
+                <BarChart3 className="w-6 h-6 text-green-600" />
+              </div>
+              <span className="text-sm text-green-600 font-medium">View →</span>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Analytics Dashboard</h3>
+            <p className="text-gray-600 text-sm">
+              Track profile views, lead conversion, and revenue trends.
+            </p>
+          </button>
+
+          <button
+            onClick={() => router.push('/vendor-dashboard/reviews')}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition text-left group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-amber-100 rounded-lg group-hover:bg-amber-200 transition">
+                <Quote className="w-6 h-6 text-amber-600" />
+              </div>
+              <span className="text-sm text-amber-600 font-medium">View →</span>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Reviews & Ratings</h3>
+            <p className="text-gray-600 text-sm">
+              View all reviews, respond to feedback, and manage your reputation.
+            </p>
+          </button>
+
+          <button
+            onClick={() => router.push('/vendor-pricing')}
+            className="bg-gradient-to-r from-purple-600 to-amber-600 rounded-xl shadow-md p-6 hover:shadow-lg transition text-left group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-white bg-opacity-20 rounded-lg group-hover:bg-opacity-30 transition">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm text-white font-medium">Upgrade →</span>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Upgrade Your Plan</h3>
+            <p className="text-white text-opacity-90 text-sm">
+              Unlock more features, photos, and visibility. Reduce commission fees.
+            </p>
+          </button>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-lg shadow p-4">
