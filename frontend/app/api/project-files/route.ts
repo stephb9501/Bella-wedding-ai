@@ -2,17 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client with service role for storage access
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
+// Helper to get admin client (lazy initialization to avoid build-time errors)
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase configuration missing');
+  }
+
+  return createClient(supabaseUrl, supabaseKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
-  }
-);
+  });
+}
 
 // Get files for a booking
 export async function GET(request: NextRequest) {
@@ -139,6 +144,7 @@ export async function POST(request: NextRequest) {
     const storagePath = `${bookingId}/${fileType}/${timestamp}_${sanitizedFileName}`;
 
     // Upload to Supabase Storage
+    const supabaseAdmin = getSupabaseAdmin();
     const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
       .from('wedding-files')
       .upload(storagePath, file, {
@@ -241,6 +247,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Generate signed URL (valid for 1 hour)
+    const supabaseAdmin = getSupabaseAdmin();
     const { data: signedUrl, error: urlError } = await supabaseAdmin.storage
       .from('wedding-files')
       .createSignedUrl(file.storage_path, 3600); // 1 hour
@@ -305,6 +312,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete from storage
+    const supabaseAdmin = getSupabaseAdmin();
     const { error: storageError } = await supabaseAdmin.storage
       .from('wedding-files')
       .remove([file.storage_path]);
