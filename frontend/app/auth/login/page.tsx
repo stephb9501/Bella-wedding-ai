@@ -51,11 +51,21 @@ function LoginForm() {
         console.log('🔍 Admin check - Email:', data.user?.email);
         console.log('🔍 Admin check - Data:', adminData);
         console.log('🔍 Admin check - Error:', adminError);
+        console.log('🔍 Admin check - Role value:', adminData?.role);
+        console.log('🔍 Admin check - Role type:', typeof adminData?.role);
+        console.log('🔍 Admin check - Is admin?:', adminData?.role === 'admin');
+        console.log('🔍 Admin check - No error?:', !adminError);
+        console.log('🔍 Admin check - Full condition:', !adminError && adminData?.role === 'admin');
 
         if (!adminError && adminData?.role === 'admin') {
           console.log('✅ Admin detected - redirecting to /admin/dashboard');
           router.push('/admin/dashboard');
           return;
+        } else {
+          console.log('⚠️ Admin check failed - not redirecting');
+          console.log('   - adminError:', adminError);
+          console.log('   - adminData:', adminData);
+          console.log('   - condition result:', !adminError && adminData?.role === 'admin');
         }
 
         // If not admin, check if vendor
