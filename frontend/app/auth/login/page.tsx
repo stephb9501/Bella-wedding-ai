@@ -45,7 +45,7 @@ export default function LoginPage() {
         const { data: adminData, error: adminError } = await supabase
           .from('users')
           .select('role')
-          .eq('id', data.user?.id)
+          .eq('email', data.user?.email)
           .single();
 
         if (adminData?.role === 'admin') {
@@ -57,7 +57,7 @@ export default function LoginPage() {
         const { data: vendorData, error: vendorError } = await supabase
           .from('vendors')
           .select('id')
-          .eq('id', data.user?.id)
+          .eq('email', data.user?.email)
           .single();
 
         if (vendorData && !vendorError) {
