@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
   Users,
   TrendingUp,
@@ -12,7 +13,8 @@ import {
   Crown,
   BarChart3,
   Settings,
-  Shield
+  Shield,
+  LogOut
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -28,6 +30,7 @@ interface DashboardStats {
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'vendors' | 'analytics'>('overview');
@@ -46,6 +49,15 @@ export default function AdminDashboard() {
       console.error('Stats fetch error:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
     }
   };
 
@@ -102,11 +114,22 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/')}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-600 hover:text-gray-900 font-medium"
             >
               Public Site
             </button>
-            <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm font-medium">
+            <button
+              onClick={() => router.push('/settings')}
+              className="p-2 hover:bg-gray-100 rounded-lg transition"
+              title="Settings"
+            >
+              <Settings className="w-5 h-5 text-gray-600" />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm font-medium"
+            >
+              <LogOut className="w-4 h-4" />
               Logout
             </button>
           </div>
