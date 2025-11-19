@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Heart, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClientComponentClient();
 
   const [email, setEmail] = useState('');
@@ -15,6 +16,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    // Check for password reset success
+    if (searchParams.get('reset') === 'success') {
+      setSuccessMessage('Password reset successful! You can now log in with your new password.');
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,24 +38,38 @@ export default function LoginPage() {
 
       if (signInError) throw signInError;
 
-      // Check if user is vendor or bride
+      // Check user role and redirect appropriately
+      // Priority: Admin > Vendor > Bride
       try {
-        const { data: userData, error: vendorCheckError } = await supabase
+        // First, check if user is admin
+        const { data: adminData, error: adminError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', data.user?.id)
+          .single();
+
+        if (adminData?.role === 'admin') {
+          router.push('/admin/dashboard');
+          return;
+        }
+
+        // If not admin, check if vendor
+        const { data: vendorData, error: vendorError } = await supabase
           .from('vendors')
           .select('id')
           .eq('id', data.user?.id)
           .single();
 
-        // If vendor record found, redirect to vendor dashboard
-        if (userData && !vendorCheckError) {
+        if (vendorData && !vendorError) {
           router.push('/vendor-dashboard');
-        } else {
-          // Default to bride dashboard
-          router.push('/dashboard');
+          return;
         }
-      } catch (vendorError) {
-        // If vendor check fails, default to bride dashboard
-        console.warn('Vendor check failed, defaulting to bride dashboard:', vendorError);
+
+        // Default to bride dashboard
+        router.push('/dashboard');
+      } catch (err) {
+        // If all checks fail, default to bride dashboard
+        console.warn('Role check failed, defaulting to bride dashboard:', err);
         router.push('/dashboard');
       }
     } catch (err: any) {
@@ -71,6 +94,12 @@ export default function LoginPage() {
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <form onSubmit={handleLogin} className="space-y-6">
+            {successMessage && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                {successMessage}
+              </div>
+            )}
+
             {error && (
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {error}

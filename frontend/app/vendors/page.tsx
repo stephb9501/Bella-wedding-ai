@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X, ClipboardList } from 'lucide-react';
 import Image from 'next/image';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { SuggestVendorModal } from '@/components/SuggestVendorModal';
 
 interface Vendor {
   id: string;
@@ -46,6 +47,7 @@ export default function Vendors() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showSuggestModal, setShowSuggestModal] = useState(false);
   const [sortBy, setSortBy] = useState<'tier' | 'rating' | 'views'>('tier');
   const [filterRating, setFilterRating] = useState(0);
   const [filterTier, setFilterTier] = useState<string>('All');
@@ -320,6 +322,17 @@ export default function Vendors() {
           )}
         </div>
 
+        {/* Suggest Vendor Button */}
+        <div className="mb-8 text-center">
+          <button
+            onClick={() => setShowSuggestModal(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition"
+          >
+            <Heart className="w-5 h-5" />
+            Don't see who you're looking for? Suggest a Vendor!
+          </button>
+        </div>
+
         {loading ? (
           <div className="text-center py-20">
             <Heart className="w-12 h-12 text-champagne-600 animate-pulse mx-auto mb-4" />
@@ -377,6 +390,18 @@ export default function Vendors() {
             setShowBookingModal(false);
             setSelectedVendor(null);
           }}
+        />
+      )}
+
+      {/* Suggest Vendor Modal */}
+      {showSuggestModal && (
+        <SuggestVendorModal
+          onClose={() => setShowSuggestModal(false)}
+          onSuccess={() => {
+            setShowSuggestModal(false);
+            fetchVendors();
+          }}
+          prefilledCategory={selectedCategory !== 'All' ? selectedCategory : undefined}
         />
       )}
     </div>
