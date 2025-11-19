@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
 import { PhotoGallery } from '@/components/PhotoGallery';
 import { useAuth } from '@/lib/useAuth';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import AuthWall from '@/components/AuthWall';
 
 interface DashboardStats {
@@ -240,6 +240,7 @@ export default function Dashboard() {
   const { user, isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('website');
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalGuests: 0,
