@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, User, Lock, Bell, CreditCard, Mail, Calendar, MapPin, Trash2, Save, Loader2 } from 'lucide-react';
