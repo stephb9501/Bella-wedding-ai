@@ -1,0 +1,107 @@
+# Robots.txt for Bella Wedding AI
+# This file controls web crawler access to the site
+
+# Allow major search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+Crawl-delay: 10
+
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+Crawl-delay: 10
+
+# Block all other bots from sensitive areas
+User-agent: *
+Allow: /
+Allow: /contact
+Allow: /guest-response
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /vendor-dashboard
+Disallow: /api/
+Disallow: /settings
+Disallow: /timeline
+Disallow: /checklist
+Disallow: /guests
+Disallow: /budget
+Disallow: /vendors
+Disallow: /ai
+Disallow: /rsvp
+Disallow: /website
+Disallow: /photos
+Disallow: /registry
+Disallow: /seating
+Disallow: /honeymoon
+Disallow: /auth
+Crawl-delay: 30
+
+# Block aggressive crawlers and scrapers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+User-agent: python-requests
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: wget
+Disallow: /
+
+# Block AI training bots
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+# Sitemap location (update with actual URL when deployed)
+# Sitemap: https://bellawedding.ai/sitemap.xml
