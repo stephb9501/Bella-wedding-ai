@@ -234,6 +234,13 @@ export default function AdminDashboard() {
                     <div className="font-medium text-gray-900">Reported Content</div>
                     <div className="text-sm text-gray-600">3 items to review</div>
                   </button>
+                  <button
+                    onClick={() => router.push('/admin/vendor-import')}
+                    className="w-full p-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg text-left transition"
+                  >
+                    <div className="font-bold">📥 Bulk Import Vendors</div>
+                    <div className="text-sm opacity-90">Add hundreds of vendors at once</div>
+                  </button>
                 </div>
               </div>
             </div>
