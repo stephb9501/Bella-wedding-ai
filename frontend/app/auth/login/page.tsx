@@ -44,11 +44,16 @@ function LoginForm() {
         // First, check if user is admin
         const { data: adminData, error: adminError } = await supabase
           .from('users')
-          .select('role')
+          .select('role, email, subscription_tier')
           .eq('email', data.user?.email)
           .single();
 
-        if (adminData?.role === 'admin') {
+        console.log('🔍 Admin check - Email:', data.user?.email);
+        console.log('🔍 Admin check - Data:', adminData);
+        console.log('🔍 Admin check - Error:', adminError);
+
+        if (!adminError && adminData?.role === 'admin') {
+          console.log('✅ Admin detected - redirecting to /admin/dashboard');
           router.push('/admin/dashboard');
           return;
         }
@@ -60,16 +65,21 @@ function LoginForm() {
           .eq('email', data.user?.email)
           .single();
 
+        console.log('🔍 Vendor check - Data:', vendorData);
+        console.log('🔍 Vendor check - Error:', vendorError);
+
         if (vendorData && !vendorError) {
+          console.log('✅ Vendor detected - redirecting to /vendor-dashboard');
           router.push('/vendor-dashboard');
           return;
         }
 
         // Default to bride dashboard
+        console.log('⚠️ No admin/vendor role found - defaulting to bride dashboard');
         router.push('/dashboard');
       } catch (err) {
         // If all checks fail, default to bride dashboard
-        console.warn('Role check failed, defaulting to bride dashboard:', err);
+        console.error('❌ Role check failed, defaulting to bride dashboard:', err);
         router.push('/dashboard');
       }
     } catch (err: any) {
