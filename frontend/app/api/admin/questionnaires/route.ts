@@ -181,6 +181,109 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Get vendor custom questions (for admin review)
+    if (action === 'get_vendor_custom_questions') {
+      const canView = await supabase.rpc('has_admin_permission', {
+        p_user_id: user.id,
+        p_permission: 'can_manage_content',
+      });
+
+      if (!canView.data) {
+        return NextResponse.json({
+          error: 'Permission denied: can_manage_content required'
+        }, { status: 403 });
+      }
+
+      const { data: vendorQuestions, error } = await supabase.rpc('get_all_vendor_custom_questions');
+
+      if (error) {
+        console.error('Get vendor custom questions error:', error);
+        return NextResponse.json({ error: 'Failed to fetch vendor custom questions' }, { status: 500 });
+      }
+
+      return NextResponse.json({
+        vendor_custom_questions: vendorQuestions || [],
+        total: vendorQuestions?.length || 0,
+      });
+    }
+
+    // Get bride custom questions (for admin review)
+    if (action === 'get_bride_custom_questions') {
+      const canView = await supabase.rpc('has_admin_permission', {
+        p_user_id: user.id,
+        p_permission: 'can_manage_content',
+      });
+
+      if (!canView.data) {
+        return NextResponse.json({
+          error: 'Permission denied: can_manage_content required'
+        }, { status: 403 });
+      }
+
+      const { data: brideQuestions, error } = await supabase.rpc('get_all_bride_custom_questions');
+
+      if (error) {
+        console.error('Get bride custom questions error:', error);
+        return NextResponse.json({ error: 'Failed to fetch bride custom questions' }, { status: 500 });
+      }
+
+      return NextResponse.json({
+        bride_custom_questions: brideQuestions || [],
+        total: brideQuestions?.length || 0,
+      });
+    }
+
+    // Promote custom question to template library
+    if (action === 'promote_to_template') {
+      const canManage = await supabase.rpc('has_admin_permission', {
+        p_user_id: user.id,
+        p_permission: 'can_manage_content',
+      });
+
+      if (!canManage.data) {
+        return NextResponse.json({
+          error: 'Permission denied: can_manage_content required'
+        }, { status: 403 });
+      }
+
+      const {
+        question_text,
+        question_type,
+        category,
+        options = null,
+        is_required = false,
+        help_text = null,
+      } = body;
+
+      if (!question_text || !question_type || !category) {
+        return NextResponse.json(
+          { error: 'question_text, question_type, and category are required' },
+          { status: 400 }
+        );
+      }
+
+      // Promote to template library
+      const { data: templateId, error } = await supabase.rpc('promote_custom_question_to_template', {
+        p_question_text: question_text,
+        p_question_type: question_type,
+        p_category: category,
+        p_options: options,
+        p_is_required: is_required,
+        p_help_text: help_text,
+        p_approved_by: user.id,
+      });
+
+      if (error) {
+        console.error('Promote to template error:', error);
+        return NextResponse.json({ error: 'Failed to promote question to template library' }, { status: 500 });
+      }
+
+      return NextResponse.json({
+        message: 'Question promoted to template library successfully',
+        template_id: templateId,
+      });
+    }
+
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });

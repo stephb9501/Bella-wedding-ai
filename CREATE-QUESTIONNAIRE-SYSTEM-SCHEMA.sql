@@ -60,6 +60,9 @@ CREATE TABLE IF NOT EXISTS vendor_questionnaires (
   -- Selected questions from template library
   selected_questions JSONB NOT NULL, -- Array of question IDs with custom ordering
 
+  -- Vendor's own custom questions (not in template library yet)
+  custom_questions JSONB, -- [{question_text, question_type, options, is_required, help_text}, ...]
+
   -- Settings
   is_active BOOLEAN DEFAULT true,
   send_automatically BOOLEAN DEFAULT false, -- Send when bride books vendor
@@ -87,6 +90,9 @@ CREATE TABLE IF NOT EXISTS questionnaire_responses (
 
   -- Responses (question_id → answer)
   responses JSONB NOT NULL, -- {"question_uuid": "answer", ...}
+
+  -- Bride's custom questions for this specific wedding
+  bride_custom_questions JSONB, -- [{question_text, question_type, options, answer}, ...]
 
   -- Completion tracking
   is_complete BOOLEAN DEFAULT false,
@@ -378,6 +384,109 @@ BEGIN
   UPDATE questionnaire_templates
   SET times_used = times_used + 1
   WHERE id = p_template_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Get all vendor custom questions (for admin review)
+CREATE OR REPLACE FUNCTION get_all_vendor_custom_questions()
+RETURNS TABLE (
+  questionnaire_id UUID,
+  questionnaire_name VARCHAR,
+  vendor_id UUID,
+  vendor_name VARCHAR,
+  vendor_category VARCHAR,
+  custom_questions JSONB,
+  created_at TIMESTAMPTZ
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    vq.id as questionnaire_id,
+    vq.name as questionnaire_name,
+    v.id as vendor_id,
+    v.business_name as vendor_name,
+    v.category as vendor_category,
+    vq.custom_questions,
+    vq.created_at
+  FROM vendor_questionnaires vq
+  JOIN vendors v ON v.id = vq.vendor_id
+  WHERE vq.custom_questions IS NOT NULL
+    AND jsonb_array_length(vq.custom_questions) > 0
+  ORDER BY vq.created_at DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Promote a vendor custom question to main template library
+CREATE OR REPLACE FUNCTION promote_custom_question_to_template(
+  p_question_text TEXT,
+  p_question_type VARCHAR,
+  p_category VARCHAR,
+  p_options JSONB DEFAULT NULL,
+  p_is_required BOOLEAN DEFAULT false,
+  p_help_text TEXT DEFAULT NULL,
+  p_approved_by UUID DEFAULT NULL
+) RETURNS UUID AS $$
+DECLARE
+  v_template_id UUID;
+BEGIN
+  -- Insert into template library
+  INSERT INTO questionnaire_templates (
+    question_text,
+    question_type,
+    category,
+    options,
+    is_required,
+    help_text,
+    status,
+    approved_by,
+    approved_at
+  ) VALUES (
+    p_question_text,
+    p_question_type,
+    p_category,
+    p_options,
+    p_is_required,
+    p_help_text,
+    'approved',
+    p_approved_by,
+    NOW()
+  )
+  RETURNING id INTO v_template_id;
+
+  RETURN v_template_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Get all bride custom questions (for admin review)
+CREATE OR REPLACE FUNCTION get_all_bride_custom_questions()
+RETURNS TABLE (
+  response_id UUID,
+  bride_id UUID,
+  bride_name VARCHAR,
+  vendor_id UUID,
+  vendor_name VARCHAR,
+  wedding_date DATE,
+  bride_custom_questions JSONB,
+  created_at TIMESTAMPTZ
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    qr.id as response_id,
+    qr.bride_id,
+    u.full_name as bride_name,
+    qr.vendor_id,
+    v.business_name as vendor_name,
+    w.wedding_date,
+    qr.bride_custom_questions,
+    qr.created_at
+  FROM questionnaire_responses qr
+  JOIN users u ON u.id = qr.bride_id
+  JOIN vendors v ON v.id = qr.vendor_id
+  LEFT JOIN weddings w ON w.user_id = qr.bride_id
+  WHERE qr.bride_custom_questions IS NOT NULL
+    AND jsonb_array_length(qr.bride_custom_questions) > 0
+  ORDER BY qr.created_at DESC;
 END;
 $$ LANGUAGE plpgsql;
 
