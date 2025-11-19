@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileDown, Printer, CheckSquare, Calendar, DollarSign, Users, FileText, Download } from 'lucide-react';
+import { FileDown, Printer, CheckSquare, Calendar, DollarSign, Users, FileText, Download, Briefcase, LayoutGrid, StickyNote } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useAuth } from '@/lib/useAuth';
 
@@ -46,7 +46,7 @@ export default function ExportsPage() {
       title: 'Complete Wedding Binder',
       description: 'All your wedding information in one printable document',
       icon: FileText,
-      color: 'bg-rose-50',
+      color: 'bg-gradient-to-br from-champagne-100 to-rose-100',
       iconColor: 'text-rose-600',
       action: () => printCompleteBinder(),
       pages: '15-20 pages'
@@ -62,19 +62,19 @@ export default function ExportsPage() {
       pages: '2-3 pages'
     },
     {
-      id: 'checklist',
-      title: 'Planning Checklist',
-      description: 'Month-by-month tasks with checkboxes',
-      icon: CheckSquare,
-      color: 'bg-green-50',
-      iconColor: 'text-green-600',
-      action: () => printChecklist(),
-      pages: '4-5 pages'
+      id: 'guest-list',
+      title: 'Guest List',
+      description: 'Complete guest list with RSVP status, meal choices, and +1s',
+      icon: Users,
+      color: 'bg-purple-50',
+      iconColor: 'text-purple-600',
+      action: () => printGuestList(),
+      pages: '3-5 pages'
     },
     {
       id: 'budget',
-      title: 'Budget Summary',
-      description: 'Expense breakdown by category',
+      title: 'Budget Breakdown',
+      description: 'All expenses by category with payment tracking',
       icon: DollarSign,
       color: 'bg-emerald-50',
       iconColor: 'text-emerald-600',
@@ -82,14 +82,44 @@ export default function ExportsPage() {
       pages: '2-3 pages'
     },
     {
-      id: 'guest-list',
-      title: 'Guest List',
-      description: 'Complete guest list with RSVP status and contact info',
-      icon: Users,
-      color: 'bg-purple-50',
-      iconColor: 'text-purple-600',
-      action: () => printGuestList(),
-      pages: '3-5 pages'
+      id: 'vendor-contacts',
+      title: 'Vendor Contacts',
+      description: 'Business cards style with all vendor information',
+      icon: Briefcase,
+      color: 'bg-amber-50',
+      iconColor: 'text-amber-600',
+      action: () => printVendorContacts(),
+      pages: '2-4 pages'
+    },
+    {
+      id: 'checklist',
+      title: 'Planning Checklist',
+      description: 'Month-by-month tasks organized by category',
+      icon: CheckSquare,
+      color: 'bg-green-50',
+      iconColor: 'text-green-600',
+      action: () => printChecklist(),
+      pages: '4-5 pages'
+    },
+    {
+      id: 'seating-chart',
+      title: 'Seating Chart',
+      description: 'Visual representation of table assignments',
+      icon: LayoutGrid,
+      color: 'bg-indigo-50',
+      iconColor: 'text-indigo-600',
+      action: () => printSeatingChart(),
+      pages: '1-2 pages'
+    },
+    {
+      id: 'custom-sections',
+      title: 'Custom Sections',
+      description: 'Notes, ideas, inspiration, and custom planning pages',
+      icon: StickyNote,
+      color: 'bg-pink-50',
+      iconColor: 'text-pink-600',
+      action: () => printCustomSections(),
+      pages: '2-3 pages'
     }
   ];
 
@@ -111,6 +141,23 @@ export default function ExportsPage() {
 
   const printGuestList = () => {
     router.push('/exports/guests');
+  };
+
+  const printVendorContacts = () => {
+    router.push('/exports/vendors');
+  };
+
+  const printSeatingChart = () => {
+    router.push('/exports/seating');
+  };
+
+  const printCustomSections = () => {
+    router.push('/exports/notes');
+  };
+
+  const exportAll = () => {
+    // Open complete binder which contains everything
+    router.push('/exports/binder');
   };
 
   if (authLoading || loading) {
@@ -162,6 +209,20 @@ export default function ExportsPage() {
             </div>
           </div>
         )}
+
+        {/* Export All Button */}
+        <div className="mb-8">
+          <button
+            onClick={exportAll}
+            className="w-full px-8 py-6 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-xl transition shadow-lg hover:shadow-xl flex items-center justify-center gap-3 text-lg"
+          >
+            <Download className="w-6 h-6" />
+            Export Complete Wedding Binder (All Sections)
+          </button>
+          <p className="text-center text-sm text-gray-600 mt-2">
+            Or choose individual sections below to print separately
+          </p>
+        </div>
 
         {/* Export Options Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
