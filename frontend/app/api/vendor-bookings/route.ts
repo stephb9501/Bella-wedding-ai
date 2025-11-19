@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
+import { Resend } from 'resend';
 
 export async function GET(request: NextRequest) {
 
@@ -31,10 +32,26 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
 
   try {
-    const { bride_id, vendor_id, wedding_date, venue_location, message } = await request.json();
+    const { bride_id, vendor_id, wedding_date, venue_location, message, bride_name, email, phone, budget_range } = await request.json();
 
     if (!bride_id || !vendor_id) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Get bride info from auth if not provided
+    let brideName = bride_name;
+    let brideEmail = email;
+
+    if (!brideName || !brideEmail) {
+      const { data: userData, error: userError } = await supabaseServer.auth.admin.getUserById(bride_id);
+      if (userData?.user) {
+        brideEmail = brideEmail || userData.user.email || '';
+        brideName = brideName || userData.user.user_metadata?.full_name || brideEmail.split('@')[0];
+      }
+    }
+
+    if (!brideEmail || !brideName) {
+      return NextResponse.json({ error: 'Bride name and email are required' }, { status: 400 });
     }
 
     // Check if booking already exists
@@ -49,21 +66,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Already connected with this vendor' }, { status: 400 });
     }
 
-    // Get vendor category for permissions
-    const { data: vendor } = await supabaseServer
-      .from('vendors')
-      .select('category')
-      .eq('id', vendor_id)
-      .single();
-
     const { data, error } = await supabaseServer
       .from('vendor_bookings')
       .insert({
         bride_id,
         vendor_id,
-        vendor_category: vendor?.category || '',
+        bride_name: brideName,
+        email: brideEmail,
+        phone: phone || null,
         wedding_date: wedding_date || null,
-        venue_location: venue_location || '',
+        venue: venue_location || '',
+        budget_range: budget_range || null,
         message: message || '',
         status: 'pending',
       })
@@ -73,6 +86,67 @@ export async function POST(request: NextRequest) {
 
     // Increment vendor's booking_requests count
     await supabaseServer.rpc('increment_booking_requests', { vendor_id_input: vendor_id });
+
+    // Get vendor details for email notification
+    const { data: vendorData } = await supabaseServer
+      .from('vendors')
+      .select('business_name, email')
+      .eq('id', vendor_id)
+      .single();
+
+    // Send email notification to vendor (if Resend API key is configured)
+    if (process.env.RESEND_API_KEY && vendorData?.email) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+
+        const formattedDate = wedding_date
+          ? new Date(wedding_date).toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+          : 'Not specified';
+
+        await resend.emails.send({
+          from: 'Bella Wedding <notifications@bellawedding.com>',
+          to: vendorData.email,
+          subject: `New Booking Request from ${brideName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #8B4789;">New Booking Request!</h2>
+
+              <p>Hi ${vendorData.business_name},</p>
+
+              <p>You have a new booking request from <strong>${brideName}</strong>.</p>
+
+              <div style="background: #f7f7f7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="margin-top: 0; color: #333;">Request Details:</h3>
+                <p><strong>Contact:</strong> ${brideEmail}${phone ? ` • ${phone}` : ''}</p>
+                <p><strong>Wedding Date:</strong> ${formattedDate}</p>
+                ${venue_location ? `<p><strong>Venue:</strong> ${venue_location}</p>` : ''}
+                ${budget_range ? `<p><strong>Budget:</strong> ${budget_range}</p>` : ''}
+                ${message ? `<p><strong>Message:</strong><br>${message.replace(/\n/g, '<br>')}</p>` : ''}
+              </div>
+
+              <p>
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://bellawedding.com'}/vendor-dashboard"
+                   style="background: linear-gradient(to right, #8B4789, #D97757); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">
+                  View in Dashboard
+                </a>
+              </p>
+
+              <p style="color: #666; font-size: 14px; margin-top: 30px;">
+                Respond quickly to increase your chances of booking!
+              </p>
+            </div>
+          `,
+        });
+      } catch (emailError) {
+        // Log email error but don't fail the request
+        console.error('Email notification error:', emailError);
+      }
+    }
 
     return NextResponse.json(data?.[0] || {}, { status: 201 });
   } catch (error) {

@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Heart, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClientComponentClient();
 
   const [email, setEmail] = useState('');
@@ -15,6 +18,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    // Check for password reset success
+    if (searchParams.get('reset') === 'success') {
+      setSuccessMessage('Password reset successful! You can now log in with your new password.');
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,24 +40,48 @@ export default function LoginPage() {
 
       if (signInError) throw signInError;
 
-      // Check if user is vendor or bride
+      // Check user role and redirect appropriately
+      // Priority: Admin > Vendor > Bride
       try {
-        const { data: userData, error: vendorCheckError } = await supabase
-          .from('vendors')
-          .select('id')
-          .eq('id', data.user?.id)
+        // First, check if user is admin
+        const { data: adminData, error: adminError } = await supabase
+          .from('users')
+          .select('role, email, subscription_tier')
+          .eq('email', data.user?.email)
           .single();
 
-        // If vendor record found, redirect to vendor dashboard
-        if (userData && !vendorCheckError) {
-          router.push('/vendor-dashboard');
-        } else {
-          // Default to bride dashboard
-          router.push('/dashboard');
+        console.log('🔍 Admin check - Email:', data.user?.email);
+        console.log('🔍 Admin check - Data:', adminData);
+        console.log('🔍 Admin check - Error:', adminError);
+
+        if (!adminError && adminData?.role === 'admin') {
+          console.log('✅ Admin detected - redirecting to /admin/dashboard');
+          router.push('/admin/dashboard');
+          return;
         }
-      } catch (vendorError) {
-        // If vendor check fails, default to bride dashboard
-        console.warn('Vendor check failed, defaulting to bride dashboard:', vendorError);
+
+        // If not admin, check if vendor
+        const { data: vendorData, error: vendorError } = await supabase
+          .from('vendors')
+          .select('id')
+          .eq('email', data.user?.email)
+          .single();
+
+        console.log('🔍 Vendor check - Data:', vendorData);
+        console.log('🔍 Vendor check - Error:', vendorError);
+
+        if (vendorData && !vendorError) {
+          console.log('✅ Vendor detected - redirecting to /vendor-dashboard');
+          router.push('/vendor-dashboard');
+          return;
+        }
+
+        // Default to bride dashboard
+        console.log('⚠️ No admin/vendor role found - defaulting to bride dashboard');
+        router.push('/dashboard');
+      } catch (err) {
+        // If all checks fail, default to bride dashboard
+        console.error('❌ Role check failed, defaulting to bride dashboard:', err);
         router.push('/dashboard');
       }
     } catch (err: any) {
@@ -71,6 +106,12 @@ export default function LoginPage() {
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <form onSubmit={handleLogin} className="space-y-6">
+            {successMessage && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                {successMessage}
+              </div>
+            )}
+
             {error && (
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {error}
@@ -179,5 +220,22 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <Heart className="w-8 h-8 text-white" />
+          </div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

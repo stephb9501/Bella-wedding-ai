@@ -24,6 +24,8 @@ export function VendorBookings({ vendorId }: Props) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'declined'>('all');
+  const [respondingTo, setRespondingTo] = useState<string | null>(null);
+  const [responseMessage, setResponseMessage] = useState('');
 
   useEffect(() => {
     fetchBookings();
@@ -208,24 +210,45 @@ export function VendorBookings({ vendorId }: Props) {
                 </div>
               )}
 
-              {booking.status === 'pending' && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => updateBookingStatus(booking.id, 'accepted')}
-                    className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
+              <div className="flex gap-2 flex-wrap">
+                {/* Contact Actions */}
+                <a
+                  href={`mailto:${booking.email}`}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition flex items-center gap-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  Email
+                </a>
+                {booking.phone && (
+                  <a
+                    href={`tel:${booking.phone}`}
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition flex items-center gap-2"
                   >
-                    <Check className="w-4 h-4" />
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => updateBookingStatus(booking.id, 'declined')}
-                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
-                  >
-                    <X className="w-4 h-4" />
-                    Decline
-                  </button>
-                </div>
-              )}
+                    <Phone className="w-4 h-4" />
+                    Call
+                  </a>
+                )}
+
+                {/* Accept/Decline Actions */}
+                {booking.status === 'pending' && (
+                  <>
+                    <button
+                      onClick={() => updateBookingStatus(booking.id, 'accepted')}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition flex items-center gap-2 ml-auto"
+                    >
+                      <Check className="w-4 h-4" />
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => updateBookingStatus(booking.id, 'declined')}
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition flex items-center gap-2"
+                    >
+                      <X className="w-4 h-4" />
+                      Decline
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>

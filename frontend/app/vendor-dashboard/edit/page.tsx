@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Save, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const CATEGORIES = [
   'Venue', 'Catering', 'Photography', 'Videography', 'Florist',
@@ -12,7 +13,7 @@ const CATEGORIES = [
 
 interface VendorProfile {
   id: string;
-  businessName: string;
+  business_name: string;
   email: string;
   phone: string;
   categories: string[]; // Now an array
@@ -28,9 +29,10 @@ export default function EditVendorProfile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [vendorId, setVendorId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    businessName: '',
+    business_name: '',
     email: '',
     phone: '',
     categories: [] as string[],
@@ -39,12 +41,34 @@ export default function EditVendorProfile() {
     description: '',
   });
 
-  // TODO: Get vendor ID from auth session
-  const vendorId = 'demo-vendor-123';
+  useEffect(() => {
+    const initializeEdit = async () => {
+      try {
+        // Get the current authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+          // Not authenticated, redirect to login
+          router.push('/auth');
+          return;
+        }
+
+        // Set the vendor ID to the authenticated user's ID
+        setVendorId(user.id);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        router.push('/auth');
+      }
+    };
+
+    initializeEdit();
+  }, [router]);
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    if (vendorId) {
+      fetchProfile();
+    }
+  }, [vendorId]);
 
   const fetchProfile = async () => {
     try {
@@ -53,7 +77,7 @@ export default function EditVendorProfile() {
       const data: VendorProfile = await response.json();
 
       setFormData({
-        businessName: data.businessName,
+        business_name: data.business_name,
         email: data.email,
         phone: data.phone,
         categories: Array.isArray(data.categories) ? data.categories : [data.categories], // Handle old single category
@@ -84,6 +108,12 @@ export default function EditVendorProfile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!vendorId) {
+      setError('Not authenticated');
+      return;
+    }
+
     setSaving(true);
     setError('');
     setSuccess(false);
@@ -173,8 +203,8 @@ export default function EditVendorProfile() {
               </label>
               <input
                 type="text"
-                name="businessName"
-                value={formData.businessName}
+                name="business_name"
+                value={formData.business_name}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
                 required

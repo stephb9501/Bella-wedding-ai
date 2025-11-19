@@ -14,6 +14,9 @@ export default function AuthPage() {
   const [message, setMessage] = useState({ text: '', type: 'success', show: false });
   const [loading, setLoading] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [showPasswordSignIn, setShowPasswordSignIn] = useState(false);
+  const [showPasswordSignUp, setShowPasswordSignUp] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const showMessage = (text: string, type: string) => {
     setMessage({ text, type, show: true });
@@ -39,14 +42,18 @@ export default function AuthPage() {
 
     setLoading(true);
     try {
-      await signIn(emailSignIn, passwordSignIn);
+      const { user } = await signIn(emailSignIn, passwordSignIn);
       showMessage('✓ Sign in successful! Redirecting...', 'success');
       setEmailSignIn('');
       setPasswordSignIn('');
 
-      // Get redirect URL from query params or default to dashboard
+      // Check if user is a vendor
+      const vendorCheck = await fetch(`/api/vendors?id=${user.id}`);
+      const isVendor = vendorCheck.ok;
+
+      // Get redirect URL from query params or default based on user type
       const params = new URLSearchParams(window.location.search);
-      const redirectUrl = params.get('redirect') || '/dashboard';
+      const redirectUrl = params.get('redirect') || (isVendor ? '/vendor-dashboard' : '/dashboard');
 
       // Redirect after 1 second
       setTimeout(() => {
@@ -228,7 +235,7 @@ export default function AuthPage() {
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
             font-weight: 600;
-            color: #bbb;
+            color: #666;
             cursor: pointer;
             transition: all 0.3s ease;
             padding: 5px 0;
@@ -292,6 +299,58 @@ export default function AuthPage() {
             border-color: #a64c74;
             background: white;
             box-shadow: 0 0 0 4px rgba(166, 76, 116, 0.1);
+          }
+
+          /* Password wrapper for eye icon */
+          .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+          }
+
+          .password-wrapper input {
+            padding-right: 40px;
+            width: 100%;
+          }
+
+          .eye-button {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #999;
+            font-size: 1.2rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .eye-button:hover {
+            color: #666;
+            background: none;
+            transform: none;
+            box-shadow: none;
+          }
+
+          /* Forgot password link */
+          .forgot-password {
+            text-align: right;
+            margin-top: -4px;
+          }
+
+          .forgot-password a {
+            color: #a64c74;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+          }
+
+          .forgot-password a:hover {
+            color: #b84b7a;
+            text-decoration: underline;
           }
 
           /* Button */
@@ -436,14 +495,26 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Enter your password"
-                    value={passwordSignIn}
-                    onChange={(e) => setPasswordSignIn(e.target.value)}
-                    disabled={loading}
-                    required 
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      type={showPasswordSignIn ? 'text' : 'password'}
+                      placeholder="Enter your password"
+                      value={passwordSignIn}
+                      onChange={(e) => setPasswordSignIn(e.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="eye-button"
+                      onClick={() => setShowPasswordSignIn(!showPasswordSignIn)}
+                    >
+                      {showPasswordSignIn ? '👁️' : '👁️‍🗨️'}
+                    </button>
+                  </div>
+                  <div className="forgot-password">
+                    <a href="/auth/forgot-password">Forgot Password?</a>
+                  </div>
                 </div>
                 <button type="submit" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
@@ -469,14 +540,23 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Password</label>
-                  <input
-                    type="password"
-                    placeholder="Create a password"
-                    value={passwordSignUp}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    disabled={loading}
-                    required
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      type={showPasswordSignUp ? 'text' : 'password'}
+                      placeholder="Create a password"
+                      value={passwordSignUp}
+                      onChange={(e) => handlePasswordChange(e.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="eye-button"
+                      onClick={() => setShowPasswordSignUp(!showPasswordSignUp)}
+                    >
+                      {showPasswordSignUp ? '👁️' : '👁️‍🗨️'}
+                    </button>
+                  </div>
                   {passwordSignUp && (
                     <div style={{
                       fontSize: '0.75rem',
@@ -511,14 +591,23 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Confirm Password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    disabled={loading}
-                    required 
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="eye-button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                    </button>
+                  </div>
                 </div>
                 <button type="submit" disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}

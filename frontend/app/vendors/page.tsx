@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X, ClipboardList } from 'lucide-react';
 import Image from 'next/image';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { SuggestVendorModal } from '@/components/SuggestVendorModal';
 
 interface Vendor {
   id: string;
@@ -17,8 +18,11 @@ interface Vendor {
   photo_count: number;
   profile_views: number;
   is_featured: boolean;
+  average_rating: number | null;
+  review_count: number;
   email: string;
   phone: string;
+  first_photo_url: string | null;
 }
 
 const CATEGORIES = [
@@ -43,6 +47,10 @@ export default function Vendors() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showSuggestModal, setShowSuggestModal] = useState(false);
+  const [sortBy, setSortBy] = useState<'tier' | 'rating' | 'views'>('tier');
+  const [filterRating, setFilterRating] = useState(0);
+  const [filterTier, setFilterTier] = useState<string>('All');
 
   useEffect(() => {
     fetchVendors();
@@ -50,7 +58,7 @@ export default function Vendors() {
 
   useEffect(() => {
     filterVendors();
-  }, [selectedCategory, searchQuery, vendors]);
+  }, [selectedCategory, searchQuery, vendors, sortBy, filterRating, filterTier]);
 
   const fetchVendors = async () => {
     try {
@@ -68,10 +76,22 @@ export default function Vendors() {
   const filterVendors = () => {
     let filtered = vendors;
 
+    // Category filter
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(v => v.category === selectedCategory);
     }
 
+    // Tier filter
+    if (filterTier !== 'All') {
+      filtered = filtered.filter(v => v.tier === filterTier.toLowerCase());
+    }
+
+    // Rating filter
+    if (filterRating > 0) {
+      filtered = filtered.filter(v => v.average_rating !== null && v.average_rating >= filterRating);
+    }
+
+    // Search query
     if (searchQuery) {
       filtered = filtered.filter(v =>
         v.business_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -80,9 +100,19 @@ export default function Vendors() {
       );
     }
 
-    // Sort by tier: elite > featured > premium > free
-    const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
-    filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
+    // Sort vendors
+    if (sortBy === 'tier') {
+      const tierOrder = { elite: 4, featured: 3, premium: 2, free: 1 };
+      filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
+    } else if (sortBy === 'rating') {
+      filtered.sort((a, b) => {
+        const ratingA = a.average_rating || 0;
+        const ratingB = b.average_rating || 0;
+        return ratingB - ratingA;
+      });
+    } else if (sortBy === 'views') {
+      filtered.sort((a, b) => (b.profile_views || 0) - (a.profile_views || 0));
+    }
 
     setFilteredVendors(filtered);
   };
@@ -161,7 +191,7 @@ export default function Vendors() {
         </div>
 
         {/* Category Filter */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex overflow-x-auto gap-2 pb-2">
             {CATEGORIES.map(category => (
               <button
@@ -177,6 +207,130 @@ export default function Vendors() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Advanced Filters */}
+        <div className="mb-8 bg-white rounded-xl p-6 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Sort By */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Sort By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'tier' | 'rating' | 'views')}
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+              >
+                <option value="tier">Tier (Premium First)</option>
+                <option value="rating">Highest Rated</option>
+                <option value="views">Most Viewed</option>
+              </select>
+            </div>
+
+            {/* Tier Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tier
+              </label>
+              <select
+                value={filterTier}
+                onChange={(e) => setFilterTier(e.target.value)}
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+              >
+                <option value="All">All Tiers</option>
+                <option value="Elite">Elite</option>
+                <option value="Featured">Featured</option>
+                <option value="Premium">Premium</option>
+                <option value="Free">Free</option>
+              </select>
+            </div>
+
+            {/* Rating Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Minimum Rating
+              </label>
+              <select
+                value={filterRating}
+                onChange={(e) => setFilterRating(Number(e.target.value))}
+                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+              >
+                <option value="0">Any Rating</option>
+                <option value="4.5">4.5+ Stars</option>
+                <option value="4.0">4.0+ Stars</option>
+                <option value="3.5">3.5+ Stars</option>
+                <option value="3.0">3.0+ Stars</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Active Filters Display */}
+          {(selectedCategory !== 'All' || filterTier !== 'All' || filterRating > 0 || searchQuery) && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm font-medium text-gray-600">Active filters:</span>
+                {selectedCategory !== 'All' && (
+                  <button
+                    onClick={() => setSelectedCategory('All')}
+                    className="px-3 py-1 bg-champagne-100 text-champagne-800 rounded-full text-sm font-medium hover:bg-champagne-200 transition flex items-center gap-1"
+                  >
+                    {selectedCategory}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {filterTier !== 'All' && (
+                  <button
+                    onClick={() => setFilterTier('All')}
+                    className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200 transition flex items-center gap-1"
+                  >
+                    {filterTier}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {filterRating > 0 && (
+                  <button
+                    onClick={() => setFilterRating(0)}
+                    className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium hover:bg-amber-200 transition flex items-center gap-1"
+                  >
+                    {filterRating}+ Stars
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition flex items-center gap-1"
+                  >
+                    "{searchQuery}"
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setFilterTier('All');
+                    setFilterRating(0);
+                    setSearchQuery('');
+                  }}
+                  className="px-3 py-1 text-gray-600 hover:text-gray-900 text-sm font-medium underline"
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Suggest Vendor Button */}
+        <div className="mb-8 text-center">
+          <button
+            onClick={() => setShowSuggestModal(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition"
+          >
+            <Heart className="w-5 h-5" />
+            Don't see who you're looking for? Suggest a Vendor!
+          </button>
         </div>
 
         {loading ? (
@@ -238,6 +392,18 @@ export default function Vendors() {
           }}
         />
       )}
+
+      {/* Suggest Vendor Modal */}
+      {showSuggestModal && (
+        <SuggestVendorModal
+          onClose={() => setShowSuggestModal(false)}
+          onSuccess={() => {
+            setShowSuggestModal(false);
+            fetchVendors();
+          }}
+          prefilledCategory={selectedCategory !== 'All' ? selectedCategory : undefined}
+        />
+      )}
     </div>
   );
 }
@@ -246,6 +412,10 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
   const router = useRouter();
   const tierInfo = TIER_INFO[vendor.tier];
   const TierIcon = tierInfo.icon;
+
+  const handleCardClick = () => {
+    router.push(`/vendors/${vendor.id}`);
+  };
 
   // Map vendor category to vendor questions page category
   const getCategoryLink = (category: string) => {
@@ -271,23 +441,37 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
   return (
     <div className={`bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden ${featured ? 'ring-2 ring-purple-300' : ''}`}>
-      {/* Photo Placeholder */}
-      <div className="h-48 bg-gradient-to-br from-champagne-200 to-rose-200 relative">
-        {vendor.photo_count > 0 ? (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-            {/* TODO: Show actual first photo */}
+      {/* Photo */}
+      <div className="h-48 bg-gradient-to-br from-champagne-200 to-rose-200 relative overflow-hidden">
+        {vendor.first_photo_url ? (
+          <Image
+            src={vendor.first_photo_url}
+            alt={vendor.business_name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : vendor.photo_count > 0 ? (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-400 bg-gradient-to-br from-champagne-100 to-rose-100">
             <p className="text-sm">{vendor.photo_count} photos</p>
           </div>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-            <p className="text-sm">No photos yet</p>
+            <Heart className="w-12 h-12 opacity-30" />
           </div>
         )}
         {featured && (
-          <div className="absolute top-3 right-3">
-            <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+          <div className="absolute top-3 right-3 z-10">
+            <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
               <Crown className="w-3 h-3" />
               FEATURED
+            </span>
+          </div>
+        )}
+        {vendor.photo_count > 1 && vendor.first_photo_url && (
+          <div className="absolute bottom-3 right-3 z-10">
+            <span className="bg-black/60 text-white text-xs font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+              +{vendor.photo_count - 1} more
             </span>
           </div>
         )}
@@ -295,7 +479,12 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
       <div className="p-6">
         <div className="flex items-start justify-between mb-3">
-          <h4 className="text-xl font-bold text-gray-900">{vendor.business_name}</h4>
+          <button
+            onClick={handleCardClick}
+            className="text-xl font-bold text-gray-900 hover:text-champagne-700 transition text-left"
+          >
+            {vendor.business_name}
+          </button>
           <div className={`flex items-center gap-1 px-2 py-1 ${tierInfo.bg} rounded`}>
             <TierIcon className={`w-4 h-4 ${tierInfo.color}`} />
           </div>
@@ -314,8 +503,15 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
         <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-            <span>4.9</span>
+            {vendor.average_rating !== null ? (
+              <>
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="font-medium text-gray-900">{vendor.average_rating.toFixed(1)}</span>
+                <span className="text-gray-400">({vendor.review_count})</span>
+              </>
+            ) : (
+              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">New</span>
+            )}
           </div>
           <span>{vendor.profile_views || 0} views</span>
         </div>
@@ -352,8 +548,12 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
+    bride_name: '',
+    email: '',
+    phone: '',
     wedding_date: '',
     venue_location: '',
+    budget_range: '',
     message: '',
   });
 
@@ -379,8 +579,12 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
         body: JSON.stringify({
           bride_id: brideId,
           vendor_id: vendor.id,
+          bride_name: formData.bride_name,
+          email: formData.email,
+          phone: formData.phone,
           wedding_date: formData.wedding_date,
           venue_location: formData.venue_location,
+          budget_range: formData.budget_range,
           message: formData.message,
         }),
       });
@@ -435,6 +639,48 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
             </p>
 
             <div className="space-y-5">
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Jane Smith"
+                    value={formData.bride_name}
+                    onChange={(e) => setFormData({ ...formData, bride_name: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="jane@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                  />
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="(555) 123-4567"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                />
+              </div>
+
               {/* Wedding Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -462,13 +708,32 @@ function BookingModal({ vendor, onClose }: { vendor: Vendor; onClose: () => void
                 />
               </div>
 
+              {/* Budget Range */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Budget Range
+                </label>
+                <select
+                  value={formData.budget_range}
+                  onChange={(e) => setFormData({ ...formData, budget_range: e.target.value })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-champagne-500"
+                >
+                  <option value="">Select a budget range</option>
+                  <option value="Under $1,000">Under $1,000</option>
+                  <option value="$1,000 - $2,500">$1,000 - $2,500</option>
+                  <option value="$2,500 - $5,000">$2,500 - $5,000</option>
+                  <option value="$5,000 - $10,000">$5,000 - $10,000</option>
+                  <option value="$10,000+">$10,000+</option>
+                </select>
+              </div>
+
               {/* Message */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Message
                 </label>
                 <textarea
-                  placeholder="Tell them about your vision, guest count, budget range, or any specific requests..."
+                  placeholder="Tell them about your vision, guest count, or any specific requests..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={5}

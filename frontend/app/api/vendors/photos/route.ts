@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { randomBytes } from 'crypto';
 
 export async function GET(request: NextRequest) {
   try {
@@ -48,25 +45,39 @@ export async function POST(request: NextRequest) {
 
     // Generate unique filename
     const fileExt = file.name.split('.').pop();
-    const fileName = `${randomBytes(16).toString('hex')}.${fileExt}`;
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'vendors', vendorId);
+    const timestamp = Date.now();
+    const fileName = `${vendorId}/${timestamp}.${fileExt}`;
 
-    // Create directory if it doesn't exist
-    await mkdir(uploadDir, { recursive: true });
-
-    // Save file
+    // Convert file to buffer for Supabase Storage
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const filePath = join(uploadDir, fileName);
-    await writeFile(filePath, buffer);
+
+    // Upload to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabaseServer
+      .storage
+      .from('vendor-photos')
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error('Supabase storage upload error:', uploadError);
+      throw new Error('Failed to upload to storage');
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabaseServer
+      .storage
+      .from('vendor-photos')
+      .getPublicUrl(fileName);
 
     // Save to database
-    const photoUrl = `/uploads/vendors/${vendorId}/${fileName}`;
     const { data, error } = await supabaseServer
       .from('vendor_photos')
       .insert({
         vendor_id: vendorId,
-        photo_url: photoUrl,
+        photo_url: publicUrl,
         file_name: file.name,
       })
       .select();
@@ -98,13 +109,31 @@ export async function DELETE(request: NextRequest) {
 
     if (!photoId) return NextResponse.json({ error: 'Missing photo id' }, { status: 400 });
 
-    // Get vendor_id before deleting
+    // Get photo details before deleting
     const { data: photo } = await supabaseServer
       .from('vendor_photos')
-      .select('vendor_id')
+      .select('vendor_id, photo_url')
       .eq('id', photoId)
       .single();
 
+    if (!photo) {
+      return NextResponse.json({ error: 'Photo not found' }, { status: 404 });
+    }
+
+    // Extract file path from URL for Supabase Storage
+    // URL format: https://[project].supabase.co/storage/v1/object/public/vendor-photos/[vendorId]/[timestamp].[ext]
+    const urlParts = photo.photo_url.split('/vendor-photos/');
+    if (urlParts.length > 1) {
+      const filePath = urlParts[1];
+
+      // Delete from Supabase Storage
+      await supabaseServer
+        .storage
+        .from('vendor-photos')
+        .remove([filePath]);
+    }
+
+    // Delete from database
     const { error } = await supabaseServer
       .from('vendor_photos')
       .delete()
@@ -113,17 +142,15 @@ export async function DELETE(request: NextRequest) {
     if (error) throw error;
 
     // Update vendor photo count
-    if (photo) {
-      const { data: photos } = await supabaseServer
-        .from('vendor_photos')
-        .select('id')
-        .eq('vendor_id', photo.vendor_id);
+    const { data: photos } = await supabaseServer
+      .from('vendor_photos')
+      .select('id')
+      .eq('vendor_id', photo.vendor_id);
 
-      await supabaseServer
-        .from('vendors')
-        .update({ photo_count: photos?.length || 0 })
-        .eq('id', photo.vendor_id);
-    }
+    await supabaseServer
+      .from('vendors')
+      .update({ photo_count: photos?.length || 0 })
+      .eq('id', photo.vendor_id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

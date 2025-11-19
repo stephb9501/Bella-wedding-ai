@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote } from 'lucide-react';
+import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote, Briefcase } from 'lucide-react';
 import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
 import { VendorReviews } from '@/components/VendorReviews';
+import { supabase } from '@/lib/supabase';
 
 interface VendorProfile {
   id: string;
-  businessName: string;
+  business_name: string;
   email: string;
   phone: string;
   category: string;
@@ -51,16 +52,39 @@ export default function VendorDashboard() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'clients' | 'reviews'>('overview');
+  const [vendorId, setVendorId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // TODO: Get vendor ID from auth session
-  const vendorId = 'demo-vendor-123';
+  useEffect(() => {
+    const initializeDashboard = async () => {
+      try {
+        // Get the current authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+          // Not authenticated, redirect to login
+          router.push('/auth');
+          return;
+        }
+
+        // Set the vendor ID to the authenticated user's ID
+        setVendorId(user.id);
+      } catch (err) {
+        console.error('Error getting user:', err);
+        router.push('/auth');
+      }
+    };
+
+    initializeDashboard();
+  }, [router]);
 
   useEffect(() => {
-    fetchProfile();
-    fetchPhotos();
-  }, []);
+    if (vendorId) {
+      fetchProfile();
+      fetchPhotos();
+    }
+  }, [vendorId]);
 
   const fetchProfile = async () => {
     try {
@@ -87,7 +111,7 @@ export default function VendorDashboard() {
   };
 
   const handleFileUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0 || !profile) return;
+    if (!files || files.length === 0 || !profile || !vendorId) return;
 
     const tierLimit = TIER_LIMITS[profile.tier].photos;
     if (photos.length >= tierLimit) {
@@ -192,7 +216,13 @@ export default function VendorDashboard() {
             >
               Home
             </button>
-            <button className="text-gray-600 hover:text-gray-900">
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                router.push('/auth');
+              }}
+              className="text-gray-600 hover:text-gray-900"
+            >
               Logout
             </button>
           </div>
@@ -204,7 +234,7 @@ export default function VendorDashboard() {
         <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">{profile.businessName}</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">{profile.business_name}</h2>
               <p className="text-gray-600">{profile.category} • {profile.city}, {profile.state}</p>
             </div>
 
@@ -224,7 +254,7 @@ export default function VendorDashboard() {
               Edit Profile
             </button>
             <button
-              onClick={() => router.push('/vendor-dashboard/upgrade')}
+              onClick={() => router.push('/vendor-pricing')}
               className="px-4 py-2 bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white font-medium rounded-lg transition"
             >
               Upgrade Plan
@@ -272,6 +302,13 @@ export default function VendorDashboard() {
           >
             <Calendar className="w-5 h-5" />
             Bookings
+          </button>
+          <button
+            onClick={() => router.push('/vendor-dashboard/clients')}
+            className="flex-1 py-4 px-6 font-medium text-gray-600 hover:bg-gray-50 transition flex items-center justify-center gap-2"
+          >
+            <Briefcase className="w-5 h-5" />
+            Clients
           </button>
           <button
             onClick={() => setActiveTab('reviews')}
@@ -368,7 +405,7 @@ export default function VendorDashboard() {
                 Photo limit reached! Upgrade to {profile.tier === 'free' ? 'Premium' : profile.tier === 'premium' ? 'Featured' : 'Elite'} to upload more photos.
               </p>
               <button
-                onClick={() => router.push('/vendor-dashboard/upgrade')}
+                onClick={() => router.push('/vendor-pricing')}
                 className="mt-2 text-amber-600 hover:text-amber-700 font-medium"
               >
                 View Upgrade Options →
@@ -409,17 +446,17 @@ export default function VendorDashboard() {
         )}
 
         {/* Analytics Tab */}
-        {activeTab === 'analytics' && profile && (
+        {activeTab === 'analytics' && profile && vendorId && (
           <VendorAnalytics vendorId={vendorId} tier={profile.tier} />
         )}
 
         {/* Bookings Tab */}
-        {activeTab === 'bookings' && (
+        {activeTab === 'bookings' && vendorId && (
           <VendorBookings vendorId={vendorId} />
         )}
 
         {/* Reviews Tab */}
-        {activeTab === 'reviews' && (
+        {activeTab === 'reviews' && vendorId && (
           <VendorReviews vendorId={vendorId} />
         )}
       </div>

@@ -106,7 +106,15 @@ export default function AdminDashboard() {
             >
               Public Site
             </button>
-            <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm font-medium">
+            <button
+              onClick={async () => {
+                const { createClientComponentClient } = await import('@supabase/auth-helpers-nextjs');
+                const supabase = createClientComponentClient();
+                await supabase.auth.signOut();
+                router.push('/');
+              }}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm font-medium"
+            >
               Logout
             </button>
           </div>
@@ -234,6 +242,20 @@ export default function AdminDashboard() {
                     <div className="font-medium text-gray-900">Reported Content</div>
                     <div className="text-sm text-gray-600">3 items to review</div>
                   </button>
+                  <button
+                    onClick={() => router.push('/admin/vendor-import')}
+                    className="w-full p-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg text-left transition"
+                  >
+                    <div className="font-bold">📥 Bulk Import Vendors</div>
+                    <div className="text-sm opacity-90">Add hundreds of vendors at once</div>
+                  </button>
+                  <button
+                    onClick={() => router.push('/admin/incomplete-vendors')}
+                    className="w-full p-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg text-left transition"
+                  >
+                    <div className="font-bold">⚠️ Incomplete Vendors</div>
+                    <div className="text-sm opacity-90">Find & fix missing information</div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -245,10 +267,15 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">User Management</h3>
             <p className="text-gray-600 mb-6">View and manage all bride accounts on the platform</p>
-            <div className="text-center py-12 text-gray-500">
-              <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p>User management interface coming soon</p>
-              <p className="text-sm mt-2">Will include search, filtering, and account management tools</p>
+            <div className="text-center py-12">
+              <Users className="w-16 h-16 mx-auto mb-4 text-blue-600" />
+              <p className="text-gray-900 font-medium mb-4">Manage All Users</p>
+              <button
+                onClick={() => router.push('/admin/users')}
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-lg shadow-lg transition"
+              >
+                Open User Management
+              </button>
             </div>
           </div>
         )}

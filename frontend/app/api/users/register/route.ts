@@ -39,19 +39,23 @@ export async function POST(request: NextRequest) {
 
     if (authData.user) {
       // Create user profile in database
+      // Note: id is auto-increment INTEGER, not UUID
       const { error: profileError } = await supabaseAdmin
         .from('users')
         .insert({
-          id: authData.user.id,
           email,
-          full_name: fullName,
+          first_name: fullName,
+          password_hash: 'supabase_auth_user', // Placeholder - actual auth handled by Supabase
           wedding_date: weddingDate || null,
           subscription_tier: plan || 'standard',
+          subscription_status: 'active',
+          role: 'bride', // Default role for new registrations
         });
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
-        // Continue anyway, we'll handle this gracefully
+        // Don't continue if profile creation fails - this is critical
+        throw new Error(`Failed to create user profile: ${profileError.message}`);
       }
 
       // Send admin notification email

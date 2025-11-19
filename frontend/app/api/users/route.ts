@@ -1,21 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    const email = searchParams.get('email');
 
-    if (!id) {
-      return NextResponse.json({ error: 'Missing user id' }, { status: 400 });
+    // Support both id and email lookup
+    if (!id && !email) {
+      return NextResponse.json({ error: 'Missing user id or email' }, { status: 400 });
     }
 
-    // Fetch user data from database
-    const { data, error } = await supabaseServer
+    // Build query - users table has integer IDs, so lookup by email is more reliable
+    let query = supabaseServer
       .from('users')
-      .select('id, email, full_name, partner_name, wedding_date, wedding_location, subscription_tier')
-      .eq('id', id)
-      .single();
+      .select('id, email, first_name, partner_name, wedding_date, subscription_tier, role, subscription_status');
+
+    if (email) {
+      query = query.eq('email', email);
+    } else if (id) {
+      // Try to lookup by id (integer), but this might fail if passed a UUID
+      query = query.eq('id', id);
+    }
+
+    const { data, error } = await query.single();
 
     if (error) {
       console.error('User fetch error:', error);

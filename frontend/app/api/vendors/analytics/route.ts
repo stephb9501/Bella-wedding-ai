@@ -16,43 +16,86 @@ export async function GET(request: NextRequest) {
     const days = daysMap[period as keyof typeof daysMap] || 30;
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
+    const startDateStr = startDate.toISOString().split('T')[0];
 
-    // Fetch vendor profile for tier info
+    // Fetch vendor profile with current metrics
     const { data: vendor } = await supabaseServer
       .from('vendors')
-      .select('tier, category')
+      .select('tier, category, profile_views, booking_requests, message_count_this_month')
       .eq('id', vendorId)
       .single();
 
-    // In production, these would come from actual tracking tables
-    // For now, generating sample analytics data
+    // Fetch booking requests for the period
+    const { data: bookings } = await supabaseServer
+      .from('vendor_bookings')
+      .select('created_at')
+      .eq('vendor_id', vendorId)
+      .gte('created_at', startDateStr)
+      .order('created_at', { ascending: true });
 
-    // Mock trend data
+    // Fetch daily analytics if available
+    const { data: dailyAnalytics } = await supabaseServer
+      .from('vendor_analytics')
+      .select('date, profile_views, messages_received, booking_requests_received')
+      .eq('vendor_id', vendorId)
+      .gte('date', startDateStr)
+      .order('date', { ascending: true });
+
+    // Build trend data
     const viewTrends = [];
     const messageTrends = [];
+    const bookingsByDate: Record<string, number> = {};
 
+    // Count bookings by date
+    (bookings || []).forEach(booking => {
+      const date = new Date(booking.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      bookingsByDate[date] = (bookingsByDate[date] || 0) + 1;
+    });
+
+    // Use daily analytics if available, otherwise use aggregated booking data
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
       const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const dateKey = date.toISOString().split('T')[0];
+
+      const dayAnalytics = dailyAnalytics?.find(a => a.date === dateKey);
 
       viewTrends.push({
         date: dateStr,
-        views: Math.floor(Math.random() * 50) + 10,
+        views: dayAnalytics?.profile_views || 0,
       });
 
       messageTrends.push({
         date: dateStr,
-        messages: Math.floor(Math.random() * 10) + 1,
+        messages: dayAnalytics?.messages_received || bookingsByDate[dateStr] || 0,
       });
     }
 
-    const totalViews = viewTrends.reduce((sum, d) => sum + d.views, 0);
-    const totalMessages = messageTrends.reduce((sum, d) => sum + d.messages, 0);
-    const bookingRequests = Math.floor(totalMessages * 0.3);
-    const conversionRate = totalViews > 0 ? (bookingRequests / totalViews) * 100 : 0;
+    // Calculate totals
+    const totalViews = vendor?.profile_views || viewTrends.reduce((sum, d) => sum + d.views, 0);
+    const totalBookings = bookings?.length || 0;
+    const totalMessages = vendor?.message_count_this_month || messageTrends.reduce((sum, d) => sum + d.messages, 0);
+    const conversionRate = totalViews > 0 ? (totalBookings / totalViews) * 100 : 0;
 
-    // Mock commission rates by tier
+    // Calculate change percentages (compare to previous period)
+    const previousPeriodStart = new Date(startDate);
+    previousPeriodStart.setDate(previousPeriodStart.getDate() - days);
+    const previousPeriodStartStr = previousPeriodStart.toISOString().split('T')[0];
+
+    const { data: previousBookings } = await supabaseServer
+      .from('vendor_bookings')
+      .select('id')
+      .eq('vendor_id', vendorId)
+      .gte('created_at', previousPeriodStartStr)
+      .lt('created_at', startDateStr);
+
+    const previousBookingCount = previousBookings?.length || 0;
+    const bookingsChange = previousBookingCount > 0
+      ? Math.round(((totalBookings - previousBookingCount) / previousBookingCount) * 100)
+      : totalBookings > 0 ? 100 : 0;
+
+    // Commission rates by tier
     const commissionRates = {
       free: 0.10,
       premium: 0.05,
@@ -60,31 +103,32 @@ export async function GET(request: NextRequest) {
       elite: 0.00,
     };
 
-    const avgBookingValue = 2500; // Average wedding vendor booking
-    const estimatedRevenue = bookingRequests * avgBookingValue * (1 - (commissionRates[vendor?.tier as keyof typeof commissionRates] || 0.10));
+    const avgBookingValue = 2500; // Industry average
+    const commission = commissionRates[vendor?.tier as keyof typeof commissionRates] || 0.10;
+    const estimatedRevenue = totalBookings * avgBookingValue * (1 - commission);
 
     const analytics = {
       profile_views: totalViews,
-      profile_views_change: Math.floor(Math.random() * 40) - 10, // -10% to +30%
+      profile_views_change: 0, // Would need historical data to calculate
       messages_sent: totalMessages,
-      messages_change: Math.floor(Math.random() * 50) - 10,
-      booking_requests: bookingRequests,
-      bookings_change: Math.floor(Math.random() * 60) - 15,
-      conversion_rate: conversionRate,
+      messages_change: 0, // Would need historical data to calculate
+      booking_requests: totalBookings,
+      bookings_change: bookingsChange,
+      conversion_rate: Math.round(conversionRate * 100) / 100,
       revenue_estimate: Math.floor(estimatedRevenue),
-      revenue_change: Math.floor(Math.random() * 45) - 10,
+      revenue_change: bookingsChange, // Same as bookings change for now
       popular_days: [
         'Saturday (40% of views)',
         'Sunday (25% of views)',
         'Friday (20% of views)',
-      ],
+      ], // Would need view timestamp tracking
       top_search_terms: [
         `${vendor?.category || 'Wedding'} near me`,
         'Affordable wedding vendors',
         `Best ${vendor?.category?.toLowerCase() || 'vendors'}`,
         'Wedding planning',
         'Local wedding services',
-      ],
+      ], // Would need search tracking
       view_trends: viewTrends,
       message_trends: messageTrends,
     };
