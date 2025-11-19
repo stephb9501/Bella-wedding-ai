@@ -96,6 +96,23 @@ CREATE TABLE IF NOT EXISTS master_plan_items (
 );
 
 -- =====================================================
+-- VERSION LIMIT CONFIGURATION
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS plan_version_config (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  max_versions_per_plan INTEGER DEFAULT 50, -- Limit to prevent storage bloat
+  auto_cleanup_enabled BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Insert default configuration
+INSERT INTO plan_version_config (max_versions_per_plan, auto_cleanup_enabled)
+VALUES (50, true)
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
 -- PLAN VERSIONS (Track changes when unlocked/updated)
 -- =====================================================
 
@@ -415,6 +432,56 @@ CREATE TRIGGER log_plan_changes_trigger
 -- HELPER FUNCTIONS
 -- =====================================================
 
+-- Cleanup old plan versions to prevent storage bloat
+CREATE OR REPLACE FUNCTION cleanup_old_plan_versions(
+  p_plan_id UUID
+) RETURNS void AS $$
+DECLARE
+  v_max_versions INTEGER;
+  v_auto_cleanup BOOLEAN;
+  v_current_count INTEGER;
+  v_versions_to_delete INTEGER;
+BEGIN
+  -- Get configuration
+  SELECT max_versions_per_plan, auto_cleanup_enabled
+  INTO v_max_versions, v_auto_cleanup
+  FROM plan_version_config
+  LIMIT 1;
+
+  -- If auto-cleanup is disabled, skip
+  IF NOT v_auto_cleanup THEN
+    RETURN;
+  END IF;
+
+  -- Count existing versions for this plan
+  SELECT COUNT(*)
+  INTO v_current_count
+  FROM master_plan_versions
+  WHERE master_plan_id = p_plan_id;
+
+  -- If under limit, nothing to do
+  IF v_current_count <= v_max_versions THEN
+    RETURN;
+  END IF;
+
+  -- Calculate how many to delete (keep newest max_versions)
+  v_versions_to_delete := v_current_count - v_max_versions;
+
+  -- Delete oldest versions (keep newest max_versions)
+  DELETE FROM master_plan_versions
+  WHERE id IN (
+    SELECT id
+    FROM master_plan_versions
+    WHERE master_plan_id = p_plan_id
+    ORDER BY version_number ASC
+    LIMIT v_versions_to_delete
+  );
+
+  -- Log cleanup (optional)
+  RAISE NOTICE 'Cleaned up % old versions for plan %', v_versions_to_delete, p_plan_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Lock master plan
 CREATE OR REPLACE FUNCTION lock_master_plan(
   p_plan_id UUID,
@@ -465,6 +532,9 @@ BEGIN
     v_plan.status,
     true,
     p_user_id;
+
+  -- Auto-cleanup old versions if limit exceeded
+  PERFORM cleanup_old_plan_versions(p_plan_id);
 
   -- Lock plan
   UPDATE master_wedding_plans
