@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
 import { VendorReviews } from '@/components/VendorReviews';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface VendorProfile {
   id: string;
@@ -47,6 +47,7 @@ const TIER_INFO = {
 
 export default function VendorDashboard() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [profile, setProfile] = useState<VendorProfile | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
