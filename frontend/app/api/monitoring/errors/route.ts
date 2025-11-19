@@ -3,10 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { sanitizeText, sanitizeSqlInput } from '@/lib/security';
 import { validateRequiredFields, createErrorResponse, createSuccessResponse } from '@/lib/api-security';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 interface ErrorLogRequest {
   message: string;
@@ -20,6 +22,7 @@ interface ErrorLogRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabaseClient();
     const body: ErrorLogRequest = await request.json();
 
     // Validate required fields

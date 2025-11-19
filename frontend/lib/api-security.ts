@@ -5,15 +5,18 @@ import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sanitizeHtml, sanitizeText, sanitizeSqlInput, validators } from './security';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 /**
  * Verify user authentication from request
  */
 export async function verifyAuth(request: NextRequest) {
+  const supabase = getSupabaseClient();
   try {
     // Get token from headers or cookies
     const authHeader = request.headers.get('authorization');
@@ -153,6 +156,7 @@ export async function logAudit(
   request?: NextRequest
 ) {
   try {
+    const supabase = getSupabaseClient();
     const ipAddress = request
       ? request.headers.get('x-forwarded-for')?.split(',')[0] ||
         request.headers.get('x-real-ip') ||
@@ -189,6 +193,7 @@ export async function logSecurityEvent(
   metadata?: Record<string, any>
 ) {
   try {
+    const supabase = getSupabaseClient();
     const ipAddress =
       request.headers.get('x-forwarded-for')?.split(',')[0] ||
       request.headers.get('x-real-ip') ||
@@ -216,6 +221,7 @@ export async function verifyOwnership(
   resourceId: number
 ): Promise<{ isOwner: boolean; error?: string }> {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from(table)
       .select('user_id')
@@ -264,6 +270,7 @@ export async function checkUserRateLimit(
   windowMinutes: number
 ): Promise<{ allowed: boolean; remaining: number }> {
   try {
+    const supabase = getSupabaseClient();
     const windowStart = new Date(Date.now() - windowMinutes * 60 * 1000);
 
     // Count recent actions

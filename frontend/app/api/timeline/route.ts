@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
       .from('timeline_events')
       .select('*')
       .eq('user_id', userId)
-      .order('event_time', { ascending: true });
+      .order('event_date', { ascending: true })
+      .order('order_index', { ascending: true });
 
     if (error) throw error;
 
@@ -35,9 +36,23 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { user_id, event_time, title, description, category, enabled } = body;
+    const {
+      user_id,
+      event_name,
+      event_date,
+      event_time,
+      location,
+      description,
+      category,
+      order_index,
+      notes,
+      music_cue,
+      assigned_to,
+      completed,
+      enabled
+    } = body;
 
-    if (!user_id || !event_time || !title) {
+    if (!user_id || !event_name || !event_date || !event_time) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -45,10 +60,17 @@ export async function POST(request: NextRequest) {
       .from('timeline_events')
       .insert({
         user_id,
+        event_name,
+        event_date,
         event_time,
-        title,
-        description: description || '',
-        category: category || 'general',
+        location: location || null,
+        description: description || null,
+        category: category || 'wedding-day',
+        order_index: order_index || 0,
+        notes: notes || null,
+        music_cue: music_cue || null,
+        assigned_to: assigned_to || [],
+        completed: completed || false,
         enabled: enabled !== undefined ? enabled : true,
       })
       .select();
@@ -68,7 +90,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, event_time, title, description, category, enabled } = body;
+    const { id, ...updates } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Missing timeline event id' }, { status: 400 });
@@ -77,11 +99,7 @@ export async function PUT(request: NextRequest) {
     const { data, error } = await supabaseServer
       .from('timeline_events')
       .update({
-        event_time,
-        title,
-        description,
-        category,
-        enabled,
+        ...updates,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -118,6 +136,36 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Timeline DELETE error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// PATCH endpoint for bulk updates (used for drag & drop reordering)
+export async function PATCH(request: NextRequest) {
+  const authError = await requireAuth(request);
+  if (authError) return authError;
+
+  try {
+    const body = await request.json();
+    const { events } = body; // Array of { id, order_index }
+
+    if (!events || !Array.isArray(events)) {
+      return NextResponse.json({ error: 'Missing events array' }, { status: 400 });
+    }
+
+    // Update all events in a transaction-like manner
+    const updates = events.map(async (event) => {
+      return supabaseServer
+        .from('timeline_events')
+        .update({ order_index: event.order_index })
+        .eq('id', event.id);
+    });
+
+    await Promise.all(updates);
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('Timeline PATCH error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

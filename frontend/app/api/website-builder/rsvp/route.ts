@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { checkRateLimit } from '@/lib/rate-limit';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 // GET - Fetch RSVPs for a website (owner only)
 export async function GET(request: NextRequest) {
+  const supabase = getSupabaseClient();
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
@@ -79,6 +82,7 @@ export async function GET(request: NextRequest) {
 
 // POST - Submit RSVP (public)
 export async function POST(request: NextRequest) {
+  const supabase = getSupabaseClient();
   try {
     const body = await request.json();
     const { website_id, guest_name, guest_email, guest_phone, number_of_guests, attending, meal_choice, dietary_restrictions, song_request, additional_notes } = body;
@@ -153,6 +157,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE - Delete RSVP (owner only)
 export async function DELETE(request: NextRequest) {
+  const supabase = getSupabaseClient();
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
