@@ -314,7 +314,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSaveProfile}
                   disabled={saving}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md flex items-center justify-center gap-2"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                   {saving ? 'Saving...' : 'Save Changes'}
@@ -360,7 +360,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleChangePassword}
                   disabled={saving}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md"
                 >
                   {saving ? 'Updating...' : 'Update Password'}
                 </button>
@@ -402,7 +402,7 @@ export default function SettingsPage() {
 
                   <button
                     onClick={() => router.push('/settings/subscription')}
-                    className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg transition shadow-md"
+                    className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg transition shadow-md"
                   >
                     Manage Subscription
                   </button>
@@ -461,7 +461,7 @@ export default function SettingsPage() {
 
                 <button
                   onClick={() => alert('Notification preferences saved!')}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg transition shadow-md"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg transition shadow-md"
                 >
                   Save Preferences
                 </button>

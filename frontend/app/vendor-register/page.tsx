@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Check, Eye, EyeOff } from 'lucide-react';
 import { validatePassword } from '@/lib/password-validator';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const VENDOR_TIERS = [
   {
@@ -88,6 +89,7 @@ const CATEGORIES = [
 
 export default function VendorRegister() {
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [step, setStep] = useState(1);
   const [selectedTier, setSelectedTier] = useState('featured');
   const [loading, setLoading] = useState(false);
@@ -168,11 +170,27 @@ export default function VendorRegister() {
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to register');
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Vendor registration error:', errorData);
+        throw new Error(errorData.error || 'Failed to register');
+      }
+
+      // Sign in the vendor after successful registration
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (signInError) {
+        console.error('Auto-login error:', signInError);
+        throw signInError;
+      }
 
       // Redirect to vendor dashboard
       router.push('/vendor-dashboard');
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
@@ -250,7 +268,7 @@ export default function VendorRegister() {
                 >
                   {tier.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-xs font-bold px-3 py-1 rounded-full">
                         BEST VALUE
                       </span>
                     </div>
@@ -290,7 +308,7 @@ export default function VendorRegister() {
             <div className="text-center">
               <button
                 onClick={() => setStep(2)}
-                className="px-8 py-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 text-white font-bold rounded-lg shadow-lg transition"
+                className="px-8 py-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-bold rounded-lg shadow-lg transition"
               >
                 Continue to Registration
               </button>
@@ -520,7 +538,7 @@ export default function VendorRegister() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition"
                 >
                   {loading ? 'Creating Account...' : 'Create Account'}
                 </button>

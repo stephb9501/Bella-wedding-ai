@@ -30,15 +30,23 @@ export default function LoginPage() {
       if (signInError) throw signInError;
 
       // Check if user is vendor or bride
-      const { data: userData } = await supabase
-        .from('vendors')
-        .select('id')
-        .eq('id', data.user?.id)
-        .single();
+      try {
+        const { data: userData, error: vendorCheckError } = await supabase
+          .from('vendors')
+          .select('id')
+          .eq('id', data.user?.id)
+          .single();
 
-      if (userData) {
-        router.push('/vendor-dashboard');
-      } else {
+        // If vendor record found, redirect to vendor dashboard
+        if (userData && !vendorCheckError) {
+          router.push('/vendor-dashboard');
+        } else {
+          // Default to bride dashboard
+          router.push('/dashboard');
+        }
+      } catch (vendorError) {
+        // If vendor check fails, default to bride dashboard
+        console.warn('Vendor check failed, defaulting to bride dashboard:', vendorError);
         router.push('/dashboard');
       }
     } catch (err: any) {
@@ -129,7 +137,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md"
+              className="w-full py-3 px-4 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold rounded-lg transition shadow-md"
             >
               {loading ? 'Logging in...' : 'Log In'}
             </button>

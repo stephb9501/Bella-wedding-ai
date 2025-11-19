@@ -145,7 +145,7 @@ export default function AIAssistant() {
               <div
                 className={`max-w-[80%] rounded-2xl px-6 py-4 ${
                   msg.role === 'user'
-                    ? 'bg-gradient-to-r from-champagne-500 to-rose-500 text-white'
+                    ? 'bg-gradient-to-r from-champagne-400 to-rose-400 text-white'
                     : 'bg-white border border-gray-200 text-gray-900'
                 }`}
               >
@@ -191,7 +191,7 @@ export default function AIAssistant() {
             <button
               type="submit"
               disabled={!input.trim() || loading}
-              className="px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 hover:from-champagne-600 hover:to-rose-600 disabled:from-gray-300 disabled:to-gray-300 text-white rounded-xl transition flex items-center gap-2 font-medium"
+              className="px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 disabled:from-gray-300 disabled:to-gray-300 text-white rounded-xl transition flex items-center gap-2 font-medium"
             >
               <Send className="w-5 h-5" />
               Send

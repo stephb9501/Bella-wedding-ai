@@ -60,7 +60,7 @@ export default function DiagnosticPage() {
 
         <div style={{ marginBottom: '20px' }}>
           <h3 style={{ color: '#444', fontSize: '16px', marginBottom: '10px' }}>Tailwind Button Test:</h3>
-          <button className="px-6 py-3 bg-gradient-to-r from-champagne-500 to-rose-500 text-white font-bold rounded-lg">
+          <button className="px-6 py-3 bg-gradient-to-r from-champagne-400 to-rose-400 text-white font-bold rounded-lg">
             Tailwind Gradient Button
           </button>
         </div>

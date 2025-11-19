@@ -236,7 +236,7 @@ const DASHBOARD_CARDS = [
 
 
 export default function Dashboard() {
-  const { isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('website');
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -287,30 +287,70 @@ export default function Dashboard() {
   ]);
 
   useEffect(() => {
-    // In a real app, fetch from API
-    const weddingDate = new Date('2025-06-15');
-    const today = new Date();
-    const daysUntil = Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const fetchUserData = async () => {
+      if (!user) return;
 
-    setStats({
-      totalGuests: 150,
-      rsvpYes: 85,
-      rsvpNo: 15,
-      budget: 30000,
-      spent: 8500,
-      daysUntilWedding: daysUntil,
-      tasksCompleted: 12,
-      totalTasks: 42,
-    });
+      try {
+        // Fetch user data from API
+        const response = await fetch(`/api/users?id=${user.id}`);
+        if (response.ok) {
+          const userData = await response.json();
 
-    setCoupleData({
-      partnerOne: 'Sarah',
-      partnerTwo: 'Michael',
-      weddingDate: '2025-06-15',
-      weddingLocation: 'Riverside Manor',
-      tier: 'premium',
-    });
-  }, []);
+          // Set real user data
+          const userWeddingDate = userData.wedding_date || '2025-06-15';
+          const weddingDate = new Date(userWeddingDate);
+          const today = new Date();
+          const daysUntil = Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+          setStats({
+            totalGuests: 150,
+            rsvpYes: 85,
+            rsvpNo: 15,
+            budget: 30000,
+            spent: 8500,
+            daysUntilWedding: daysUntil,
+            tasksCompleted: 12,
+            totalTasks: 42,
+          });
+
+          setCoupleData({
+            partnerOne: userData.full_name || 'You',
+            partnerTwo: userData.partner_name || 'Your Love',
+            weddingDate: userWeddingDate,
+            weddingLocation: userData.wedding_location || 'Your Dream Venue',
+            tier: userData.subscription_tier || 'standard',
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Use default demo data on error
+        const weddingDate = new Date('2025-06-15');
+        const today = new Date();
+        const daysUntil = Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        setStats({
+          totalGuests: 150,
+          rsvpYes: 85,
+          rsvpNo: 15,
+          budget: 30000,
+          spent: 8500,
+          daysUntilWedding: daysUntil,
+          tasksCompleted: 12,
+          totalTasks: 42,
+        });
+
+        setCoupleData({
+          partnerOne: user.user_metadata?.full_name || 'You',
+          partnerTwo: 'Your Love',
+          weddingDate: '2025-06-15',
+          weddingLocation: 'Your Dream Venue',
+          tier: 'standard',
+        });
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   const budgetPercentage = Math.round((stats.spent / stats.budget) * 100);
   const taskPercentage = Math.round((stats.tasksCompleted / stats.totalTasks) * 100);
@@ -650,7 +690,7 @@ export default function Dashboard() {
               <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
                 Premium Plan Features
               </h4>
-              <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+              <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-xs px-3 py-1 rounded-full font-semibold">
                 $29.99/month
               </span>
             </div>
@@ -664,7 +704,7 @@ export default function Dashboard() {
                     className={`${card.color} border-2 border-champagne-300 rounded-xl p-6 hover:shadow-md transition text-left group relative`}
                   >
                     <div className="absolute top-3 right-3">
-                      <span className="bg-gradient-to-r from-champagne-500 to-rose-500 text-white text-xs px-2 py-1 rounded font-medium">
+                      <span className="bg-gradient-to-r from-champagne-400 to-rose-400 text-white text-xs px-2 py-1 rounded font-medium">
                         {card.tier}
                       </span>
                     </div>
