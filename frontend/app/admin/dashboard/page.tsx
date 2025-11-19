@@ -267,10 +267,15 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">User Management</h3>
             <p className="text-gray-600 mb-6">View and manage all bride accounts on the platform</p>
-            <div className="text-center py-12 text-gray-500">
-              <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p>User management interface coming soon</p>
-              <p className="text-sm mt-2">Will include search, filtering, and account management tools</p>
+            <div className="text-center py-12">
+              <Users className="w-16 h-16 mx-auto mb-4 text-blue-600" />
+              <p className="text-gray-900 font-medium mb-4">Manage All Users</p>
+              <button
+                onClick={() => router.push('/admin/users')}
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-lg shadow-lg transition"
+              >
+                Open User Management
+              </button>
             </div>
           </div>
         )}
