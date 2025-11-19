@@ -553,6 +553,56 @@ SET options = '["Yes, we need centerpieces", "No centerpieces", "Undecided"]'::j
 WHERE question_text = 'Do you need centerpieces?';
 
 -- =====================================================
+-- AUTO-SEND QUESTIONNAIRE WHEN BRIDE BOOKS VENDOR
+-- =====================================================
+
+-- Function to auto-send questionnaire when vendor is booked
+CREATE OR REPLACE FUNCTION auto_send_questionnaire_on_booking()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_questionnaire RECORD;
+BEGIN
+  -- Find vendor's active questionnaire with auto-send enabled
+  SELECT * INTO v_questionnaire
+  FROM vendor_questionnaires
+  WHERE vendor_id = NEW.vendor_id
+    AND is_active = true
+    AND send_automatically = true
+  LIMIT 1;
+
+  -- If vendor has auto-send questionnaire, create a response for the bride
+  IF FOUND THEN
+    INSERT INTO questionnaire_responses (
+      questionnaire_id,
+      booking_id,
+      bride_id,
+      vendor_id,
+      responses,
+      is_complete,
+      bride_notified
+    ) VALUES (
+      v_questionnaire.id,
+      NEW.id,
+      NEW.user_id, -- bride_id
+      NEW.vendor_id,
+      '{}'::jsonb, -- Empty responses initially
+      false,
+      true -- Will send notification to bride
+    )
+    ON CONFLICT DO NOTHING;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger when vendor booking is created
+CREATE TRIGGER auto_send_questionnaire_trigger
+  AFTER INSERT ON vendor_bookings
+  FOR EACH ROW
+  EXECUTE FUNCTION auto_send_questionnaire_on_booking();
+
+-- =====================================================
 -- SUCCESS! Questionnaire system created!
 -- =====================================================
 -- Features:
@@ -565,4 +615,6 @@ WHERE question_text = 'Do you need centerpieces?';
 -- ✅ Admin can manually add questions (copy/paste or upload)
 -- ✅ Popular questions auto-flagged (used 50+ times)
 -- ✅ Default photography/catering/DJ/florist questions included
+-- ✅ OPTIONAL AUTO-SEND: Vendors can enable to automatically send questionnaire when bride books them
+-- ✅ Automatic integration with vendor bookings
 -- =====================================================
