@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
 import { PhotoGallery } from '@/components/PhotoGallery';
 import { useAuth } from '@/lib/useAuth';
+import { supabase } from '@/lib/supabase';
 import AuthWall from '@/components/AuthWall';
 
 interface DashboardStats {
@@ -286,13 +287,23 @@ export default function Dashboard() {
     },
   ]);
 
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
 
       try {
-        // Fetch user data from API
-        const response = await fetch(`/api/users?id=${user.id}`);
+        // Fetch user data from API - use email since users table has integer IDs
+        const response = await fetch(`/api/users?email=${user.email}`);
         if (response.ok) {
           const userData = await response.json();
 
@@ -389,8 +400,9 @@ export default function Dashboard() {
               <Settings className="w-5 h-5 text-gray-600" />
             </button>
             <button
-              onClick={() => router.push('/')}
+              onClick={handleLogout}
               className="p-2 hover:bg-gray-100 rounded-lg transition"
+              title="Logout"
             >
               <LogOut className="w-5 h-5 text-gray-600" />
             </button>
@@ -412,10 +424,16 @@ export default function Dashboard() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-champagne-200 p-4">
-          <button className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2">
+          <button
+            onClick={() => router.push('/settings')}
+            className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2"
+          >
             <Settings className="w-5 h-5" /> Settings
           </button>
-          <button className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2"
+          >
             <LogOut className="w-5 h-5" /> Logout
           </button>
         </div>
