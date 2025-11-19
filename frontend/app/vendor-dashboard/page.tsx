@@ -68,6 +68,24 @@ export default function VendorDashboard() {
           return;
         }
 
+        // Check if user is admin and redirect to admin dashboard
+        try {
+          const { data: userData } = await supabase
+            .from('users')
+            .select('role')
+            .eq('email', user.email)
+            .single();
+
+          if (userData?.role === 'admin') {
+            console.log('🔒 Admin detected on vendor dashboard - redirecting to admin dashboard');
+            router.push('/admin/dashboard');
+            return;
+          }
+        } catch (roleError) {
+          // If role check fails, continue (user might be vendor-only)
+          console.log('Role check completed, continuing as vendor');
+        }
+
         // Set the vendor ID to the authenticated user's ID
         setVendorId(user.id);
       } catch (err) {

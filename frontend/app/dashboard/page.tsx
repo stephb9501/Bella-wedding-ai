@@ -298,6 +298,30 @@ export default function Dashboard() {
     }
   };
 
+  // Check if user is admin and redirect
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      if (!user) return;
+
+      try {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('role')
+          .eq('email', user.email)
+          .single();
+
+        if (userData?.role === 'admin') {
+          console.log('🔒 Admin detected on bride dashboard - redirecting to admin dashboard');
+          router.push('/admin/dashboard');
+        }
+      } catch (error) {
+        console.error('Role check error:', error);
+      }
+    };
+
+    checkAdminRole();
+  }, [user, router, supabase]);
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
