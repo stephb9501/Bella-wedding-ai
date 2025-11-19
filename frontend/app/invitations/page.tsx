@@ -1,393 +1,582 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Download, Copy, Check } from 'lucide-react';
+import {
+  Sparkles, Download, Save, Heart, Calendar, MapPin,
+  Palette, Type, Image as ImageIcon, Send, ChevronLeft,
+  Mail, Copy, CheckCircle, Wand2
+} from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
+import AuthWall from '@/components/AuthWall';
 
-interface InvitationData {
-  brideName: string;
-  groomName: string;
-  weddingDate: string;
-  ceremonyTime: string;
-  venueName: string;
-  venueAddress: string;
-  receptionTime: string;
-  rsvpDate: string;
-  rsvpEmail: string;
-  dressCode: string;
-  additionalInfo: string;
-}
-
+// Template designs
 const TEMPLATES = [
-  { id: 'elegant', name: 'Elegant Rose' },
-  { id: 'modern', name: 'Modern Minimal' },
-  { id: 'rustic', name: 'Rustic Charm' },
-  { id: 'garden', name: 'Garden Romance' },
-  { id: 'classic', name: 'Classic Gold' },
-  { id: 'beach', name: 'Beach Bliss' },
+  {
+    id: 'elegant',
+    name: 'Elegant',
+    colors: { primary: '#F4E4D7', secondary: '#C9A07B', text: '#4A4A4A' },
+    font: 'Playfair Display, serif',
+  },
+  {
+    id: 'modern',
+    name: 'Modern',
+    colors: { primary: '#E8D5C4', secondary: '#A67F5D', text: '#2C2C2C' },
+    font: 'Montserrat, sans-serif',
+  },
+  {
+    id: 'rustic',
+    name: 'Rustic',
+    colors: { primary: '#F5E6D3', secondary: '#8B7355', text: '#5D4E37' },
+    font: 'Georgia, serif',
+  },
+  {
+    id: 'floral',
+    name: 'Floral',
+    colors: { primary: '#FFF0F5', secondary: '#DDA0B3', text: '#4A4A4A' },
+    font: 'Lora, serif',
+  },
+  {
+    id: 'minimalist',
+    name: 'Minimalist',
+    colors: { primary: '#FFFFFF', secondary: '#C7A17A', text: '#000000' },
+    font: 'Helvetica, sans-serif',
+  },
 ];
 
-export default function InvitationCreator() {
+interface InvitationData {
+  coupleName1: string;
+  coupleName2: string;
+  weddingDate: string;
+  weddingTime: string;
+  venueName: string;
+  venueAddress: string;
+  customMessage: string;
+  rsvpLink: string;
+}
+
+export default function InvitationsPage() {
+  const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
-  const [selectedTemplate, setSelectedTemplate] = useState('elegant');
-  const [copied, setCopied] = useState(false);
-  const [formData, setFormData] = useState<InvitationData>({
-    brideName: '',
-    groomName: '',
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // UI State
+  const [activeTab, setActiveTab] = useState<'canva' | 'builtin'>('canva');
+  const [selectedTemplate, setSelectedTemplate] = useState(TEMPLATES[0]);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  // Invitation Data
+  const [invitationData, setInvitationData] = useState<InvitationData>({
+    coupleName1: '',
+    coupleName2: '',
     weddingDate: '',
-    ceremonyTime: '',
+    weddingTime: '',
     venueName: '',
     venueAddress: '',
-    receptionTime: '',
-    rsvpDate: '',
-    rsvpEmail: '',
-    dressCode: '',
-    additionalInfo: '',
+    customMessage: 'Together with our families, we invite you to celebrate our wedding',
+    rsvpLink: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
+  // Canva Integration
+  const [canvaDesignUrl, setCanvaDesignUrl] = useState('');
 
-  const handleDownload = () => {
-    alert('Download PDF feature coming soon! Will integrate with jsPDF or similar library.');
-  };
+  useEffect(() => {
+    // Load user data
+    const loadUserData = async () => {
+      if (!user) return;
 
-  const handleCopyText = () => {
-    const invitationText = `
-You are cordially invited to celebrate the wedding of
-${formData.brideName} & ${formData.groomName}
-
-Date: ${formData.weddingDate}
-Ceremony: ${formData.ceremonyTime}
-Venue: ${formData.venueName}
-${formData.venueAddress}
-
-Reception to follow at ${formData.receptionTime}
-
-Please RSVP by ${formData.rsvpDate}
-Email: ${formData.rsvpEmail}
-
-${formData.dressCode ? `Dress Code: ${formData.dressCode}` : ''}
-${formData.additionalInfo}
-    `.trim();
-
-    navigator.clipboard.writeText(invitationText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const getTemplateStyles = () => {
-    const templates: Record<string, any> = {
-      elegant: {
-        bg: 'bg-gradient-to-br from-rose-50 via-white to-champagne-50',
-        border: 'border-4 border-rose-300',
-        text: 'text-gray-800',
-        accent: 'text-rose-600',
-        font: 'font-serif',
-      },
-      modern: {
-        bg: 'bg-white',
-        border: 'border-2 border-gray-900',
-        text: 'text-gray-900',
-        accent: 'text-gray-900',
-        font: 'font-sans',
-      },
-      rustic: {
-        bg: 'bg-gradient-to-br from-amber-50 to-orange-50',
-        border: 'border-4 border-amber-600',
-        text: 'text-amber-900',
-        accent: 'text-orange-700',
-        font: 'font-serif',
-      },
-      garden: {
-        bg: 'bg-gradient-to-br from-green-50 to-emerald-50',
-        border: 'border-4 border-green-400',
-        text: 'text-green-900',
-        accent: 'text-emerald-600',
-        font: 'font-serif',
-      },
-      classic: {
-        bg: 'bg-gradient-to-br from-yellow-50 to-amber-50',
-        border: 'border-4 border-yellow-600',
-        text: 'text-gray-900',
-        accent: 'text-yellow-700',
-        font: 'font-serif',
-      },
-      beach: {
-        bg: 'bg-gradient-to-br from-blue-50 to-cyan-50',
-        border: 'border-4 border-blue-400',
-        text: 'text-blue-900',
-        accent: 'text-cyan-600',
-        font: 'font-sans',
-      },
+      try {
+        const response = await fetch(`/api/users?email=${user.email}`);
+        if (response.ok) {
+          const userData = await response.json();
+          setInvitationData(prev => ({
+            ...prev,
+            coupleName1: userData.full_name || '',
+            coupleName2: userData.partner_name || '',
+            weddingDate: userData.wedding_date || '',
+            venueName: userData.wedding_location || '',
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
     };
 
-    return templates[selectedTemplate] || templates.elegant;
+    loadUserData();
+  }, [user]);
+
+  // Open Canva Design Button
+  const openCanvaDesigner = () => {
+    // Canva Design Button integration
+    // In production, you would initialize the Canva SDK
+    // For now, we'll simulate with a placeholder
+    const canvaUrl = `https://www.canva.com/design/create?type=invitation&search=wedding`;
+    window.open(canvaUrl, '_blank');
   };
 
-  const styles = getTemplateStyles();
+  // Generate preview on canvas
+  useEffect(() => {
+    if (activeTab !== 'builtin' || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    canvas.width = 600;
+    canvas.height = 800;
+
+    // Clear canvas
+    ctx.fillStyle = selectedTemplate.colors.primary;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw border
+    ctx.strokeStyle = selectedTemplate.colors.secondary;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+    // Set text styles
+    ctx.fillStyle = selectedTemplate.colors.text;
+    ctx.textAlign = 'center';
+
+    // Draw decorative elements
+    ctx.fillStyle = selectedTemplate.colors.secondary;
+    ctx.font = '60px serif';
+    ctx.fillText('♥', canvas.width / 2, 100);
+
+    // Draw invitation text
+    ctx.fillStyle = selectedTemplate.colors.text;
+    ctx.font = `24px ${selectedTemplate.font}`;
+    ctx.fillText(invitationData.customMessage, canvas.width / 2, 180);
+
+    // Draw couple names
+    ctx.font = `bold 40px ${selectedTemplate.font}`;
+    ctx.fillText(invitationData.coupleName1, canvas.width / 2, 280);
+
+    ctx.font = '30px serif';
+    ctx.fillText('&', canvas.width / 2, 330);
+
+    ctx.font = `bold 40px ${selectedTemplate.font}`;
+    ctx.fillText(invitationData.coupleName2, canvas.width / 2, 380);
+
+    // Draw wedding details
+    ctx.font = `20px ${selectedTemplate.font}`;
+    if (invitationData.weddingDate) {
+      const formattedDate = new Date(invitationData.weddingDate).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      ctx.fillText(formattedDate, canvas.width / 2, 460);
+    }
+
+    if (invitationData.weddingTime) {
+      ctx.fillText(invitationData.weddingTime, canvas.width / 2, 490);
+    }
+
+    if (invitationData.venueName) {
+      ctx.font = `italic 22px ${selectedTemplate.font}`;
+      ctx.fillText(invitationData.venueName, canvas.width / 2, 550);
+    }
+
+    if (invitationData.venueAddress) {
+      ctx.font = `18px ${selectedTemplate.font}`;
+      ctx.fillText(invitationData.venueAddress, canvas.width / 2, 580);
+    }
+
+    // Draw RSVP info
+    ctx.font = `16px ${selectedTemplate.font}`;
+    ctx.fillText('Please RSVP at:', canvas.width / 2, 680);
+    ctx.fillText(invitationData.rsvpLink || 'yourdomain.com/rsvp', canvas.width / 2, 710);
+
+  }, [invitationData, selectedTemplate, activeTab]);
+
+  // Download invitation as image
+  const downloadInvitation = () => {
+    if (!canvasRef.current) return;
+
+    const link = document.createElement('a');
+    link.download = 'wedding-invitation.png';
+    link.href = canvasRef.current.toDataURL();
+    link.click();
+  };
+
+  // Save invitation to database
+  const saveInvitation = async () => {
+    if (!user) return;
+
+    setSaving(true);
+    try {
+      const response = await fetch('/api/users?email=' + user.email);
+      const userData = await response.json();
+
+      const invitationPayload = {
+        user_id: userData.id,
+        design_type: activeTab,
+        canva_design_url: activeTab === 'canva' ? canvaDesignUrl : null,
+        template_name: activeTab === 'builtin' ? selectedTemplate.name : null,
+        couple_name_1: invitationData.coupleName1,
+        couple_name_2: invitationData.coupleName2,
+        wedding_date: invitationData.weddingDate,
+        wedding_time: invitationData.weddingTime,
+        venue_name: invitationData.venueName,
+        venue_address: invitationData.venueAddress,
+        custom_message: invitationData.customMessage,
+        color_scheme: selectedTemplate.id,
+        font_style: selectedTemplate.font,
+      };
+
+      const saveResponse = await fetch('/api/invitations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(invitationPayload),
+      });
+
+      if (saveResponse.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
+    } catch (error) {
+      console.error('Error saving invitation:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50 flex items-center justify-center">
+        <Heart className="w-12 h-12 text-champagne-600 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AuthWall featureName="Invitations Designer" fullLock={true} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
+      {/* Header */}
       <header className="bg-white border-b border-champagne-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
-              <Heart className="w-6 h-6 text-white" />
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-serif font-bold text-gray-900">
+                    Invitation Designer
+                  </h1>
+                  <p className="text-sm text-gray-600">Create beautiful wedding invitations</p>
+                </div>
+              </div>
             </div>
-            <h1 className="text-xl font-serif font-bold text-gray-900">Invitation Creator</h1>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.push('/invitations/text-rsvp')}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <Send className="w-4 h-4" />
+                Text RSVP
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="text-champagne-600 hover:text-champagne-700 font-medium"
-          >
-            Back
-          </button>
         </div>
       </header>
 
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Form */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Invitation Details</h2>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Bride Name</label>
-                    <input
-                      type="text"
-                      name="brideName"
-                      value={formData.brideName}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                      placeholder="Sarah"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Groom Name</label>
-                    <input
-                      type="text"
-                      name="groomName"
-                      value={formData.groomName}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                      placeholder="Michael"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Wedding Date</label>
-                  <input
-                    type="date"
-                    name="weddingDate"
-                    value={formData.weddingDate}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Ceremony Time</label>
-                  <input
-                    type="time"
-                    name="ceremonyTime"
-                    value={formData.ceremonyTime}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Venue Name</label>
-                  <input
-                    type="text"
-                    name="venueName"
-                    value={formData.venueName}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    placeholder="The Grand Ballroom"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Venue Address</label>
-                  <input
-                    type="text"
-                    name="venueAddress"
-                    value={formData.venueAddress}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    placeholder="123 Main St, City, State"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Reception Time</label>
-                  <input
-                    type="time"
-                    name="receptionTime"
-                    value={formData.receptionTime}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">RSVP By</label>
-                    <input
-                      type="date"
-                      name="rsvpDate"
-                      value={formData.rsvpDate}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">RSVP Email</label>
-                    <input
-                      type="email"
-                      name="rsvpEmail"
-                      value={formData.rsvpEmail}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                      placeholder="rsvp@email.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Dress Code</label>
-                  <input
-                    type="text"
-                    name="dressCode"
-                    value={formData.dressCode}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    placeholder="Semi-Formal, Black Tie, etc."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Additional Info</label>
-                  <textarea
-                    name="additionalInfo"
-                    value={formData.additionalInfo}
-                    onChange={handleChange}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-champagne-500"
-                    placeholder="Hotel info, parking, etc."
-                  />
-                </div>
+        {/* Design Method Tabs */}
+        <div className="bg-white rounded-2xl shadow-sm border border-champagne-100 mb-8">
+          <div className="flex border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab('canva')}
+              className={`flex-1 px-6 py-4 font-medium transition ${
+                activeTab === 'canva'
+                  ? 'bg-champagne-50 text-champagne-700 border-b-2 border-champagne-600'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <Sparkles className="w-5 h-5" />
+                <span>Canva Designer</span>
+                <span className="text-xs bg-champagne-600 text-white px-2 py-1 rounded">Premium</span>
               </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Choose Template</h3>
-              <div className="grid grid-cols-3 gap-3">
-                {TEMPLATES.map(template => (
-                  <button
-                    key={template.id}
-                    onClick={() => setSelectedTemplate(template.id)}
-                    className={`p-3 rounded-lg border-2 transition ${
-                      selectedTemplate === template.id
-                        ? 'border-champagne-600 bg-champagne-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="text-sm font-medium text-gray-900">{template.name}</div>
-                  </button>
-                ))}
+            </button>
+            <button
+              onClick={() => setActiveTab('builtin')}
+              className={`flex-1 px-6 py-4 font-medium transition ${
+                activeTab === 'builtin'
+                  ? 'bg-champagne-50 text-champagne-700 border-b-2 border-champagne-600'
+                  : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <Wand2 className="w-5 h-5" />
+                <span>Quick Designer</span>
               </div>
-            </div>
+            </button>
           </div>
 
-          {/* Preview */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Preview</h2>
-                <div className="flex gap-2">
+          <div className="p-8">
+            {/* Canva Tab */}
+            {activeTab === 'canva' && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <Sparkles className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-serif font-bold text-gray-900 mb-2">
+                    Design with Canva
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Access thousands of professional wedding invitation templates
+                  </p>
+
                   <button
-                    onClick={handleCopyText}
-                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition flex items-center gap-2"
+                    onClick={openCanvaDesigner}
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition font-medium text-lg"
                   >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copied ? 'Copied!' : 'Copy'}
-                  </button>
-                  <button
-                    onClick={handleDownload}
-                    className="px-4 py-2 bg-champagne-600 hover:bg-champagne-700 text-white rounded-lg transition flex items-center gap-2"
-                  >
-                    <Download className="w-4 h-4" />
-                    PDF
+                    <Sparkles className="w-5 h-5" />
+                    Open Canva Designer
                   </button>
                 </div>
+
+                <div className="bg-champagne-50 rounded-lg p-6 mt-8">
+                  <h3 className="font-semibold text-gray-900 mb-3">How it works:</h3>
+                  <ol className="space-y-2 text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <span className="bg-champagne-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">1</span>
+                      <span>Click &quot;Open Canva Designer&quot; to access their professional editor</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="bg-champagne-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">2</span>
+                      <span>Choose from thousands of wedding invitation templates</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="bg-champagne-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">3</span>
+                      <span>Customize with your details, colors, and photos</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="bg-champagne-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm flex-shrink-0">4</span>
+                      <span>Download or share your design</span>
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Paste your Canva design URL (optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={canvaDesignUrl}
+                    onChange={(e) => setCanvaDesignUrl(e.target.value)}
+                    placeholder="https://www.canva.com/design/..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                  />
+                </div>
               </div>
+            )}
 
-              <div className={`${styles.bg} ${styles.border} ${styles.text} ${styles.font} p-12 rounded-lg shadow-xl min-h-[600px] flex flex-col justify-center text-center`}>
+            {/* Built-in Designer Tab */}
+            {activeTab === 'builtin' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left: Form */}
                 <div className="space-y-6">
-                  <div className="text-sm tracking-widest uppercase">You are cordially invited</div>
-
-                  <div className={`text-5xl ${styles.accent} my-6`}>
-                    {formData.brideName || 'Bride'} & {formData.groomName || 'Groom'}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      Choose Template
+                    </h3>
+                    <div className="grid grid-cols-3 gap-3">
+                      {TEMPLATES.map((template) => (
+                        <button
+                          key={template.id}
+                          onClick={() => setSelectedTemplate(template)}
+                          className={`p-4 rounded-lg border-2 transition ${
+                            selectedTemplate.id === template.id
+                              ? 'border-champagne-600 bg-champagne-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <div
+                            className="w-full h-12 rounded mb-2"
+                            style={{ backgroundColor: template.colors.secondary }}
+                          />
+                          <p className="text-sm font-medium text-gray-900">{template.name}</p>
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  {formData.weddingDate && (
-                    <div className="text-xl font-medium">
-                      {new Date(formData.weddingDate).toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Partner 1 Name
+                      </label>
+                      <input
+                        type="text"
+                        value={invitationData.coupleName1}
+                        onChange={(e) =>
+                          setInvitationData({ ...invitationData, coupleName1: e.target.value })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                      />
                     </div>
-                  )}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Partner 2 Name
+                      </label>
+                      <input
+                        type="text"
+                        value={invitationData.coupleName2}
+                        onChange={(e) =>
+                          setInvitationData({ ...invitationData, coupleName2: e.target.value })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
 
-                  {formData.ceremonyTime && (
-                    <div className="text-lg">Ceremony at {formData.ceremonyTime}</div>
-                  )}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Wedding Date
+                      </label>
+                      <input
+                        type="date"
+                        value={invitationData.weddingDate}
+                        onChange={(e) =>
+                          setInvitationData({ ...invitationData, weddingDate: e.target.value })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Wedding Time
+                      </label>
+                      <input
+                        type="time"
+                        value={invitationData.weddingTime}
+                        onChange={(e) =>
+                          setInvitationData({ ...invitationData, weddingTime: e.target.value })
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
 
-                  {formData.venueName && (
-                    <div className="mt-8">
-                      <div className="text-xl font-semibold">{formData.venueName}</div>
-                      {formData.venueAddress && (
-                        <div className="text-sm mt-1">{formData.venueAddress}</div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Venue Name
+                    </label>
+                    <input
+                      type="text"
+                      value={invitationData.venueName}
+                      onChange={(e) =>
+                        setInvitationData({ ...invitationData, venueName: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Venue Address
+                    </label>
+                    <input
+                      type="text"
+                      value={invitationData.venueAddress}
+                      onChange={(e) =>
+                        setInvitationData({ ...invitationData, venueAddress: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Custom Message
+                    </label>
+                    <textarea
+                      value={invitationData.customMessage}
+                      onChange={(e) =>
+                        setInvitationData({ ...invitationData, customMessage: e.target.value })
+                      }
+                      rows={3}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      RSVP Link
+                    </label>
+                    <input
+                      type="text"
+                      value={invitationData.rsvpLink}
+                      onChange={(e) =>
+                        setInvitationData({ ...invitationData, rsvpLink: e.target.value })
+                      }
+                      placeholder="yourdomain.com/rsvp"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-champagne-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {/* Right: Preview */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Preview</h3>
+                  <div className="bg-white rounded-lg shadow-lg p-4">
+                    <canvas
+                      ref={canvasRef}
+                      className="w-full rounded-lg shadow-inner"
+                      style={{ maxHeight: '600px', objectFit: 'contain' }}
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={downloadInvitation}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-champagne-600 text-white rounded-lg hover:bg-champagne-700 transition font-medium"
+                    >
+                      <Download className="w-5 h-5" />
+                      Download
+                    </button>
+                    <button
+                      onClick={saveInvitation}
+                      disabled={saving}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition font-medium disabled:opacity-50"
+                    >
+                      {saved ? (
+                        <>
+                          <CheckCircle className="w-5 h-5" />
+                          Saved!
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-5 h-5" />
+                          {saving ? 'Saving...' : 'Save'}
+                        </>
                       )}
-                    </div>
-                  )}
-
-                  {formData.receptionTime && (
-                    <div className="text-md italic">Reception at {formData.receptionTime}</div>
-                  )}
-
-                  {formData.rsvpDate && (
-                    <div className="mt-8 pt-6 border-t border-current/20">
-                      <div className="text-sm">RSVP by {new Date(formData.rsvpDate).toLocaleDateString()}</div>
-                      {formData.rsvpEmail && (
-                        <div className="text-sm mt-1">{formData.rsvpEmail}</div>
-                      )}
-                    </div>
-                  )}
-
-                  {formData.dressCode && (
-                    <div className="text-sm italic">Dress Code: {formData.dressCode}</div>
-                  )}
-
-                  {formData.additionalInfo && (
-                    <div className="text-sm mt-4 whitespace-pre-wrap">{formData.additionalInfo}</div>
-                  )}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

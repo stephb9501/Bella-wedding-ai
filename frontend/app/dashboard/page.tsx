@@ -6,7 +6,7 @@ import {
   Calendar, Users, DollarSign, Heart, MapPin, Camera,
   Sparkles, MessageCircle, Settings, LogOut, Menu, X,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
-  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList, BookHeart, UserPlus
+  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList, BookHeart, UserPlus, Mail
 } from 'lucide-react';
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
@@ -148,6 +148,17 @@ const DASHBOARD_CARDS = [
   },
 
   // PREMIUM PLAN FEATURES ($29.99/mo) - Everything in Standard PLUS:
+  {
+    id: 'invitations',
+    title: 'Invitations',
+    description: 'Design & send text RSVPs',
+    icon: Mail,
+    color: 'bg-indigo-50',
+    iconColor: 'text-indigo-600',
+    href: '/invitations',
+    status: 'premium',
+    tier: 'Premium'
+  },
   {
     id: 'guests',
     title: 'Guest List',
