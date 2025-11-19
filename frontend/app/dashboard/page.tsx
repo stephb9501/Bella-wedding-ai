@@ -6,7 +6,7 @@ import {
   Calendar, Users, DollarSign, Heart, MapPin, Camera,
   Sparkles, MessageCircle, Settings, LogOut, Menu, X,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
-  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList, BookHeart
+  Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList, BookHeart, UserPlus
 } from 'lucide-react';
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
@@ -132,6 +132,17 @@ const DASHBOARD_CARDS = [
     color: 'bg-amber-50',
     iconColor: 'text-amber-600',
     href: '/ai',
+    status: 'standard',
+    tier: 'Standard'
+  },
+  {
+    id: 'bridal-party',
+    title: 'Bridal Party',
+    description: 'Manage party & services',
+    icon: UserPlus,
+    color: 'bg-rose-50',
+    iconColor: 'text-rose-600',
+    href: '/bridal-party',
     status: 'standard',
     tier: 'Standard'
   },

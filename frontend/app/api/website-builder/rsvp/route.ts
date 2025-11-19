@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { rateLimit } from '@/lib/rate-limit';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-// Rate limiter for RSVP submissions
-const rsvpLimiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
-  uniqueTokenPerInterval: 500,
-});
 
 // GET - Fetch RSVPs for a website (owner only)
 export async function GET(request: NextRequest) {
@@ -97,9 +91,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limit RSVP submissions by email
-    try {
-      await rsvpLimiter.check(3, guest_email); // 3 submissions per minute per email
-    } catch {
+    const rateLimitResult = checkRateLimit(request, 3, 60000); // 3 submissions per minute
+    if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: 'Too many RSVP attempts. Please try again later.' },
         { status: 429 }

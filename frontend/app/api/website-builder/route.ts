@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { rateLimit } from '@/lib/rate-limit';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Create Supabase client with service role for server-side operations
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-// Rate limiter for publish operations
-const publishLimiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
-  uniqueTokenPerInterval: 500,
-});
 
 // GET - Fetch user's wedding website
 export async function GET(request: NextRequest) {
@@ -161,7 +155,7 @@ export async function PUT(request: NextRequest) {
     // Verify ownership
     const { data: existingWebsite } = await supabase
       .from('wedding_websites')
-      .select('user_id')
+      .select('user_id, published_at')
       .eq('id', websiteId)
       .single();
 
@@ -171,9 +165,8 @@ export async function PUT(request: NextRequest) {
 
     // Rate limit publish operations
     if (body.published && body.published !== existingWebsite) {
-      try {
-        await publishLimiter.check(5, user.email); // 5 publishes per minute
-      } catch {
+      const rateLimitResult = checkRateLimit(request, 5, 60000); // 5 publishes per minute
+      if (!rateLimitResult.success) {
         return NextResponse.json(
           { error: 'Rate limit exceeded. Please try again later.' },
           { status: 429 }

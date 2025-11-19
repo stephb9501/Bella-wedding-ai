@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       short: 300,   // 1-2 min read
       medium: 500,  // 3-4 min read
       long: 800,    // 5+ min read
-    }[length] || 500;
+    }[length as 'short' | 'medium' | 'long'] || 500;
 
     // Build context for the AI
     const context = [];
