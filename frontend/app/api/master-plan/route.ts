@@ -134,7 +134,14 @@ export async function GET(request: NextRequest) {
 
     } else if (action === 'get_undo_history') {
       // Get undo history for current user
-      const limit = parseInt(searchParams.get('limit') || '10');
+      let limit = 10;
+      const limitParam = searchParams.get('limit');
+      if (limitParam) {
+        const parsed = parseInt(limitParam, 10);
+        if (!isNaN(parsed) && parsed > 0 && parsed <= 100) {
+          limit = parsed;
+        }
+      }
 
       const { data: history, error } = await supabase.rpc('get_undo_history', {
         p_user_id: user.id,
@@ -231,9 +238,9 @@ export async function POST(request: NextRequest) {
         is_must_have = false,
       } = body;
 
-      if (!master_plan_id || !item_type || !title) {
+      if (!master_plan_id || !wedding_id || !item_type || !title) {
         return NextResponse.json(
-          { error: 'master_plan_id, item_type, and title are required' },
+          { error: 'master_plan_id, wedding_id, item_type, and title are required' },
           { status: 400 }
         );
       }

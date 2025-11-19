@@ -229,6 +229,16 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json({ error: 'photo_orders array is required' }, { status: 400 });
       }
 
+      // Validate each item in the array
+      for (const item of photo_orders) {
+        if (!item.photo_id) {
+          return NextResponse.json({ error: 'photo_id is required for all items' }, { status: 400 });
+        }
+        if (typeof item.display_order !== 'number' || item.display_order < 0) {
+          return NextResponse.json({ error: 'display_order must be a non-negative number' }, { status: 400 });
+        }
+      }
+
       // Update each photo's display order
       const updates = photo_orders.map(async (item: any) => {
         return supabase
@@ -238,7 +248,14 @@ export async function PUT(request: NextRequest) {
           .eq('vendor_id', user.id);
       });
 
-      await Promise.all(updates);
+      const results = await Promise.all(updates);
+
+      // Check for any failed updates
+      const failedUpdates = results.filter(r => r.error);
+      if (failedUpdates.length > 0) {
+        console.error('Failed to reorder some photos:', failedUpdates);
+        return NextResponse.json({ error: 'Failed to reorder some photos' }, { status: 500 });
+      }
 
       return NextResponse.json({
         message: 'Photos reordered successfully',
