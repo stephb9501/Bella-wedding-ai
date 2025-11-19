@@ -241,6 +241,13 @@ export default function AdminDashboard() {
                     <div className="font-bold">📥 Bulk Import Vendors</div>
                     <div className="text-sm opacity-90">Add hundreds of vendors at once</div>
                   </button>
+                  <button
+                    onClick={() => router.push('/admin/incomplete-vendors')}
+                    className="w-full p-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg text-left transition"
+                  >
+                    <div className="font-bold">⚠️ Incomplete Vendors</div>
+                    <div className="text-sm opacity-90">Find & fix missing information</div>
+                  </button>
                 </div>
               </div>
             </div>
