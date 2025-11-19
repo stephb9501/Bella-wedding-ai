@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseServer } from './supabase-server';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 /**
  * Verify authentication for API routes
@@ -7,19 +8,11 @@ import { supabaseServer } from './supabase-server';
  */
 export async function verifyAuth(request: NextRequest) {
   try {
-    // Get auth token from cookies
-    const token = request.cookies.get('sb-access-token')?.value ||
-                  request.cookies.get('sb-cksukpgjkuarktbohseh-auth-token')?.value;
-
-    if (!token) {
-      return { user: null, error: 'No authentication token' };
-    }
-
-    // Verify token with Supabase
-    const { data: { user }, error } = await supabaseServer.auth.getUser(token);
+    const supabase = createRouteHandlerClient({ cookies });
+    const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
-      return { user: null, error: error?.message || 'Invalid token' };
+      return { user: null, error: error?.message || 'Not authenticated' };
     }
 
     return { user, error: null };
