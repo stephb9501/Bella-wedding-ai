@@ -106,7 +106,15 @@ export default function AdminDashboard() {
             >
               Public Site
             </button>
-            <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm font-medium">
+            <button
+              onClick={async () => {
+                const { createClientComponentClient } = await import('@supabase/auth-helpers-nextjs');
+                const supabase = createClientComponentClient();
+                await supabase.auth.signOut();
+                router.push('/');
+              }}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition text-sm font-medium"
+            >
               Logout
             </button>
           </div>
