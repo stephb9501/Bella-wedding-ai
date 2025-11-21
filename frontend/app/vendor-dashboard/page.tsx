@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
 import { VendorReviews } from '@/components/VendorReviews';
+import { VendorTimeline } from '@/components/VendorTimeline';
 
 interface VendorProfile {
   id: string;
@@ -63,6 +64,7 @@ export default function VendorDashboard() {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews' | 'planning'>('overview');
   const [showWeddingDropdown, setShowWeddingDropdown] = useState(false);
+  const [activePlanningTool, setActivePlanningTool] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // TODO: Get vendor ID from auth session
@@ -498,65 +500,88 @@ export default function VendorDashboard() {
         {/* Planning Tools Tab */}
         {activeTab === 'planning' && selectedWedding && (
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-md p-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Planning Tools</h3>
-              <p className="text-gray-600 mb-6">
-                Access timeline, checklist, budget, and more for {weddings.find(w => w.id === selectedWedding)?.wedding_name}
-              </p>
-
-              {/* Planning Tools Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Timeline */}
-                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
-                  <ClipboardList className="w-8 h-8 text-champagne-600 mb-3 group-hover:scale-110 transition" />
-                  <h4 className="font-bold text-gray-900 mb-2">Timeline</h4>
-                  <p className="text-sm text-gray-600">Manage event timeline and schedule</p>
-                </button>
-
-                {/* Checklist */}
-                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
-                  <CheckSquare className="w-8 h-8 text-green-600 mb-3 group-hover:scale-110 transition" />
-                  <h4 className="font-bold text-gray-900 mb-2">Checklist</h4>
-                  <p className="text-sm text-gray-600">Track tasks and to-dos</p>
-                </button>
-
-                {/* Budget */}
-                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
-                  <Wallet className="w-8 h-8 text-blue-600 mb-3 group-hover:scale-110 transition" />
-                  <h4 className="font-bold text-gray-900 mb-2">Budget</h4>
-                  <p className="text-sm text-gray-600">Manage wedding budget</p>
-                </button>
-
-                {/* Guests */}
-                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
-                  <UserCircle className="w-8 h-8 text-purple-600 mb-3 group-hover:scale-110 transition" />
-                  <h4 className="font-bold text-gray-900 mb-2">Guests</h4>
-                  <p className="text-sm text-gray-600">View guest list and details</p>
-                </button>
-
-                {/* Seating */}
-                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
-                  <Armchair className="w-8 h-8 text-rose-600 mb-3 group-hover:scale-110 transition" />
-                  <h4 className="font-bold text-gray-900 mb-2">Seating</h4>
-                  <p className="text-sm text-gray-600">Arrange seating chart</p>
-                </button>
-
-                {/* Activity Log */}
-                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
-                  <BarChart3 className="w-8 h-8 text-amber-600 mb-3 group-hover:scale-110 transition" />
-                  <h4 className="font-bold text-gray-900 mb-2">Activity Log</h4>
-                  <p className="text-sm text-gray-600">View collaboration history</p>
-                </button>
-              </div>
-
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Your Role:</strong> {weddings.find(w => w.id === selectedWedding)?.vendor_role}
-                  <br />
-                  You can view and edit items based on your role permissions. Items you create will be attributed to you.
+            {!activePlanningTool ? (
+              /* Planning Tools Grid */
+              <div className="bg-white rounded-2xl shadow-md p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Planning Tools</h3>
+                <p className="text-gray-600 mb-6">
+                  Access timeline, checklist, budget, and more for {weddings.find(w => w.id === selectedWedding)?.wedding_name}
                 </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Timeline */}
+                  <button
+                    onClick={() => setActivePlanningTool('timeline')}
+                    className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group"
+                  >
+                    <ClipboardList className="w-8 h-8 text-champagne-600 mb-3 group-hover:scale-110 transition" />
+                    <h4 className="font-bold text-gray-900 mb-2">Timeline</h4>
+                    <p className="text-sm text-gray-600">Manage event timeline and schedule</p>
+                  </button>
+
+                  {/* Checklist */}
+                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
+                    <CheckSquare className="w-8 h-8 text-green-600 mb-3" />
+                    <h4 className="font-bold text-gray-900 mb-2">Checklist</h4>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </button>
+
+                  {/* Budget */}
+                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
+                    <Wallet className="w-8 h-8 text-blue-600 mb-3" />
+                    <h4 className="font-bold text-gray-900 mb-2">Budget</h4>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </button>
+
+                  {/* Guests */}
+                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
+                    <UserCircle className="w-8 h-8 text-purple-600 mb-3" />
+                    <h4 className="font-bold text-gray-900 mb-2">Guests</h4>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </button>
+
+                  {/* Seating */}
+                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
+                    <Armchair className="w-8 h-8 text-rose-600 mb-3" />
+                    <h4 className="font-bold text-gray-900 mb-2">Seating</h4>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </button>
+
+                  {/* Activity Log */}
+                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
+                    <BarChart3 className="w-8 h-8 text-amber-600 mb-3" />
+                    <h4 className="font-bold text-gray-900 mb-2">Activity Log</h4>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </button>
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Your Role:</strong> {weddings.find(w => w.id === selectedWedding)?.vendor_role}
+                    <br />
+                    You can view and edit items based on your role permissions. Items you create will be attributed to you.
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : (
+              /* Active Planning Tool */
+              <div>
+                <button
+                  onClick={() => setActivePlanningTool(null)}
+                  className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-900"
+                >
+                  ← Back to Planning Tools
+                </button>
+
+                {activePlanningTool === 'timeline' && (
+                  <VendorTimeline
+                    weddingId={selectedWedding}
+                    vendorId={vendorId}
+                    vendorRole={weddings.find(w => w.id === selectedWedding)?.vendor_role || 'vendor'}
+                  />
+                )}
+              </div>
+            )}
           </div>
         )}
 
