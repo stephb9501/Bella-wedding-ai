@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Clock, Plus, Save, Eye, EyeOff, Trash2, Edit2, FileText, User, Calendar } from 'lucide-react';
+import { Clock, Plus, Save, Eye, EyeOff, Trash2, Edit2, FileText, User, Calendar, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 interface TimelineEvent {
   id: string;
@@ -11,10 +11,14 @@ interface TimelineEvent {
   event_time: string;
   category: string;
   status: 'draft' | 'published' | 'archived';
+  approval_status: 'pending' | 'approved' | 'rejected';
   created_by: string;
   created_by_role: string;
   published_by?: string;
   published_at?: string;
+  approved_by?: string;
+  approved_at?: string;
+  rejection_reason?: string;
   last_edited_by?: string;
   last_edited_at?: string;
   is_visible_to_team: boolean;
@@ -172,7 +176,9 @@ export function VendorTimeline({ weddingId, vendorId, vendorRole }: VendorTimeli
   });
 
   const draftCount = events.filter(e => e.status === 'draft' && e.created_by === vendorId).length;
-  const publishedCount = events.filter(e => e.status === 'published').length;
+  const pendingApprovalCount = events.filter(e => e.status === 'published' && e.approval_status === 'pending' && e.created_by === vendorId).length;
+  const approvedCount = events.filter(e => e.approval_status === 'approved').length;
+  const rejectedCount = events.filter(e => e.approval_status === 'rejected' && e.created_by === vendorId).length;
 
   if (loading) {
     return (
@@ -191,7 +197,8 @@ export function VendorTimeline({ weddingId, vendorId, vendorRole }: VendorTimeli
           <div>
             <h3 className="text-2xl font-bold text-gray-900">Wedding Timeline</h3>
             <p className="text-sm text-gray-600 mt-1">
-              {publishedCount} published • {draftCount} drafts
+              {approvedCount} approved • {pendingApprovalCount} pending • {draftCount} drafts
+              {rejectedCount > 0 && <span className="text-red-600"> • {rejectedCount} rejected</span>}
             </p>
           </div>
 
@@ -315,7 +322,7 @@ export function VendorTimeline({ weddingId, vendorId, vendorRole }: VendorTimeli
                   className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  Publish Now
+                  Submit for Approval
                 </button>
               </div>
             </form>
@@ -347,8 +354,30 @@ export function VendorTimeline({ weddingId, vendorId, vendorRole }: VendorTimeli
                       <h4 className="text-lg font-bold text-gray-900">{event.title}</h4>
 
                       {event.status === 'draft' && (
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded flex items-center gap-1">
+                          <FileText className="w-3 h-3" />
                           DRAFT
+                        </span>
+                      )}
+
+                      {event.status === 'published' && event.approval_status === 'pending' && (
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          PENDING APPROVAL
+                        </span>
+                      )}
+
+                      {event.approval_status === 'approved' && (
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          APPROVED
+                        </span>
+                      )}
+
+                      {event.approval_status === 'rejected' && (
+                        <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded flex items-center gap-1">
+                          <XCircle className="w-3 h-3" />
+                          REJECTED
                         </span>
                       )}
 
@@ -364,6 +393,13 @@ export function VendorTimeline({ weddingId, vendorId, vendorRole }: VendorTimeli
 
                     {event.description && (
                       <p className="text-gray-700 mb-3">{event.description}</p>
+                    )}
+
+                    {event.approval_status === 'rejected' && event.rejection_reason && (
+                      <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-xs font-semibold text-red-700 mb-1">Rejection Reason:</p>
+                        <p className="text-sm text-red-900">{event.rejection_reason}</p>
+                      </div>
                     )}
 
                     <div className="flex items-center gap-4 text-xs text-gray-500">
