@@ -221,6 +221,150 @@ INSERT INTO public.users (
   'https://kayleighross.com',
   'free',
   true
+),
+
+-- 14. Tony Baker Photography
+(
+  'info@tonybakerphotography.com',
+  'vendor',
+  'Tony Baker Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Little Rock',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
+),
+
+-- 15. Taylor Howard Photography
+(
+  'info@taylorhowardphotography.com',
+  'vendor',
+  'Taylor Howard Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Searcy',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
+),
+
+-- 16. Kylee Grace Photography
+(
+  'info@kyleegracephotography.com',
+  'vendor',
+  'Kylee Grace Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Bentonville',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
+),
+
+-- 17. Hope Mulanax Photography
+(
+  'info@hopemulanax.com',
+  'vendor',
+  'Hope Mulanax Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Northwest Arkansas',
+  'AR',
+  NULL,
+  'https://hopemulanax.com',
+  'free',
+  true
+),
+
+-- 18. Beaty Creative Photo
+(
+  'info@beatycreativephoto.com',
+  'vendor',
+  'Beaty Creative Photo',
+  'photographer',
+  NULL,
+  NULL,
+  'Arkansas',
+  'AR',
+  NULL,
+  'https://beatycreativephoto.com',
+  'free',
+  true
+),
+
+-- 19. Count In Threes Photo
+(
+  'info@countinthreesphoto.com',
+  'vendor',
+  'Count In Threes Photo',
+  'photographer',
+  NULL,
+  NULL,
+  'Arkansas',
+  'AR',
+  NULL,
+  'https://countinthreesphoto.com',
+  'free',
+  true
+),
+
+-- 20. Eternal Memories Photography
+(
+  'info@eternalmemoriesphotography.com',
+  'vendor',
+  'Eternal Memories Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Searcy',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
+),
+
+-- 21. Alice McLain Photography
+(
+  'info@alicemclainphotography.com',
+  'vendor',
+  'Alice McLain Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Northeast Arkansas',
+  'AR',
+  NULL,
+  'https://alicemclainphotography.com',
+  'free',
+  true
+),
+
+-- 22. Megan Thackston Photo & Film
+(
+  'info@meganthackston.com',
+  'vendor',
+  'Megan Thackston Photo & Film',
+  'photographer',
+  NULL,
+  NULL,
+  'Arkansas',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
 )
 
 ON CONFLICT (email) DO NOTHING;
