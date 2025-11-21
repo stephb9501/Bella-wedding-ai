@@ -8,6 +8,9 @@ import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
 import { VendorReviews } from '@/components/VendorReviews';
 import { VendorTimeline } from '@/components/VendorTimeline';
+import { VendorChecklist } from '@/components/VendorChecklist';
+import { VendorBudget } from '@/components/VendorBudget';
+import { ActivityLog } from '@/components/ActivityLog';
 
 interface VendorProfile {
   id: string;
@@ -520,17 +523,23 @@ export default function VendorDashboard() {
                   </button>
 
                   {/* Checklist */}
-                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
-                    <CheckSquare className="w-8 h-8 text-green-600 mb-3" />
+                  <button
+                    onClick={() => setActivePlanningTool('checklist')}
+                    className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group"
+                  >
+                    <CheckSquare className="w-8 h-8 text-green-600 mb-3 group-hover:scale-110 transition" />
                     <h4 className="font-bold text-gray-900 mb-2">Checklist</h4>
-                    <p className="text-sm text-gray-600">Coming soon</p>
+                    <p className="text-sm text-gray-600">Manage wedding tasks and to-dos</p>
                   </button>
 
                   {/* Budget */}
-                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
-                    <Wallet className="w-8 h-8 text-blue-600 mb-3" />
+                  <button
+                    onClick={() => setActivePlanningTool('budget')}
+                    className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group"
+                  >
+                    <Wallet className="w-8 h-8 text-blue-600 mb-3 group-hover:scale-110 transition" />
                     <h4 className="font-bold text-gray-900 mb-2">Budget</h4>
-                    <p className="text-sm text-gray-600">Coming soon</p>
+                    <p className="text-sm text-gray-600">Track expenses and payments</p>
                   </button>
 
                   {/* Guests */}
@@ -548,10 +557,13 @@ export default function VendorDashboard() {
                   </button>
 
                   {/* Activity Log */}
-                  <button className="p-6 border-2 border-gray-200 hover:border-gray-300 rounded-xl text-left transition group opacity-50 cursor-not-allowed">
-                    <BarChart3 className="w-8 h-8 text-amber-600 mb-3" />
+                  <button
+                    onClick={() => setActivePlanningTool('activity')}
+                    className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group"
+                  >
+                    <BarChart3 className="w-8 h-8 text-amber-600 mb-3 group-hover:scale-110 transition" />
                     <h4 className="font-bold text-gray-900 mb-2">Activity Log</h4>
-                    <p className="text-sm text-gray-600">Coming soon</p>
+                    <p className="text-sm text-gray-600">View all changes and actions</p>
                   </button>
                 </div>
 
@@ -579,6 +591,26 @@ export default function VendorDashboard() {
                     vendorId={vendorId}
                     vendorRole={weddings.find(w => w.id === selectedWedding)?.vendor_role || 'vendor'}
                   />
+                )}
+
+                {activePlanningTool === 'checklist' && (
+                  <VendorChecklist
+                    weddingId={selectedWedding}
+                    vendorId={vendorId}
+                    vendorRole={weddings.find(w => w.id === selectedWedding)?.vendor_role || 'vendor'}
+                  />
+                )}
+
+                {activePlanningTool === 'budget' && (
+                  <VendorBudget
+                    weddingId={selectedWedding}
+                    vendorId={vendorId}
+                    vendorRole={weddings.find(w => w.id === selectedWedding)?.vendor_role || 'vendor'}
+                  />
+                )}
+
+                {activePlanningTool === 'activity' && (
+                  <ActivityLog weddingId={selectedWedding} />
                 )}
               </div>
             )}

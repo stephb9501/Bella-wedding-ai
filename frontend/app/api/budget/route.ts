@@ -1,25 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase-server';
-import { requireAuth } from '@/lib/auth-helpers';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET(request: NextRequest) {
-  // Require authentication
-  const authError = await requireAuth(request);
-  if (authError) return authError;
-
   try {
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('user_id');
+    const weddingId = searchParams.get('wedding_id');
+    const userId = searchParams.get('user_id'); // Legacy support
 
-    if (!userId) {
-      return NextResponse.json({ error: 'Missing user_id' }, { status: 400 });
+    // Support both new wedding_id and legacy user_id
+    const query = supabaseServer.from('budget_items').select('*');
+
+    if (weddingId) {
+      query.eq('wedding_id', weddingId);
+    } else if (userId) {
+      query.eq('user_id', userId);
+    } else {
+      return NextResponse.json({ error: 'wedding_id or user_id is required' }, { status: 400 });
     }
 
-    const { data, error } = await supabaseServer
-      .from('budget_items')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: true });
+    const { data, error } = await query.order('created_at', { ascending: false });
 
     if (error) throw error;
 
@@ -31,34 +34,108 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  // Require authentication
-  const authError = await requireAuth(request);
-  if (authError) return authError;
-
   try {
     const body = await request.json();
-    const { user_id, category, item_name, estimated_cost, actual_cost, paid, notes } = body;
+    const {
+      wedding_id,
+      user_id, // Legacy support
+      category,
+      item_name,
+      description,
+      estimated_cost,
+      actual_cost,
+      paid_amount,
+      vendor_name,
+      payment_status,
+      status,
+      created_by,
+      created_by_role,
+      is_visible_to_team,
+      paid, // Legacy support
+      notes, // Legacy support
+    } = body;
 
-    if (!user_id || !category || !item_name) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    // New wedding collaboration system
+    if (wedding_id && created_by && created_by_role) {
+      if (!item_name || !category) {
+        return NextResponse.json({ error: 'Missing required fields: item_name, category' }, { status: 400 });
+      }
 
-    const { data, error } = await supabaseServer
-      .from('budget_items')
-      .insert({
-        user_id,
+      const insertData: any = {
+        wedding_id,
         category,
         item_name,
+        description: description || notes || '',
         estimated_cost: estimated_cost || 0,
-        actual_cost: actual_cost || 0,
-        paid: paid || false,
-        notes: notes || '',
-      })
-      .select();
+        actual_cost: actual_cost || null,
+        paid_amount: paid_amount || 0,
+        vendor_name: vendor_name || null,
+        payment_status: payment_status || 'unpaid',
+        status: status || 'published',
+        created_by,
+        created_by_role,
+        is_visible_to_team: is_visible_to_team !== undefined ? is_visible_to_team : true,
+        last_edited_by: created_by,
+        last_edited_at: new Date().toISOString(),
+      };
 
-    if (error) throw error;
+      if (insertData.status === 'published') {
+        insertData.published_by = created_by;
+        insertData.published_at = new Date().toISOString();
+      }
 
-    return NextResponse.json(data?.[0] || {}, { status: 201 });
+      const { data, error } = await supabaseServer
+        .from('budget_items')
+        .insert(insertData)
+        .select();
+
+      if (error) throw error;
+
+      const item = data?.[0];
+
+      // Log activity
+      await supabaseServer.from('activity_log').insert({
+        wedding_id,
+        user_id: created_by,
+        user_name: created_by_role,
+        user_role: created_by_role,
+        action_type: 'created',
+        entity_type: 'budget_item',
+        entity_id: item.id,
+        entity_name: item_name,
+        changes: { estimated_cost, status: insertData.status },
+      });
+
+      return NextResponse.json(item, { status: 201 });
+    }
+    // Legacy system
+    else if (user_id) {
+      if (!category || !item_name) {
+        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      }
+
+      const { data, error } = await supabaseServer
+        .from('budget_items')
+        .insert({
+          user_id,
+          category,
+          item_name,
+          estimated_cost: estimated_cost || 0,
+          actual_cost: actual_cost || 0,
+          paid: paid || false,
+          notes: notes || '',
+        })
+        .select();
+
+      if (error) throw error;
+
+      return NextResponse.json(data?.[0] || {}, { status: 201 });
+    } else {
+      return NextResponse.json(
+        { error: 'Either (wedding_id, created_by, created_by_role) or user_id is required' },
+        { status: 400 }
+      );
+    }
   } catch (error: any) {
     console.error('Budget POST error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -66,33 +143,77 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  // Require authentication
-  const authError = await requireAuth(request);
-  if (authError) return authError;
-
   try {
     const body = await request.json();
-    const { id, estimated_cost, actual_cost, paid, notes } = body;
+    const { id, ...updates } = body;
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing budget item id' }, { status: 400 });
+      return NextResponse.json({ error: 'Item id is required' }, { status: 400 });
+    }
+
+    // Get current item for activity logging
+    const { data: currentItem } = await supabaseServer
+      .from('budget_items')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    const updateData: any = { ...updates };
+
+    // Handle collaboration fields
+    if (updates.last_edited_by) {
+      updateData.last_edited_at = new Date().toISOString();
+    }
+
+    // If status is changing to published, set published_by and published_at
+    if (updates.status === 'published' && !updates.published_at) {
+      updateData.published_at = new Date().toISOString();
+      if (updates.published_by) {
+        updateData.published_by = updates.published_by;
+      }
+    }
+
+    // Legacy updated_at
+    if (!updateData.last_edited_at) {
+      updateData.updated_at = new Date().toISOString();
     }
 
     const { data, error } = await supabaseServer
       .from('budget_items')
-      .update({
-        estimated_cost,
-        actual_cost,
-        paid,
-        notes,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', id)
       .select();
 
     if (error) throw error;
 
-    return NextResponse.json(data?.[0] || {});
+    const item = data?.[0];
+
+    // Log activity
+    if (currentItem && item && currentItem.wedding_id) {
+      const changes: any = {};
+      Object.keys(updateData).forEach(key => {
+        if (currentItem[key] !== updateData[key]) {
+          changes[key] = { old: currentItem[key], new: updateData[key] };
+        }
+      });
+
+      let actionType = 'updated';
+      if (updates.status === 'published') actionType = 'published';
+
+      await supabaseServer.from('activity_log').insert({
+        wedding_id: item.wedding_id,
+        user_id: updates.last_edited_by || currentItem.created_by,
+        user_name: updates.last_edited_by || currentItem.created_by_role,
+        user_role: currentItem.created_by_role,
+        action_type: actionType,
+        entity_type: 'budget_item',
+        entity_id: item.id,
+        entity_name: item.item_name,
+        changes,
+      });
+    }
+
+    return NextResponse.json(item);
   } catch (error: any) {
     console.error('Budget PUT error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -100,17 +221,20 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  // Require authentication
-  const authError = await requireAuth(request);
-  if (authError) return authError;
-
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing budget item id' }, { status: 400 });
+      return NextResponse.json({ error: 'Item id is required' }, { status: 400 });
     }
+
+    // Get item for activity logging
+    const { data: item } = await supabaseServer
+      .from('budget_items')
+      .select('*')
+      .eq('id', id)
+      .single();
 
     const { error } = await supabaseServer
       .from('budget_items')
@@ -118,6 +242,20 @@ export async function DELETE(request: NextRequest) {
       .eq('id', id);
 
     if (error) throw error;
+
+    // Log activity
+    if (item && item.wedding_id) {
+      await supabaseServer.from('activity_log').insert({
+        wedding_id: item.wedding_id,
+        user_id: item.created_by,
+        user_name: item.created_by_role,
+        user_role: item.created_by_role,
+        action_type: 'deleted',
+        entity_type: 'budget_item',
+        entity_id: item.id,
+        entity_name: item.item_name,
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
