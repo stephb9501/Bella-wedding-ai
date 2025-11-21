@@ -5,13 +5,6 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
 
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -20,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     if (id) {
       const { data, error } = await supabaseServer
-        .from('wedding_websites')
+        .from('seating_charts')
         .select('*')
         .eq('id', id)
         .single();
@@ -31,18 +24,18 @@ export async function GET(request: NextRequest) {
 
     if (weddingId) {
       const { data, error } = await supabaseServer
-        .from('wedding_websites')
+        .from('seating_charts')
         .select('*')
         .eq('wedding_id', weddingId)
-        .single();
+        .order('created_at', { ascending: false });
 
-      if (error && error.code !== 'PGRST116') throw error;
-      return NextResponse.json(data || null);
+      if (error) throw error;
+      return NextResponse.json(data || []);
     }
 
     return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
   } catch (error: any) {
-    console.error('Website GET error:', error);
+    console.error('Seating charts GET error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -52,40 +45,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       wedding_id,
-      site_name,
-      bride_name,
-      groom_name,
-      theme,
-      ceremony_date,
-      ceremony_location,
-      reception_date,
-      reception_location,
-      design_settings,
+      name,
+      venue_name,
+      layout_data,
+      is_active,
     } = body;
 
-    if (!wedding_id || !site_name) {
+    if (!wedding_id || !name) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const site_slug = generateSlug(site_name);
-
     const { data, error } = await supabaseServer
-      .from('wedding_websites')
+      .from('seating_charts')
       .insert({
         wedding_id,
-        site_name,
-        site_slug,
-        bride_name: bride_name || '',
-        groom_name: groom_name || '',
-        theme: theme || 'classic',
-        ceremony_date: ceremony_date || null,
-        ceremony_location: ceremony_location || '',
-        reception_date: reception_date || null,
-        reception_location: reception_location || '',
-        design_settings: design_settings || {},
-        is_published: false,
-        enable_rsvp: true,
-        view_count: 0,
+        name,
+        venue_name: venue_name || null,
+        layout_data: layout_data || {},
+        is_active: is_active !== undefined ? is_active : true,
       })
       .select()
       .single();
@@ -94,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: 201 });
   } catch (error: any) {
-    console.error('Website POST error:', error);
+    console.error('Seating charts POST error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -105,11 +82,11 @@ export async function PUT(request: NextRequest) {
     const { id, ...updates } = body;
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing website id' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing chart id' }, { status: 400 });
     }
 
     const { data, error } = await supabaseServer
-      .from('wedding_websites')
+      .from('seating_charts')
       .update(updates)
       .eq('id', id)
       .select()
@@ -119,7 +96,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error('Website PUT error:', error);
+    console.error('Seating charts PUT error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -130,11 +107,11 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing website id' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing chart id' }, { status: 400 });
     }
 
     const { error } = await supabaseServer
-      .from('wedding_websites')
+      .from('seating_charts')
       .delete()
       .eq('id', id);
 
@@ -142,7 +119,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Website DELETE error:', error);
+    console.error('Seating charts DELETE error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
