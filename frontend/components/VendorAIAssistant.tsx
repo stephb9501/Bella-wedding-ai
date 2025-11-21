@@ -133,7 +133,10 @@ export function VendorAIAssistant({ userId, userTier, weddingId }: VendorAIAssis
       content: inputMessage,
     };
 
-    setMessages([...messages, userMessage]);
+    const messageToSend = inputMessage;
+
+    // Add user message to state using functional update
+    setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setLoading(true);
     setError('');
@@ -145,7 +148,7 @@ export function VendorAIAssistant({ userId, userTier, weddingId }: VendorAIAssis
         body: JSON.stringify({
           user_id: userId,
           wedding_id: weddingId,
-          message: inputMessage,
+          message: messageToSend,
           tier: userTier,
         }),
       });
@@ -157,18 +160,21 @@ export function VendorAIAssistant({ userId, userTier, weddingId }: VendorAIAssis
 
       const data = await response.json();
 
-      setMessages([...messages, userMessage, {
+      const assistantMessage: Message = {
         role: 'assistant',
         content: data.response,
         created_at: new Date().toISOString(),
-      }]);
+      };
+
+      // Add assistant message using functional update
+      setMessages(prev => [...prev, assistantMessage]);
 
       // Update usage stats
       await fetchUsageStats();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      // Remove the user message if there was an error
-      setMessages(messages);
+      // Remove the user message if there was an error using functional update
+      setMessages(prev => prev.slice(0, -1));
     } finally {
       setLoading(false);
     }

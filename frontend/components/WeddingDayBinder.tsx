@@ -45,43 +45,54 @@ export function WeddingDayBinder({ weddingId }: WeddingDayBinderProps) {
     try {
       setLoading(true);
 
-      // Fetch wedding data
-      const weddingRes = await fetch(`/api/weddings?id=${weddingId}`);
+      // Fetch all data in parallel for better performance
+      const [
+        weddingRes,
+        timelineRes,
+        checklistRes,
+        guestsRes,
+        vendorsRes,
+        budgetRes
+      ] = await Promise.all([
+        fetch(`/api/weddings?id=${weddingId}`),
+        fetch(`/api/timeline?wedding_id=${weddingId}`),
+        fetch(`/api/checklist?wedding_id=${weddingId}`),
+        fetch(`/api/guests?wedding_id=${weddingId}`),
+        fetch(`/api/vendor-collaborations?wedding_id=${weddingId}`),
+        fetch(`/api/budget?wedding_id=${weddingId}`)
+      ]);
+
+      // Process wedding data
       if (weddingRes.ok) {
         const weddingData = await weddingRes.json();
         setWeddingData(weddingData);
       }
 
-      // Fetch timeline events
-      const timelineRes = await fetch(`/api/timeline?wedding_id=${weddingId}`);
+      // Process timeline events
       if (timelineRes.ok) {
         const timelineData = await timelineRes.json();
         setTimelineEvents(timelineData.filter((e: any) => e.approval_status === 'approved'));
       }
 
-      // Fetch checklist items
-      const checklistRes = await fetch(`/api/checklist?wedding_id=${weddingId}`);
+      // Process checklist items
       if (checklistRes.ok) {
         const checklistData = await checklistRes.json();
         setChecklistItems(checklistData.filter((i: any) => i.approval_status === 'approved'));
       }
 
-      // Fetch guests
-      const guestsRes = await fetch(`/api/guests?wedding_id=${weddingId}`);
+      // Process guests
       if (guestsRes.ok) {
         const guestsData = await guestsRes.json();
         setGuests(guestsData);
       }
 
-      // Fetch vendors
-      const vendorsRes = await fetch(`/api/vendor-collaborations?wedding_id=${weddingId}`);
+      // Process vendors
       if (vendorsRes.ok) {
         const vendorsData = await vendorsRes.json();
         setVendors(vendorsData);
       }
 
-      // Fetch budget items
-      const budgetRes = await fetch(`/api/budget?wedding_id=${weddingId}`);
+      // Process budget items
       if (budgetRes.ok) {
         const budgetData = await budgetRes.json();
         setBudgetItems(budgetData.filter((i: any) => i.approval_status === 'approved'));

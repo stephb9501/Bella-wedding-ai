@@ -771,14 +771,17 @@ export function InvitationDesigner({ weddingId, userRole }: InvitationDesignerPr
                 {/* Date & Time */}
                 <div className="py-4 px-6 rounded-lg" style={{ backgroundColor: activeColors.secondary }}>
                   <div className="text-xl font-semibold" style={{ color: activeColors.primary }}>
-                    {currentInvitation.ceremony_date
-                      ? new Date(currentInvitation.ceremony_date).toLocaleDateString('en-US', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })
-                      : 'Wedding Date'}
+                    {(() => {
+                      if (!currentInvitation.ceremony_date) return 'Wedding Date';
+                      const date = new Date(currentInvitation.ceremony_date);
+                      if (isNaN(date.getTime())) return 'Wedding Date';
+                      return date.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      });
+                    })()}
                   </div>
                   {currentInvitation.ceremony_time && (
                     <div className="mt-2">at {currentInvitation.ceremony_time}</div>

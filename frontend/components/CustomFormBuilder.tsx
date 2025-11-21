@@ -221,12 +221,13 @@ export function CustomFormBuilder({ vendorId, weddingId }: CustomFormBuilderProp
   };
 
   const duplicateForm = async (form: CustomForm) => {
+    // Deep copy fields array to prevent mutation
     const duplicate: CustomForm = {
       vendor_id: vendorId,
       wedding_id: weddingId,
       form_name: `${form.form_name} (Copy)`,
       description: form.description,
-      fields: form.fields,
+      fields: JSON.parse(JSON.stringify(form.fields)), // Deep copy
       is_published: false,
     };
 
