@@ -9,7 +9,7 @@ function generateGuestToken(): string {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const weddingId = searchParams.get('weddingId');
+    const weddingId = searchParams.get('weddingId') || searchParams.get('wedding_id');
 
     if (!weddingId) return NextResponse.json({ error: 'Missing weddingId' }, { status: 400 });
 
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       .from('guests')
       .select('*')
       .eq('wedding_id', weddingId)
-      .order('created_at', { ascending: false });
+      .order('name', { ascending: true });
 
     if (error) throw error;
     return NextResponse.json(data || []);
@@ -29,7 +29,20 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { wedding_id, name, email, phone } = await request.json();
+    const {
+      wedding_id,
+      name,
+      email,
+      phone,
+      group_name,
+      rsvp_status,
+      plus_one_allowed,
+      plus_one_name,
+      plus_one_rsvp,
+      dietary_restrictions,
+      table_number,
+      notes,
+    } = await request.json();
 
     if (!wedding_id || !name) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -45,14 +58,18 @@ export async function POST(request: NextRequest) {
         name,
         email: email || '',
         phone: phone || '',
+        group_name: group_name || null,
         address: '',
         city: '',
         state: '',
         zip: '',
-        rsvp_status: 'pending',
-        has_plus_one: false,
-        plus_one_name: '',
-        dietary_restrictions: '',
+        rsvp_status: rsvp_status || 'pending',
+        has_plus_one: plus_one_allowed || false,
+        plus_one_name: plus_one_name || '',
+        plus_one_rsvp: plus_one_rsvp || 'pending',
+        dietary_restrictions: dietary_restrictions || '',
+        table_number: table_number || null,
+        notes: notes || '',
         link_clicked: false,
         response_submitted: false,
       })
