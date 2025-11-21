@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 const TIER_LIMITS: Record<string, number> = {
   free: 0,
@@ -212,37 +209,58 @@ What would you like to know more about?`;
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { user_id, wedding_id, message, tier } = body;
+    const supabase = createRouteHandlerClient({ cookies });
 
-    if (!user_id || !message) {
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { wedding_id, message } = body;
+
+    if (!message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // SERVER-SIDE tier validation - CRITICAL FIX
+    const { data: vendorProfile, error: profileError } = await supabase
+      .from('vendor_profiles')
+      .select('tier')
+      .eq('user_id', session.user.id)
+      .single();
+
+    // Default to free if no vendor profile found
+    const actualTier = vendorProfile?.tier || 'free';
+
     // Check tier access
-    if (tier === 'free') {
+    if (actualTier === 'free') {
       return NextResponse.json(
         { error: 'AI Assistant is not available for free tier. Please upgrade to Premium, Featured, or Elite.' },
         { status: 403 }
       );
     }
 
-    // Check monthly usage limit
+    // Check monthly usage limit using ACTUAL tier from database
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    const { data: usageData, error: usageError } = await supabaseServer
+    const { data: usageData, error: usageError } = await supabase
       .from('ai_usage_tracking')
       .select('id')
-      .eq('user_id', user_id)
+      .eq('user_id', session.user.id)
       .gte('created_at', firstDayOfMonth.toISOString())
       .lte('created_at', lastDayOfMonth.toISOString());
 
-    if (usageError) throw usageError;
+    if (usageError) {
+      console.error('Usage tracking error:', usageError);
+      return NextResponse.json({ error: 'Failed to check usage limits' }, { status: 500 });
+    }
 
     const currentUsage = usageData?.length || 0;
-    const monthlyLimit = TIER_LIMITS[tier] || 0;
+    const monthlyLimit = TIER_LIMITS[actualTier] || 0;
 
     if (currentUsage >= monthlyLimit) {
       return NextResponse.json(
@@ -255,17 +273,20 @@ export async function POST(request: NextRequest) {
     const aiResponse = generateAIResponse(message);
 
     // Track usage
-    const { error: trackError } = await supabaseServer
+    const { error: trackError } = await supabase
       .from('ai_usage_tracking')
       .insert({
-        user_id,
+        user_id: session.user.id,
         wedding_id: wedding_id || null,
         prompt: message,
         response: aiResponse,
         tokens_used: message.length + aiResponse.length, // Simplified token counting
       });
 
-    if (trackError) throw trackError;
+    if (trackError) {
+      console.error('Tracking error:', trackError);
+      // Don't fail the request if tracking fails
+    }
 
     return NextResponse.json({
       response: aiResponse,
@@ -276,6 +297,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('AI chat POST error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
