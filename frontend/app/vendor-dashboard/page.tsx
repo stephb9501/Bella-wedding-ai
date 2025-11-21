@@ -11,6 +11,8 @@ import { VendorTimeline } from '@/components/VendorTimeline';
 import { VendorChecklist } from '@/components/VendorChecklist';
 import { VendorBudget } from '@/components/VendorBudget';
 import { ActivityLog } from '@/components/ActivityLog';
+import { VendorAIAssistant } from '@/components/VendorAIAssistant';
+import { CustomFormBuilder } from '@/components/CustomFormBuilder';
 
 interface VendorProfile {
   id: string;
@@ -565,6 +567,26 @@ export default function VendorDashboard() {
                     <h4 className="font-bold text-gray-900 mb-2">Activity Log</h4>
                     <p className="text-sm text-gray-600">View all changes and actions</p>
                   </button>
+
+                  {/* AI Assistant */}
+                  <button
+                    onClick={() => setActivePlanningTool('ai')}
+                    className="p-6 border-2 border-purple-200 hover:border-purple-400 rounded-xl text-left transition group"
+                  >
+                    <Zap className="w-8 h-8 text-purple-600 mb-3 group-hover:scale-110 transition" />
+                    <h4 className="font-bold text-gray-900 mb-2">AI Assistant</h4>
+                    <p className="text-sm text-gray-600">Get AI-powered planning help</p>
+                  </button>
+
+                  {/* Custom Forms */}
+                  <button
+                    onClick={() => setActivePlanningTool('forms')}
+                    className="p-6 border-2 border-blue-200 hover:border-blue-400 rounded-xl text-left transition group"
+                  >
+                    <ClipboardList className="w-8 h-8 text-blue-600 mb-3 group-hover:scale-110 transition" />
+                    <h4 className="font-bold text-gray-900 mb-2">Custom Forms</h4>
+                    <p className="text-sm text-gray-600">Create client questionnaires</p>
+                  </button>
                 </div>
 
                 <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -611,6 +633,21 @@ export default function VendorDashboard() {
 
                 {activePlanningTool === 'activity' && (
                   <ActivityLog weddingId={selectedWedding} />
+                )}
+
+                {activePlanningTool === 'ai' && (
+                  <VendorAIAssistant
+                    userId={vendorId}
+                    userTier={profile.tier}
+                    weddingId={selectedWedding}
+                  />
+                )}
+
+                {activePlanningTool === 'forms' && (
+                  <CustomFormBuilder
+                    vendorId={vendorId}
+                    weddingId={selectedWedding}
+                  />
                 )}
               </div>
             )}

@@ -11,6 +11,10 @@ import {
 import Image from 'next/image';
 import { RegistryAggregator } from '@/components/RegistryAggregator';
 import { PhotoGallery } from '@/components/PhotoGallery';
+import { PremiumWebsiteBuilder } from '@/components/PremiumWebsiteBuilder';
+import { Moodboards } from '@/components/Moodboards';
+import { InvitationDesigner } from '@/components/InvitationDesigner';
+import { WeddingDayBinder } from '@/components/WeddingDayBinder';
 import { useAuth } from '@/lib/useAuth';
 import AuthWall from '@/components/AuthWall';
 
@@ -583,18 +587,20 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-{/* BUILD 1 Features */}
+{/* Premium Features Tabs */}
         <div className="mt-12">
-          <div className="flex gap-4 mb-6 border-b border-gray-200">
-            <button onClick={() => setActiveTab('website')} className={`px-4 py-2 font-medium ${activeTab === 'website' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎨 Website</button>
-            <button onClick={() => setActiveTab('registry')} className={`px-4 py-2 font-medium ${activeTab === 'registry' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎁 Registry</button>
-            <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
+          <div className="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto">
+            <button onClick={() => setActiveTab('website')} className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'website' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎨 Website</button>
+            <button onClick={() => setActiveTab('registry')} className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'registry' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎁 Registry</button>
+            <button onClick={() => setActiveTab('gallery')} className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'gallery' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📸 Gallery</button>
+            <button onClick={() => setActiveTab('moodboards')} className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'moodboards' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>🎨 Moodboards</button>
+            <button onClick={() => setActiveTab('invitations')} className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'invitations' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>💌 Invitations</button>
+            <button onClick={() => setActiveTab('binder')} className={`px-4 py-2 font-medium whitespace-nowrap ${activeTab === 'binder' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}>📋 Day-of Binder</button>
           </div>
 
-          {activeTab === 'website' && (
-            <div className="p-6 bg-white rounded-lg mt-4">
-              <h3 className="text-xl font-bold">🎨 Wedding Website Builder</h3>
-              <p className="text-gray-600 mt-2">Coming soon!</p>
+          {activeTab === 'website' && user && (
+            <div className="mt-4">
+              <PremiumWebsiteBuilder weddingId={user.id} userRole="bride" />
             </div>
           )}
           {activeTab === 'registry' && (
@@ -605,6 +611,21 @@ export default function Dashboard() {
           {activeTab === 'gallery' && (
             <div className="mt-4">
               <PhotoGallery weddingId="demo-wedding-123" />
+            </div>
+          )}
+          {activeTab === 'moodboards' && user && (
+            <div className="mt-4">
+              <Moodboards weddingId={user.id} userRole="bride" />
+            </div>
+          )}
+          {activeTab === 'invitations' && user && (
+            <div className="mt-4">
+              <InvitationDesigner weddingId={user.id} userRole="bride" />
+            </div>
+          )}
+          {activeTab === 'binder' && user && (
+            <div className="mt-4">
+              <WeddingDayBinder weddingId={user.id} />
             </div>
           )}
         </div>
