@@ -75,10 +75,11 @@ export function SeatingChart({ weddingId, userRole }: SeatingChartProps) {
   }, [weddingId]);
 
   useEffect(() => {
-    if (selectedChart?.id) {
+    // Only fetch tables after guests are loaded to avoid race condition
+    if (selectedChart?.id && guests.length >= 0) {
       fetchTables(selectedChart.id);
     }
-  }, [selectedChart]);
+  }, [selectedChart, guests]);
 
   useEffect(() => {
     updateUnassignedGuests();

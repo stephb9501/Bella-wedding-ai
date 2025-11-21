@@ -158,13 +158,33 @@ export function Moodboards({ weddingId, userRole }: MoodboardsProps) {
     const file = e.target.files?.[0];
     if (!file || !selectedBoard?.id) return;
 
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Only image files (JPEG, PNG, GIF, WebP) are allowed');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      setError('File size must be less than 5MB');
+      return;
+    }
+
     // In production, upload to Supabase Storage or similar
     // For now, we'll use a placeholder URL
     const reader = new FileReader();
+
+    reader.onerror = () => {
+      setError('Failed to read file');
+    };
+
     reader.onload = async (event) => {
       const imageUrl = event.target?.result as string;
       await addImage(imageUrl, 100, 100);
     };
+
     reader.readAsDataURL(file);
   };
 
