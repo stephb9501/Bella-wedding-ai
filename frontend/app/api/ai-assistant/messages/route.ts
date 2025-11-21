@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
     const weddingId = searchParams.get('wedding_id');
@@ -15,7 +20,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing user_id' }, { status: 400 });
     }
 
-    let query = supabaseServer
+    // Authorization check - user can only view their own messages
+    if (userId !== session.user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    let query = supabase
       .from('ai_usage_tracking')
       .select('*')
       .eq('user_id', userId)
@@ -27,7 +37,10 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await query;
 
-    if (error) throw error;
+    if (error) {
+      console.error('Fetch error:', error);
+      return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
+    }
 
     // Transform data into message format
     const messages = data.flatMap(item => {
@@ -52,6 +65,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(messages);
   } catch (error: any) {
     console.error('AI messages GET error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }

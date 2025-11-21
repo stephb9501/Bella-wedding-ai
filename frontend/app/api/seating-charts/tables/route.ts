@@ -1,47 +1,95 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
+// Helper to verify seating chart ownership
+async function verifySeatingChartOwnership(supabase: any, seatingChartId: string, userId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from('seating_charts')
+    .select('id, wedding_id, weddings!inner(bride_id, groom_id)')
+    .eq('id', seatingChartId)
+    .single();
+
+  if (error || !data) return false;
+
+  return data.weddings.bride_id === userId || data.weddings.groom_id === userId;
+}
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const seatingChartId = searchParams.get('seating_chart_id');
     const id = searchParams.get('id');
 
     if (id) {
-      const { data, error } = await supabaseServer
+      // Fetch table and verify ownership through seating chart
+      const { data: table, error } = await supabase
         .from('seating_tables')
-        .select('*')
+        .select('*, seating_charts!inner(wedding_id, weddings!inner(bride_id, groom_id))')
         .eq('id', id)
         .single();
 
-      if (error) throw error;
-      return NextResponse.json(data);
+      if (error) {
+        return NextResponse.json({ error: 'Table not found' }, { status: 404 });
+      }
+
+      // Authorization check
+      const isOwner = table.seating_charts.weddings.bride_id === session.user.id ||
+                      table.seating_charts.weddings.groom_id === session.user.id;
+
+      if (!isOwner) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+
+      return NextResponse.json(table);
     }
 
     if (seatingChartId) {
-      const { data, error } = await supabaseServer
+      // Authorization check
+      const isOwner = await verifySeatingChartOwnership(supabase, seatingChartId, session.user.id);
+      if (!isOwner) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+
+      const { data, error } = await supabase
         .from('seating_tables')
         .select('*')
         .eq('seating_chart_id', seatingChartId)
         .order('table_number', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Fetch error:', error);
+        return NextResponse.json({ error: 'Failed to fetch tables' }, { status: 500 });
+      }
+
       return NextResponse.json(data || []);
     }
 
     return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
   } catch (error: any) {
     console.error('Seating tables GET error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const {
       seating_chart_id,
@@ -59,58 +107,131 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const { data, error } = await supabaseServer
+    // Authorization check
+    const isOwner = await verifySeatingChartOwnership(supabase, seating_chart_id, session.user.id);
+    if (!isOwner) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    // Whitelist allowed fields
+    const insertData = {
+      seating_chart_id,
+      table_number,
+      table_name: table_name || null,
+      table_shape: table_shape || 'round',
+      capacity,
+      position_x: position_x || 0,
+      position_y: position_y || 0,
+      rotation: rotation || 0,
+      notes: notes || null,
+    };
+
+    const { data, error } = await supabase
       .from('seating_tables')
-      .insert({
-        seating_chart_id,
-        table_number,
-        table_name: table_name || null,
-        table_shape: table_shape || 'round',
-        capacity,
-        position_x: position_x || 0,
-        position_y: position_y || 0,
-        rotation: rotation || 0,
-        notes: notes || null,
-      })
+      .insert(insertData)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Insert error:', error);
+      return NextResponse.json({ error: 'Failed to create table' }, { status: 500 });
+    }
 
     return NextResponse.json(data, { status: 201 });
   } catch (error: any) {
     console.error('Seating tables POST error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
-    const { id, ...updates } = body;
+    const { id, ...rawUpdates } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Missing table id' }, { status: 400 });
     }
 
-    const { data, error } = await supabaseServer
+    // Verify ownership through seating chart
+    const { data: table, error: fetchError } = await supabase
+      .from('seating_tables')
+      .select('seating_chart_id, seating_charts!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !table) {
+      return NextResponse.json({ error: 'Table not found' }, { status: 404 });
+    }
+
+    // Authorization check
+    const isOwner = table.seating_charts.weddings.bride_id === session.user.id ||
+                    table.seating_charts.weddings.groom_id === session.user.id;
+
+    if (!isOwner) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    // Whitelist allowed update fields
+    const allowedFields = [
+      'table_number',
+      'table_name',
+      'table_shape',
+      'capacity',
+      'position_x',
+      'position_y',
+      'rotation',
+      'notes',
+    ];
+
+    const updates: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (rawUpdates[field] !== undefined) {
+        updates[field] = rawUpdates[field];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
       .from('seating_tables')
       .update(updates)
       .eq('id', id)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Update error:', error);
+      return NextResponse.json({ error: 'Failed to update table' }, { status: 500 });
+    }
 
     return NextResponse.json(data);
   } catch (error: any) {
     console.error('Seating tables PUT error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -118,31 +239,47 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Missing table id' }, { status: 400 });
     }
 
-    // First, unassign all guests from this table
-    const table = await supabaseServer
+    // Verify ownership through seating chart
+    const { data: table, error: fetchError } = await supabase
       .from('seating_tables')
-      .select('table_number')
+      .select('seating_chart_id, table_number, seating_charts!inner(wedding_id, weddings!inner(bride_id, groom_id))')
       .eq('id', id)
       .single();
 
-    if (table.data) {
-      await supabaseServer
+    if (fetchError || !table) {
+      return NextResponse.json({ error: 'Table not found' }, { status: 404 });
+    }
+
+    // Authorization check
+    const isOwner = table.seating_charts.weddings.bride_id === session.user.id ||
+                    table.seating_charts.weddings.groom_id === session.user.id;
+
+    if (!isOwner) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    // First, unassign all guests from this table
+    if (table.table_number) {
+      await supabase
         .from('guests')
         .update({ table_number: null })
-        .eq('table_number', table.data.table_number);
+        .eq('table_number', table.table_number);
     }
 
     // Then delete the table
-    const { error } = await supabaseServer
+    const { error } = await supabase
       .from('seating_tables')
       .delete()
       .eq('id', id);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Delete error:', error);
+      return NextResponse.json({ error: 'Failed to delete table' }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Seating tables DELETE error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }

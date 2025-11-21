@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Authentication check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
@@ -14,30 +19,36 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Missing user_id' }, { status: 400 });
     }
 
+    // Authorization check - user can only view their own usage
+    if (userId !== session.user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     // Get current month's usage
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    const { data: usageData, error: usageError } = await supabaseServer
+    const { data: usageData, error: usageError } = await supabase
       .from('ai_usage_tracking')
       .select('*')
       .eq('user_id', userId)
       .gte('created_at', firstDayOfMonth.toISOString())
       .lte('created_at', lastDayOfMonth.toISOString());
 
-    if (usageError) throw usageError;
+    if (usageError) {
+      console.error('Usage error:', usageError);
+      return NextResponse.json({ error: 'Failed to fetch usage' }, { status: 500 });
+    }
 
-    // Get user tier from users table
-    const { data: userData, error: userError } = await supabaseServer
-      .from('users')
-      .select('subscription_tier')
-      .eq('id', userId)
+    // Get user tier from vendor_profiles table
+    const { data: vendorProfile, error: profileError } = await supabase
+      .from('vendor_profiles')
+      .select('tier')
+      .eq('user_id', userId)
       .single();
 
-    if (userError) throw userError;
-
-    const tier = userData?.subscription_tier || 'free';
+    const tier = vendorProfile?.tier || 'free';
     const tierLimits: Record<string, number> = {
       free: 0,
       premium: 50,
@@ -55,6 +66,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('AI usage GET error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
