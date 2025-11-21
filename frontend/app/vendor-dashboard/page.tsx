@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote } from 'lucide-react';
+import { Heart, Upload, X, Image as ImageIcon, TrendingUp, Users, MessageCircle, DollarSign, Crown, Star, Zap, BarChart3, Calendar, Quote, ChevronDown, ClipboardList, CheckSquare, Wallet, UserCircle, Armchair } from 'lucide-react';
 import Image from 'next/image';
 import { VendorAnalytics } from '@/components/VendorAnalytics';
 import { VendorBookings } from '@/components/VendorBookings';
@@ -30,6 +30,14 @@ interface Photo {
   photo_url: string;
 }
 
+interface Wedding {
+  id: string;
+  wedding_name: string;
+  bride_name: string;
+  wedding_date: string;
+  vendor_role: string;
+}
+
 const TIER_LIMITS = {
   free: { photos: 1, messages: 5, regions: 1, categories: 1, staff: 1 },
   premium: { photos: 25, messages: 999, regions: 1, categories: 1, staff: 1 },
@@ -48,10 +56,13 @@ export default function VendorDashboard() {
   const router = useRouter();
   const [profile, setProfile] = useState<VendorProfile | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [weddings, setWeddings] = useState<Wedding[]>([]);
+  const [selectedWedding, setSelectedWedding] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'bookings' | 'reviews' | 'planning'>('overview');
+  const [showWeddingDropdown, setShowWeddingDropdown] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // TODO: Get vendor ID from auth session
@@ -60,6 +71,7 @@ export default function VendorDashboard() {
   useEffect(() => {
     fetchProfile();
     fetchPhotos();
+    fetchWeddings();
   }, []);
 
   const fetchProfile = async () => {
@@ -83,6 +95,21 @@ export default function VendorDashboard() {
       setPhotos(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  };
+
+  const fetchWeddings = async () => {
+    try {
+      const response = await fetch(`/api/vendors/weddings?vendor_id=${vendorId}`);
+      if (!response.ok) throw new Error('Failed to fetch weddings');
+      const data = await response.json();
+      setWeddings(data || []);
+      // Auto-select first wedding if available
+      if (data && data.length > 0 && !selectedWedding) {
+        setSelectedWedding(data[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to fetch weddings:', err);
     }
   };
 
@@ -177,25 +204,72 @@ export default function VendorDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
       {/* Header */}
       <header className="bg-white border-b border-champagne-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
-              <Heart className="w-6 h-6 text-white" />
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-xl font-serif font-bold text-gray-900">Bella Wedding - Vendor</h1>
             </div>
-            <h1 className="text-xl font-serif font-bold text-gray-900">Bella Wedding - Vendor</h1>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/')}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Home
+              </button>
+              <button className="text-gray-600 hover:text-gray-900">
+                Logout
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => router.push('/')}
-              className="text-gray-600 hover:text-gray-900"
-            >
-              Home
-            </button>
-            <button className="text-gray-600 hover:text-gray-900">
-              Logout
-            </button>
-          </div>
+          {/* Wedding Selector */}
+          {weddings.length > 0 && (
+            <div className="relative">
+              <button
+                onClick={() => setShowWeddingDropdown(!showWeddingDropdown)}
+                className="w-full md:w-auto flex items-center justify-between gap-3 px-4 py-2 bg-champagne-50 hover:bg-champagne-100 border border-champagne-200 rounded-lg transition"
+              >
+                <div className="flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-champagne-600" />
+                  <span className="text-sm font-medium text-gray-700">
+                    {weddings.find(w => w.id === selectedWedding)?.wedding_name || 'Select Wedding'}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    ({weddings.find(w => w.id === selectedWedding)?.vendor_role})
+                  </span>
+                </div>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </button>
+
+              {showWeddingDropdown && (
+                <div className="absolute top-full left-0 right-0 md:right-auto md:min-w-[400px] mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                  <div className="p-2">
+                    {weddings.map((wedding) => (
+                      <button
+                        key={wedding.id}
+                        onClick={() => {
+                          setSelectedWedding(wedding.id);
+                          setShowWeddingDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 rounded-lg hover:bg-champagne-50 transition ${
+                          selectedWedding === wedding.id ? 'bg-champagne-100' : ''
+                        }`}
+                      >
+                        <div className="font-medium text-gray-900">{wedding.wedding_name}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {wedding.bride_name} • {new Date(wedding.wedding_date).toLocaleDateString()} • {wedding.vendor_role}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </header>
 
@@ -250,6 +324,19 @@ export default function VendorDashboard() {
           >
             <ImageIcon className="w-5 h-5" />
             Overview
+          </button>
+          <button
+            onClick={() => setActiveTab('planning')}
+            className={`flex-1 py-4 px-6 font-medium transition flex items-center justify-center gap-2 ${
+              activeTab === 'planning'
+                ? 'bg-champagne-50 border-b-2 border-champagne-600 text-champagne-700'
+                : 'text-gray-600 hover:bg-gray-50'
+            }`}
+            disabled={!selectedWedding}
+          >
+            <ClipboardList className="w-5 h-5" />
+            Planning Tools
+            {!selectedWedding && <span className="text-xs">(Select wedding)</span>}
           </button>
           <button
             onClick={() => setActiveTab('analytics')}
@@ -406,6 +493,71 @@ export default function VendorDashboard() {
           )}
         </div>
           </>
+        )}
+
+        {/* Planning Tools Tab */}
+        {activeTab === 'planning' && selectedWedding && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-md p-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Planning Tools</h3>
+              <p className="text-gray-600 mb-6">
+                Access timeline, checklist, budget, and more for {weddings.find(w => w.id === selectedWedding)?.wedding_name}
+              </p>
+
+              {/* Planning Tools Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Timeline */}
+                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
+                  <ClipboardList className="w-8 h-8 text-champagne-600 mb-3 group-hover:scale-110 transition" />
+                  <h4 className="font-bold text-gray-900 mb-2">Timeline</h4>
+                  <p className="text-sm text-gray-600">Manage event timeline and schedule</p>
+                </button>
+
+                {/* Checklist */}
+                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
+                  <CheckSquare className="w-8 h-8 text-green-600 mb-3 group-hover:scale-110 transition" />
+                  <h4 className="font-bold text-gray-900 mb-2">Checklist</h4>
+                  <p className="text-sm text-gray-600">Track tasks and to-dos</p>
+                </button>
+
+                {/* Budget */}
+                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
+                  <Wallet className="w-8 h-8 text-blue-600 mb-3 group-hover:scale-110 transition" />
+                  <h4 className="font-bold text-gray-900 mb-2">Budget</h4>
+                  <p className="text-sm text-gray-600">Manage wedding budget</p>
+                </button>
+
+                {/* Guests */}
+                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
+                  <UserCircle className="w-8 h-8 text-purple-600 mb-3 group-hover:scale-110 transition" />
+                  <h4 className="font-bold text-gray-900 mb-2">Guests</h4>
+                  <p className="text-sm text-gray-600">View guest list and details</p>
+                </button>
+
+                {/* Seating */}
+                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
+                  <Armchair className="w-8 h-8 text-rose-600 mb-3 group-hover:scale-110 transition" />
+                  <h4 className="font-bold text-gray-900 mb-2">Seating</h4>
+                  <p className="text-sm text-gray-600">Arrange seating chart</p>
+                </button>
+
+                {/* Activity Log */}
+                <button className="p-6 border-2 border-champagne-200 hover:border-champagne-400 rounded-xl text-left transition group">
+                  <BarChart3 className="w-8 h-8 text-amber-600 mb-3 group-hover:scale-110 transition" />
+                  <h4 className="font-bold text-gray-900 mb-2">Activity Log</h4>
+                  <p className="text-sm text-gray-600">View collaboration history</p>
+                </button>
+              </div>
+
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Your Role:</strong> {weddings.find(w => w.id === selectedWedding)?.vendor_role}
+                  <br />
+                  You can view and edit items based on your role permissions. Items you create will be attributed to you.
+                </p>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Analytics Tab */}
