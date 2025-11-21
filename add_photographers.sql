@@ -1,5 +1,5 @@
 -- Add Arkansas Wedding Photographers to Vendors Table
--- Comprehensive list of photographers
+-- Using only verified contact information provided
 
 INSERT INTO public.users (
   email,
@@ -15,7 +15,7 @@ INSERT INTO public.users (
   subscription_tier,
   is_active
 ) VALUES
--- 1. The Linns - Arkansas Wedding & Elopement Photographers
+-- 1. The Linns - VERIFIED EMAIL
 (
   'contact@thelinns.co',
   'vendor',
@@ -31,7 +31,7 @@ INSERT INTO public.users (
   true
 ),
 
--- 2. Boston Mountain Photo
+-- 2. Boston Mountain Photo - VERIFIED EMAIL & PHONE
 (
   'hello@bostonmountainphoto.com',
   'vendor',
@@ -47,103 +47,7 @@ INSERT INTO public.users (
   true
 ),
 
--- 3. Arkansas Wedding Collection
-(
-  'info@arkansasweddingcollection.com',
-  'vendor',
-  'Arkansas Wedding Collection',
-  'photographer',
-  NULL,
-  '9000 Commerce Cv Ste 3',
-  'North Little Rock',
-  'AR',
-  '72113',
-  NULL,
-  'free',
-  true
-),
-
--- 4. Heather Jenkins Photography
-(
-  'info@heatherjenkins.com',
-  'vendor',
-  'Heather Jenkins Photography',
-  'photographer',
-  NULL,
-  '10310 W Markham St #222',
-  'Little Rock',
-  'AR',
-  '72205',
-  'https://heatherjenkins.com',
-  'free',
-  true
-),
-
--- 5. Caroline M. Holt Photographer LLC
-(
-  'info@carolinemholt.com',
-  'vendor',
-  'Caroline M. Holt Photographer LLC',
-  'photographer',
-  NULL,
-  NULL,
-  'Little Rock',
-  'AR',
-  NULL,
-  NULL,
-  'free',
-  true
-),
-
--- 6. Chelsea Duff Photography
-(
-  'info@chelseaduffphotography.com',
-  'vendor',
-  'Chelsea Duff Photography',
-  'photographer',
-  NULL,
-  NULL,
-  'Jonesboro',
-  'AR',
-  NULL,
-  'https://chelseaduffphotography.com',
-  'free',
-  true
-),
-
--- 7. Avis Rubra Photography
-(
-  'info@avisrubraphotography.com',
-  'vendor',
-  'Avis Rubra Photography',
-  'photographer',
-  NULL,
-  NULL,
-  'Central Arkansas',
-  'AR',
-  NULL,
-  'https://avisrubraphotography.com',
-  'free',
-  true
-),
-
--- 8. Taryn Lynn Photography
-(
-  'info@tarynlynnphotography.com',
-  'vendor',
-  'Taryn Lynn Photography',
-  'photographer',
-  NULL,
-  NULL,
-  'Springdale',
-  'AR',
-  NULL,
-  NULL,
-  'free',
-  true
-),
-
--- 9. Allie Atkisson Imaging
+-- 3. Allie Atkisson Imaging - VERIFIED EMAIL
 (
   'allieatkissonimaging@gmail.com',
   'vendor',
@@ -159,9 +63,105 @@ INSERT INTO public.users (
   true
 ),
 
--- 10. Miles Witt Boyer Photography
+-- 4. Arkansas Wedding Collection - Address only, no contact info
 (
-  'info@mileswittboyer.com',
+  'vendor+arkansasweddingcollection@bellawedding.ai',
+  'vendor',
+  'Arkansas Wedding Collection',
+  'photographer',
+  NULL,
+  '9000 Commerce Cv Ste 3',
+  'North Little Rock',
+  'AR',
+  '72113',
+  NULL,
+  'free',
+  true
+),
+
+-- 5. Heather Jenkins Photography - Website only
+(
+  'vendor+heatherjenkins@bellawedding.ai',
+  'vendor',
+  'Heather Jenkins Photography',
+  'photographer',
+  NULL,
+  '10310 W Markham St #222',
+  'Little Rock',
+  'AR',
+  '72205',
+  'https://heatherjenkins.com',
+  'free',
+  true
+),
+
+-- 6. Caroline M. Holt Photographer LLC - Little Rock only
+(
+  'vendor+carolinemholt@bellawedding.ai',
+  'vendor',
+  'Caroline M. Holt Photographer LLC',
+  'photographer',
+  NULL,
+  NULL,
+  'Little Rock',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
+),
+
+-- 7. Chelsea Duff Photography - Website only
+(
+  'vendor+chelseaduff@bellawedding.ai',
+  'vendor',
+  'Chelsea Duff Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Jonesboro',
+  'AR',
+  NULL,
+  'https://chelseaduffphotography.com',
+  'free',
+  true
+),
+
+-- 8. Avis Rubra Photography - Website only
+(
+  'vendor+avisrubra@bellawedding.ai',
+  'vendor',
+  'Avis Rubra Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Central Arkansas',
+  'AR',
+  NULL,
+  'https://avisrubraphotography.com',
+  'free',
+  true
+),
+
+-- 9. Taryn Lynn Photography - Location only
+(
+  'vendor+tarynlynn@bellawedding.ai',
+  'vendor',
+  'Taryn Lynn Photography',
+  'photographer',
+  NULL,
+  NULL,
+  'Springdale',
+  'AR',
+  NULL,
+  NULL,
+  'free',
+  true
+),
+
+-- 10. Miles Witt Boyer Photography - Name only
+(
+  'vendor+mileswittboyer@bellawedding.ai',
   'vendor',
   'Miles Witt Boyer Photography',
   'photographer',
@@ -170,14 +170,14 @@ INSERT INTO public.users (
   'Northwest Arkansas',
   'AR',
   NULL,
-  'https://mileswittboyer.com',
+  NULL,
   'free',
   true
 ),
 
--- 11. Around The Rock Photography
+-- 11. Around The Rock Photography - Name only
 (
-  'info@aroundtherock.com',
+  'vendor+aroundtherock@bellawedding.ai',
   'vendor',
   'Around The Rock Photography',
   'photographer',
@@ -186,14 +186,14 @@ INSERT INTO public.users (
   'Central Arkansas',
   'AR',
   NULL,
-  'https://aroundtherock.com',
+  NULL,
   'free',
   true
 ),
 
--- 12. Kati Mallory Photo & Design
+-- 12. Kati Mallory Photo & Design - Name only
 (
-  'info@katimallory.com',
+  'vendor+katimallory@bellawedding.ai',
   'vendor',
   'Kati Mallory Photo & Design',
   'photographer',
@@ -202,14 +202,14 @@ INSERT INTO public.users (
   'Arkansas',
   'AR',
   NULL,
-  'https://katimallory.com',
+  NULL,
   'free',
   true
 ),
 
--- 13. Kayleigh Ross Photography
+-- 13. Kayleigh Ross Photography - Name only
 (
-  'info@kayleighross.com',
+  'vendor+kayleighross@bellawedding.ai',
   'vendor',
   'Kayleigh Ross Photography',
   'photographer',
@@ -218,14 +218,14 @@ INSERT INTO public.users (
   'Arkansas',
   'AR',
   NULL,
-  'https://kayleighross.com',
+  NULL,
   'free',
   true
 ),
 
--- 14. Tony Baker Photography
+-- 14. Tony Baker Photography - Little Rock only
 (
-  'info@tonybakerphotography.com',
+  'vendor+tonybaker@bellawedding.ai',
   'vendor',
   'Tony Baker Photography',
   'photographer',
@@ -239,9 +239,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 15. Taylor Howard Photography
+-- 15. Taylor Howard Photography - Searcy only
 (
-  'info@taylorhowardphotography.com',
+  'vendor+taylorhoward@bellawedding.ai',
   'vendor',
   'Taylor Howard Photography',
   'photographer',
@@ -255,9 +255,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 16. Kylee Grace Photography
+-- 16. Kylee Grace Photography - Bentonville only
 (
-  'info@kyleegracephotography.com',
+  'vendor+kyleegrace@bellawedding.ai',
   'vendor',
   'Kylee Grace Photography',
   'photographer',
@@ -271,9 +271,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 17. Hope Mulanax Photography
+-- 17. Hope Mulanax Photography - Website only
 (
-  'info@hopemulanax.com',
+  'vendor+hopemulanax@bellawedding.ai',
   'vendor',
   'Hope Mulanax Photography',
   'photographer',
@@ -287,9 +287,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 18. Beaty Creative Photo
+-- 18. Beaty Creative Photo - Website only
 (
-  'info@beatycreativephoto.com',
+  'vendor+beatycreative@bellawedding.ai',
   'vendor',
   'Beaty Creative Photo',
   'photographer',
@@ -303,9 +303,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 19. Count In Threes Photo
+-- 19. Count In Threes Photo - Website only
 (
-  'info@countinthreesphoto.com',
+  'vendor+countinthrees@bellawedding.ai',
   'vendor',
   'Count In Threes Photo',
   'photographer',
@@ -319,9 +319,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 20. Eternal Memories Photography
+-- 20. Eternal Memories Photography - Searcy only
 (
-  'info@eternalmemoriesphotography.com',
+  'vendor+eternalmemories@bellawedding.ai',
   'vendor',
   'Eternal Memories Photography',
   'photographer',
@@ -335,9 +335,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 21. Alice McLain Photography
+-- 21. Alice McLain Photography - Website only
 (
-  'info@alicemclainphotography.com',
+  'vendor+alicemclain@bellawedding.ai',
   'vendor',
   'Alice McLain Photography',
   'photographer',
@@ -351,9 +351,9 @@ INSERT INTO public.users (
   true
 ),
 
--- 22. Megan Thackston Photo & Film
+-- 22. Megan Thackston Photo & Film - Name only
 (
-  'info@meganthackston.com',
+  'vendor+meganthackston@bellawedding.ai',
   'vendor',
   'Megan Thackston Photo & Film',
   'photographer',
