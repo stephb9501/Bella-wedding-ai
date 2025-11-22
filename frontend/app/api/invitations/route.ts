@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
 // Helper to verify wedding ownership
 async function verifyWeddingOwnership(supabase: any, weddingId: string, userId: string): Promise<boolean> {
   const { data, error } = await supabase
@@ -37,51 +30,52 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get('id');
 
     if (id) {
-      // Fetch website and verify ownership through wedding
-      const { data: website, error } = await supabase
-        .from('wedding_websites')
+      // Fetch invitation and verify ownership
+      const { data: invitation, error } = await supabase
+        .from('invitations')
         .select('*, weddings!inner(bride_id, groom_id)')
         .eq('id', id)
         .single();
 
       if (error) {
-        return NextResponse.json({ error: 'Website not found' }, { status: 404 });
+        return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
       }
 
       // Authorization check
-      const isOwner = website.weddings.bride_id === session.user.id ||
-                      website.weddings.groom_id === session.user.id;
+      const isOwner = invitation.weddings.bride_id === session.user.id ||
+                      invitation.weddings.groom_id === session.user.id;
 
       if (!isOwner) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
-      return NextResponse.json(website);
+      return NextResponse.json(invitation);
     }
 
     if (weddingId) {
-      // Authorization check - verify wedding ownership
+      // Authorization check
       const isOwner = await verifyWeddingOwnership(supabase, weddingId, session.user.id);
       if (!isOwner) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
       const { data, error } = await supabase
-        .from('wedding_websites')
+        .from('invitations')
         .select('*')
         .eq('wedding_id', weddingId)
-        .single();
+        .order('created_at', { ascending: false });
 
-      if (error && error.code !== 'PGRST116') {
-        return NextResponse.json({ error: 'Failed to fetch website' }, { status: 500 });
+      if (error) {
+        console.error('Fetch error:', error);
+        return NextResponse.json({ error: 'Failed to fetch invitations' }, { status: 500 });
       }
 
-      return NextResponse.json(data || null);
+      return NextResponse.json(data || []);
     }
 
     return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
   } catch (error: any) {
-    console.error('Website GET error:', error);
+    console.error('Invitations GET error:', error);
     return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
@@ -99,61 +93,67 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       wedding_id,
-      site_name,
+      template_id,
       bride_name,
       groom_name,
-      theme,
       ceremony_date,
-      ceremony_location,
-      reception_date,
-      reception_location,
-      design_settings,
+      ceremony_time,
+      ceremony_venue,
+      ceremony_address,
+      reception_venue,
+      reception_address,
+      rsvp_deadline,
+      rsvp_contact,
+      custom_message,
+      custom_colors,
+      header_image_url,
+      is_finalized,
     } = body;
 
-    if (!wedding_id || !site_name) {
+    if (!wedding_id || !template_id) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Authorization check - verify wedding ownership
+    // Authorization check
     const isOwner = await verifyWeddingOwnership(supabase, wedding_id, session.user.id);
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const site_slug = generateSlug(site_name);
-
     // Whitelist allowed fields
     const insertData = {
       wedding_id,
-      site_name,
-      site_slug,
+      template_id,
       bride_name: bride_name || '',
       groom_name: groom_name || '',
-      theme: theme || 'classic',
       ceremony_date: ceremony_date || null,
-      ceremony_location: ceremony_location || '',
-      reception_date: reception_date || null,
-      reception_location: reception_location || '',
-      design_settings: design_settings || {},
-      is_published: false,
-      enable_rsvp: true,
-      view_count: 0,
+      ceremony_time: ceremony_time || null,
+      ceremony_venue: ceremony_venue || '',
+      ceremony_address: ceremony_address || '',
+      reception_venue: reception_venue || '',
+      reception_address: reception_address || '',
+      rsvp_deadline: rsvp_deadline || null,
+      rsvp_contact: rsvp_contact || '',
+      custom_message: custom_message || '',
+      custom_colors: custom_colors || {},
+      header_image_url: header_image_url || null,
+      is_finalized: is_finalized || false,
     };
 
     const { data, error } = await supabase
-      .from('wedding_websites')
+      .from('invitations')
       .insert(insertData)
       .select()
       .single();
 
     if (error) {
       console.error('Insert error:', error);
-      return NextResponse.json({ error: 'Failed to create website' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to create invitation' }, { status: 500 });
     }
 
     return NextResponse.json(data, { status: 201 });
   } catch (error: any) {
-    console.error('Website POST error:', error);
+    console.error('Invitations POST error:', error);
     return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
@@ -172,52 +172,45 @@ export async function PUT(request: NextRequest) {
     const { id, ...rawUpdates } = body;
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing website id' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing invitation id' }, { status: 400 });
     }
 
-    // First, verify ownership
-    const { data: website, error: fetchError } = await supabase
-      .from('wedding_websites')
+    // Verify ownership
+    const { data: invitation, error: fetchError } = await supabase
+      .from('invitations')
       .select('wedding_id, weddings!inner(bride_id, groom_id)')
       .eq('id', id)
       .single();
 
-    if (fetchError || !website) {
-      return NextResponse.json({ error: 'Website not found' }, { status: 404 });
+    if (fetchError || !invitation) {
+      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
     }
 
     // Authorization check
-    const isOwner = website.weddings.bride_id === session.user.id ||
-                    website.weddings.groom_id === session.user.id;
+    const isOwner = invitation.weddings.bride_id === session.user.id ||
+                    invitation.weddings.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Whitelist allowed update fields (fix mass assignment vulnerability)
+    // Whitelist allowed update fields
     const allowedFields = [
-      'site_name',
+      'template_id',
       'bride_name',
       'groom_name',
-      'theme',
       'ceremony_date',
       'ceremony_time',
-      'ceremony_location',
       'ceremony_venue',
-      'reception_date',
-      'reception_time',
-      'reception_location',
+      'ceremony_address',
       'reception_venue',
-      'design_settings',
-      'meta_description',
-      'meta_image',
+      'reception_address',
+      'rsvp_deadline',
+      'rsvp_contact',
+      'custom_message',
+      'custom_colors',
       'header_image_url',
-      'custom_domain',
-      'is_password_protected',
-      'password_hash',
-      'enable_rsvp',
-      'is_published',
-      'published_at',
+      'is_finalized',
     ];
 
     const updates: Record<string, any> = {};
@@ -232,7 +225,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from('wedding_websites')
+      .from('invitations')
       .update(updates)
       .eq('id', id)
       .select()
@@ -240,12 +233,12 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error('Update error:', error);
-      return NextResponse.json({ error: 'Failed to update website' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to update invitation' }, { status: 500 });
     }
 
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error('Website PUT error:', error);
+    console.error('Invitations PUT error:', error);
     return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
@@ -264,41 +257,41 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get('id');
 
     if (!id) {
-      return NextResponse.json({ error: 'Missing website id' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing invitation id' }, { status: 400 });
     }
 
-    // Verify ownership before delete
-    const { data: website, error: fetchError } = await supabase
-      .from('wedding_websites')
+    // Verify ownership
+    const { data: invitation, error: fetchError } = await supabase
+      .from('invitations')
       .select('wedding_id, weddings!inner(bride_id, groom_id)')
       .eq('id', id)
       .single();
 
-    if (fetchError || !website) {
-      return NextResponse.json({ error: 'Website not found' }, { status: 404 });
+    if (fetchError || !invitation) {
+      return NextResponse.json({ error: 'Invitation not found' }, { status: 404 });
     }
 
     // Authorization check
-    const isOwner = website.weddings.bride_id === session.user.id ||
-                    website.weddings.groom_id === session.user.id;
+    const isOwner = invitation.weddings.bride_id === session.user.id ||
+                    invitation.weddings.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const { error } = await supabase
-      .from('wedding_websites')
+      .from('invitations')
       .delete()
       .eq('id', id);
 
     if (error) {
       console.error('Delete error:', error);
-      return NextResponse.json({ error: 'Failed to delete website' }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to delete invitation' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Website DELETE error:', error);
+    console.error('Invitations DELETE error:', error);
     return NextResponse.json({ error: 'An error occurred' }, { status: 500 });
   }
 }
