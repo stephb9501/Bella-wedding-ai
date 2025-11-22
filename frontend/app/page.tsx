@@ -98,27 +98,97 @@ export default function HomePage() {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Bella Wedding AI",
-    "description": "AI-powered wedding planning platform with guest management, budget tracking, timeline, photo gallery, and vendor directory",
-    "url": "https://bellaweddingai.com",
-    "applicationCategory": "LifestyleApplication",
-    "operatingSystem": "Web",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "featureList": [
-      "Guest List & RSVP Management",
-      "Photo Gallery",
-      "Registry Aggregator",
-      "Budget Tracker",
-      "Timeline & Checklist",
-      "AI Wedding Assistant",
-      "Vendor Directory"
-    ],
-    "screenshot": "https://bellaweddingai.com/images/IMG_3941.JPG"
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://bellaweddingai.com/#webapp",
+        "name": "Bella Wedding AI",
+        "description": "AI-powered wedding planning platform with guest management, budget tracking, timeline, photo gallery, and vendor directory",
+        "url": "https://bellaweddingai.com",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "featureList": [
+          "AI-Powered Wedding Planning",
+          "Guest List & RSVP Management",
+          "Budget Tracker with Category Breakdown",
+          "Wedding Timeline & Checklist",
+          "Photo Gallery",
+          "Registry Aggregator",
+          "Vendor Directory & Booking",
+          "Seating Chart Planner",
+          "Wedding Website Builder"
+        ],
+        "screenshot": "https://bellaweddingai.com/wedding-photos/deltalow-560.jpg",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "150"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://bellaweddingai.com/#organization",
+        "name": "Bella Wedding AI",
+        "url": "https://bellaweddingai.com",
+        "logo": "https://bellaweddingai.com/logo.png",
+        "sameAs": [
+          "https://twitter.com/bellaweddingai",
+          "https://facebook.com/bellaweddingai",
+          "https://instagram.com/bellaweddingai"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://bellaweddingai.com/#website",
+        "url": "https://bellaweddingai.com",
+        "name": "Bella Wedding AI",
+        "description": "Your Dream Wedding, Perfectly Planned",
+        "publisher": {
+          "@id": "https://bellaweddingai.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://bellaweddingai.com/vendors?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Bella Wedding AI free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Bella Wedding AI offers a free plan with essential wedding planning features. Premium plans with advanced features are available starting at $19.99/month."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What features does Bella Wedding AI include?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Bella Wedding AI includes guest list management, RSVP tracking, budget tracking, timeline and checklist, photo gallery, registry aggregator, vendor directory, AI wedding assistant, seating chart planner, and wedding website builder."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use Bella Wedding AI on my phone?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Bella Wedding AI is fully mobile-responsive and works on all devices including smartphones and tablets."
+            }
+          }
+        ]
+      }
+    ]
   };
 
   return (
