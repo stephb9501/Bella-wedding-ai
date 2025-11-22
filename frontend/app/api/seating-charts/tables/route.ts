@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 async function verifySeatingChartOwnership(supabase: any, seatingChartId: string, userId: string): Promise<boolean> {
   const { data, error } = await supabase
     .from('seating_charts')
-    .select('id, wedding_id, weddings!inner(bride_id, groom_id)')
+    .select('id, wedding_id, weddings(bride_id, groom_id)')
     .eq('id', seatingChartId)
     .single();
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       // Fetch table and verify ownership through seating chart
       const { data: table, error } = await supabase
         .from('seating_tables')
-        .select('*, seating_charts!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+        .select('*, seating_charts!inner(wedding_id, weddings(bride_id, groom_id))')
         .eq('id', id)
         .single();
 
@@ -42,8 +42,10 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check
-      const isOwner = table.seating_charts.weddings.bride_id === session.user.id ||
-                      table.seating_charts.weddings.groom_id === session.user.id;
+      const isOwner = const chart = table.seating_charts as any;
+      const wedding = chart?.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
       if (!isOwner) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -164,7 +166,7 @@ export async function PUT(request: NextRequest) {
     // Verify ownership through seating chart
     const { data: table, error: fetchError } = await supabase
       .from('seating_tables')
-      .select('seating_chart_id, seating_charts!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+      .select('seating_chart_id, seating_charts!inner(wedding_id, weddings(bride_id, groom_id))')
       .eq('id', id)
       .single();
 
@@ -173,8 +175,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = table.seating_charts.weddings.bride_id === session.user.id ||
-                    table.seating_charts.weddings.groom_id === session.user.id;
+    const isOwner = const chart = table.seating_charts as any;
+      const wedding = chart?.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -242,7 +246,7 @@ export async function DELETE(request: NextRequest) {
     // Verify ownership through seating chart
     const { data: table, error: fetchError } = await supabase
       .from('seating_tables')
-      .select('seating_chart_id, table_number, seating_charts!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+      .select('seating_chart_id, table_number, seating_charts!inner(wedding_id, weddings(bride_id, groom_id))')
       .eq('id', id)
       .single();
 
@@ -251,8 +255,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = table.seating_charts.weddings.bride_id === session.user.id ||
-                    table.seating_charts.weddings.groom_id === session.user.id;
+    const isOwner = const chart = table.seating_charts as any;
+      const wedding = chart?.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

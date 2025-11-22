@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 async function verifyMoodboardOwnership(supabase: any, moodboardId: string, userId: string): Promise<boolean> {
   const { data, error } = await supabase
     .from('moodboards')
-    .select('id, wedding_id, weddings!inner(bride_id, groom_id)')
+    .select('id, wedding_id, weddings(bride_id, groom_id)')
     .eq('id', moodboardId)
     .single();
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       // Fetch item and verify ownership through moodboard
       const { data: item, error } = await supabase
         .from('moodboard_items')
-        .select('*, moodboards!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+        .select('*, moodboards!inner(wedding_id, weddings(bride_id, groom_id))')
         .eq('id', id)
         .single();
 
@@ -42,8 +42,10 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check
-      const isOwner = item.moodboards.weddings.bride_id === session.user.id ||
-                      item.moodboards.weddings.groom_id === session.user.id;
+      const isOwner = const moodboard = item.moodboards as any;
+      const wedding = moodboard?.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
       if (!isOwner) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -166,7 +168,7 @@ export async function PUT(request: NextRequest) {
     // Verify ownership through moodboard
     const { data: item, error: fetchError } = await supabase
       .from('moodboard_items')
-      .select('moodboard_id, moodboards!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+      .select('moodboard_id, moodboards!inner(wedding_id, weddings(bride_id, groom_id))')
       .eq('id', id)
       .single();
 
@@ -175,8 +177,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = item.moodboards.weddings.bride_id === session.user.id ||
-                    item.moodboards.weddings.groom_id === session.user.id;
+    const isOwner = const moodboard = item.moodboards as any;
+      const wedding = moodboard?.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -245,7 +249,7 @@ export async function DELETE(request: NextRequest) {
     // Verify ownership through moodboard
     const { data: item, error: fetchError } = await supabase
       .from('moodboard_items')
-      .select('moodboard_id, moodboards!inner(wedding_id, weddings!inner(bride_id, groom_id))')
+      .select('moodboard_id, moodboards!inner(wedding_id, weddings(bride_id, groom_id))')
       .eq('id', id)
       .single();
 
@@ -254,8 +258,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = item.moodboards.weddings.bride_id === session.user.id ||
-                    item.moodboards.weddings.groom_id === session.user.id;
+    const isOwner = const moodboard = item.moodboards as any;
+      const wedding = moodboard?.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

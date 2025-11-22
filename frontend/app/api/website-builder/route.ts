@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       // Fetch website and verify ownership through wedding
       const { data: website, error } = await supabase
         .from('wedding_websites')
-        .select('*, weddings!inner(bride_id, groom_id)')
+        .select('*, weddings(bride_id, groom_id)')
         .eq('id', id)
         .single();
 
@@ -49,8 +49,9 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check
-      const isOwner = website.weddings.bride_id === session.user.id ||
-                      website.weddings.groom_id === session.user.id;
+      const isOwner = const wedding = website.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
       if (!isOwner) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -178,7 +179,7 @@ export async function PUT(request: NextRequest) {
     // First, verify ownership
     const { data: website, error: fetchError } = await supabase
       .from('wedding_websites')
-      .select('wedding_id, weddings!inner(bride_id, groom_id)')
+      .select('wedding_id, weddings(bride_id, groom_id)')
       .eq('id', id)
       .single();
 
@@ -187,8 +188,9 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = website.weddings.bride_id === session.user.id ||
-                    website.weddings.groom_id === session.user.id;
+    const isOwner = const wedding = website.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -270,7 +272,7 @@ export async function DELETE(request: NextRequest) {
     // Verify ownership before delete
     const { data: website, error: fetchError } = await supabase
       .from('wedding_websites')
-      .select('wedding_id, weddings!inner(bride_id, groom_id)')
+      .select('wedding_id, weddings(bride_id, groom_id)')
       .eq('id', id)
       .single();
 
@@ -279,8 +281,9 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = website.weddings.bride_id === session.user.id ||
-                    website.weddings.groom_id === session.user.id;
+    const isOwner = const wedding = website.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
