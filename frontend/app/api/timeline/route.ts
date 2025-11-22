@@ -3,15 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-// Use service role to bypass RLS for admin operations
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
-
 // GET /api/timeline - Fetch timeline events for a wedding
 export async function GET(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const searchParams = request.nextUrl.searchParams;
     const weddingId = searchParams.get('wedding_id');
     const userId = searchParams.get('user_id'); // Legacy support
@@ -47,6 +44,9 @@ export async function GET(request: NextRequest) {
 // POST /api/timeline - Create a new timeline event
 export async function POST(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const {
       wedding_id,
@@ -126,6 +126,9 @@ export async function POST(request: NextRequest) {
 // PUT /api/timeline - Update an existing timeline event
 export async function PUT(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const { id, ...updates } = body;
 
@@ -178,6 +181,9 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/timeline - Delete a timeline event
 export async function DELETE(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const searchParams = request.nextUrl.searchParams;
     const id = searchParams.get('id');
 

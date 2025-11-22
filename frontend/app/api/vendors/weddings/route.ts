@@ -3,15 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-// Use service role to bypass RLS for admin operations
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
-
 // GET /api/vendors/weddings - Fetch all weddings a vendor has access to
 export async function GET(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const searchParams = request.nextUrl.searchParams;
     const vendorId = searchParams.get('vendor_id');
 

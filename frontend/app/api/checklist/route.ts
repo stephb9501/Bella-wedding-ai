@@ -3,12 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
-
 export async function GET(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const { searchParams } = new URL(request.url);
     const weddingId = searchParams.get('wedding_id');
     const userId = searchParams.get('user_id'); // Legacy support
@@ -37,6 +36,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const {
       wedding_id,
@@ -145,6 +147,9 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const { id, ...updates } = body;
 
@@ -241,6 +246,9 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

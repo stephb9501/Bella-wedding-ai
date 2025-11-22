@@ -20,6 +20,9 @@ function getTierPricing(tier: string): string {
 
 export async function GET(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const category = searchParams.get('category');
@@ -56,6 +59,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const { businessName, email, password, phone, categories, city, state, description, tier } = body;
 
@@ -176,6 +182,9 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const { id, ...updateData } = body;
 
@@ -197,6 +206,9 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

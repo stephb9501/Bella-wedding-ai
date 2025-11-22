@@ -3,15 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-// Use service role to bypass RLS for admin operations
-const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
-
 // POST /api/approvals - Approve or reject a timeline/checklist/budget item
 export async function POST(request: NextRequest) {
   try {
+    // Create Supabase client inside the handler to avoid build-time execution
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const {
       item_type, // 'timeline_event', 'checklist_item', 'budget_item'
@@ -106,6 +104,11 @@ export async function POST(request: NextRequest) {
 // GET /api/approvals - Get pending approval requests for a wedding
 export async function GET(request: NextRequest) {
   try {
+    // Create Supabase client inside the handler to avoid build-time execution
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
+
     const searchParams = request.nextUrl.searchParams;
     const weddingId = searchParams.get('wedding_id');
     const itemType = searchParams.get('item_type'); // optional filter
