@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { sendWelcomeEmail } from '@/lib/email-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -62,6 +63,19 @@ export async function POST(request: NextRequest) {
       if (profileError) {
         console.error('Profile creation error:', profileError);
         // Continue anyway, we'll handle this gracefully
+      }
+
+      // Send welcome email to the new user
+      try {
+        await sendWelcomeEmail(email, {
+          fullName,
+          email,
+          userType: 'bride',
+          weddingDate,
+        }, authData.user.id);
+      } catch (emailError) {
+        // Log error but don't fail the registration
+        console.error('Failed to send welcome email:', emailError);
       }
 
       // Send admin notification email

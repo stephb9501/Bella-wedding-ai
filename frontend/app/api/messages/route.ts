@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { requireAuth } from '@/lib/auth-helpers';
+import { sendMessageNotificationEmail } from '@/lib/email-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -143,6 +144,85 @@ export async function POST(request: NextRequest) {
       .select();
 
     if (error) throw error;
+
+    // Send email notification to the recipient
+    try {
+      // Determine recipient based on sender type
+      let recipientId: string | null = null;
+      let recipientEmail: string | null = null;
+      let recipientName: string | null = null;
+
+      if (booking_id) {
+        // Get booking details to find recipient
+        const { data: bookingData } = await supabaseServer
+          .from('booking_requests')
+          .select('vendor_id, user_id')
+          .eq('id', booking_id)
+          .single();
+
+        if (bookingData) {
+          recipientId = sender_type === 'vendor' ? bookingData.user_id : bookingData.vendor_id;
+
+          // Get recipient details
+          if (sender_type === 'vendor') {
+            const { data: userData } = await supabaseServer
+              .from('users')
+              .select('email, full_name')
+              .eq('id', recipientId)
+              .single();
+            recipientEmail = userData?.email;
+            recipientName = userData?.full_name;
+          } else {
+            const { data: vendorData } = await supabaseServer
+              .from('vendors')
+              .select('email, business_name')
+              .eq('id', recipientId)
+              .single();
+            recipientEmail = vendorData?.email;
+            recipientName = vendorData?.business_name;
+          }
+        }
+      }
+
+      // Get sender name
+      let senderName = 'Someone';
+      if (sender_type === 'vendor') {
+        const { data: vendorData } = await supabaseServer
+          .from('vendors')
+          .select('business_name')
+          .eq('id', sender_id)
+          .single();
+        senderName = vendorData?.business_name || 'A vendor';
+      } else {
+        const { data: userData } = await supabaseServer
+          .from('users')
+          .select('full_name')
+          .eq('id', sender_id)
+          .single();
+        senderName = userData?.full_name || 'A couple';
+      }
+
+      // Send notification email if we have recipient details
+      if (recipientEmail && recipientName && recipientId) {
+        await sendMessageNotificationEmail(
+          recipientEmail,
+          {
+            recipientName,
+            senderName,
+            senderType: sender_type,
+            message: messageContent,
+            conversationId: conversation_id,
+            bookingId: booking_id,
+            contextType: booking_id ? 'booking' : 'general',
+          },
+          recipientId
+        );
+      }
+    } catch (emailError) {
+      // Log but don't fail the message send
+      console.error('Failed to send message notification email:', emailError);
+    }
+
     return NextResponse.json(data?.[0] || {}, { status: 201 });
   } catch (error) {
     console.error('Messages POST error:', error);

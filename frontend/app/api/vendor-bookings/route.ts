@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { Resend } from 'resend';
+import { sendVendorLeadEmail, sendBookingConfirmedEmail } from '@/lib/email-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,35 +129,37 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
-    // Send email notification to vendor
+    // Send vendor lead email notification
     try {
-      if (process.env.RESEND_API_KEY && vendor.email) {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-
+      if (vendor.email) {
         // Get user info for the email
         const { data: userData } = await supabaseServer.auth.admin.getUserById(userId);
+        const { data: userProfile } = await supabaseServer
+          .from('users')
+          .select('full_name, email')
+          .eq('id', userId)
+          .single();
 
-        await resend.emails.send({
-          from: 'Bella Wedding AI <onboarding@resend.dev>',
-          to: vendor.email,
-          subject: `New Booking Request for ${wedding_date}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #E11D48;">New Booking Request</h2>
-              <p>You have received a new booking request:</p>
-              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <p><strong>From:</strong> ${userData?.user?.email || 'A couple'}</p>
-                <p><strong>Wedding Date:</strong> ${wedding_date}</p>
-                <p><strong>Time Slot:</strong> ${time_slot || 'All day'}</p>
-                ${message ? `<p><strong>Message:</strong></p><p style="white-space: pre-wrap;">${message}</p>` : ''}
-              </div>
-              <p>Please log in to your vendor dashboard to respond to this request.</p>
-            </div>
-          `,
-        });
+        const brideName = userProfile?.full_name || userData?.user?.email || 'A couple';
+        const brideEmail = userProfile?.email || userData?.user?.email || '';
+
+        await sendVendorLeadEmail(
+          vendor.email,
+          {
+            vendorName: vendor.name,
+            brideName,
+            weddingDate: wedding_date,
+            timeSlot: time_slot || 'all_day',
+            message: message || '',
+            brideEmail,
+            requestId: data.id,
+            category: vendor.category || 'Wedding Service',
+          },
+          vendor.user_id
+        );
       }
     } catch (emailError) {
-      console.error('Failed to send booking notification email:', emailError);
+      console.error('Failed to send vendor lead email:', emailError);
       // Don't fail the request if email fails
     }
 
@@ -194,7 +197,7 @@ export async function PATCH(request: NextRequest) {
     // Get the booking request with vendor and user info
     const { data: booking, error: fetchError } = await supabaseServer
       .from('booking_requests')
-      .select('*, vendors(name, email, user_id)')
+      .select('*, vendors(name, email, user_id, category)')
       .eq('id', id)
       .single();
 
@@ -217,45 +220,92 @@ export async function PATCH(request: NextRequest) {
 
     if (error) throw error;
 
-    // Send email notification to user when status changes
+    // Send email notification to user when booking is accepted
     try {
-      if (process.env.RESEND_API_KEY && (status === 'accepted' || status === 'declined')) {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-
-        // Get user email
+      if (status === 'accepted') {
+        // Get user details
         const { data: userData } = await supabaseServer.auth.admin.getUserById(booking.user_id);
-        const userEmail = userData?.user?.email;
+        const { data: userProfile } = await supabaseServer
+          .from('users')
+          .select('full_name, email')
+          .eq('id', booking.user_id)
+          .single();
+
+        const userEmail = userProfile?.email || userData?.user?.email;
+        const userName = userProfile?.full_name || userData?.user?.email || 'There';
 
         if (userEmail) {
-          const statusColor = status === 'accepted' ? '#10B981' : '#EF4444';
-          const statusText = status === 'accepted' ? 'Accepted' : 'Declined';
+          // Send booking confirmation email to bride
+          await sendBookingConfirmedEmail(
+            userEmail,
+            {
+              recipientName: userName,
+              recipientType: 'bride',
+              vendorName: booking.vendors.name,
+              vendorCategory: booking.vendors.category || 'Wedding Service',
+              weddingDate: booking.wedding_date,
+              timeSlot: booking.time_slot,
+              bookingId: booking.id,
+              message: vendor_response,
+              vendorEmail: booking.vendors.email,
+            },
+            booking.user_id
+          );
 
+          // Send booking confirmation email to vendor
+          const { data: vendorUser } = await supabaseServer
+            .from('vendors')
+            .select('email, name, user_id, category')
+            .eq('id', booking.vendor_id)
+            .single();
+
+          if (vendorUser?.email) {
+            await sendBookingConfirmedEmail(
+              vendorUser.email,
+              {
+                recipientName: vendorUser.name,
+                recipientType: 'vendor',
+                vendorName: vendorUser.name,
+                vendorCategory: vendorUser.category || 'Wedding Service',
+                weddingDate: booking.wedding_date,
+                timeSlot: booking.time_slot,
+                bookingId: booking.id,
+                brideEmail: userEmail,
+              },
+              vendorUser.user_id
+            );
+          }
+        }
+      } else if (status === 'declined') {
+        // Send simple decline notification
+        const resend = new Resend(process.env.RESEND_API_KEY || '');
+        const { data: userData } = await supabaseServer.auth.admin.getUserById(booking.user_id);
+        const { data: userProfile } = await supabaseServer
+          .from('users')
+          .select('email')
+          .eq('id', booking.user_id)
+          .single();
+
+        const userEmail = userProfile?.email || userData?.user?.email;
+
+        if (userEmail && process.env.RESEND_API_KEY) {
           await resend.emails.send({
             from: 'Bella Wedding AI <onboarding@resend.dev>',
             to: userEmail,
-            subject: `Booking Request ${statusText} - ${booking.vendors.name}`,
+            subject: `Booking Request Update - ${booking.vendors.name}`,
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: ${statusColor};">Booking Request ${statusText}</h2>
-                <p>Your booking request with <strong>${booking.vendors.name}</strong> has been ${statusText.toLowerCase()}.</p>
+                <h2 style="color: #E11D48;">Booking Request Update</h2>
+                <p>Unfortunately, <strong>${booking.vendors.name}</strong> is not available for your requested date.</p>
                 <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                  <p><strong>Vendor:</strong> ${booking.vendors.name}</p>
                   <p><strong>Wedding Date:</strong> ${booking.wedding_date}</p>
-                  <p><strong>Time Slot:</strong> ${booking.time_slot || 'All day'}</p>
-                  <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span></p>
                   ${vendor_response ? `
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-                      <p><strong>Vendor's Response:</strong></p>
-                      <p style="white-space: pre-wrap;">${vendor_response}</p>
-                    </div>
+                    <p><strong>Vendor's Note:</strong></p>
+                    <p style="white-space: pre-wrap;">${vendor_response}</p>
                   ` : ''}
                 </div>
-                ${status === 'accepted' ? `
-                  <p style="color: #10B981; font-weight: bold;">Congratulations! Your vendor has accepted your booking request.</p>
-                  <p>Please reach out to them directly to finalize the details.</p>
-                ` : `
-                  <p>Don't worry! There are many other wonderful vendors available for your special day.</p>
-                `}
+                <p>Don't worry! There are many other wonderful vendors available. Browse our marketplace to find the perfect match for your special day.</p>
+                <p><a href="https://bellaweddingai.com/vendors" style="background: #E11D48; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Browse Vendors</a></p>
               </div>
             `,
           });
