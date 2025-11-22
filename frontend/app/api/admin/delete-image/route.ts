@@ -2,6 +2,8 @@ import { unlink } from 'fs/promises';
 import { join } from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 const UPLOAD_DIR = join(process.cwd(), 'public', 'uploads', 'admin');
 
 export async function DELETE(

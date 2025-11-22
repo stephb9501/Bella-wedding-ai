@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { randomBytes } from 'crypto';
 
+export const dynamic = 'force-dynamic';
+
 function generateGuestToken(): string {
   return randomBytes(16).toString('hex');
 }

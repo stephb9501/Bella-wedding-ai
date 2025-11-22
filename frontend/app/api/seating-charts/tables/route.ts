@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 // Helper to verify seating chart ownership
 async function verifySeatingChartOwnership(supabase: any, seatingChartId: string, userId: string): Promise<boolean> {
   const { data, error } = await supabase

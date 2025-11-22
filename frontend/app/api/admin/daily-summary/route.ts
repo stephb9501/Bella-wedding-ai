@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
+export const dynamic = 'force-dynamic';
+
 // Pricing map for calculating revenue
 const PRICING_MAP = {
   'early-access': 0, // FREE for 3 months
