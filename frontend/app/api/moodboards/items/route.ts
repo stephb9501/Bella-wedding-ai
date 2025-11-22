@@ -177,10 +177,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = const moodboard = item.moodboards as any;
-      const wedding = moodboard?.weddings as any;
-      const isOwner = wedding?.bride_id === session.user.id ||
-                      wedding?.groom_id === session.user.id;
+    const moodboard = item.moodboards as any;
+    const wedding = moodboard?.weddings as any;
+    const isOwner = wedding?.bride_id === session.user.id ||
+                    wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -258,10 +258,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = const moodboard = item.moodboards as any;
-      const wedding = moodboard?.weddings as any;
-      const isOwner = wedding?.bride_id === session.user.id ||
-                      wedding?.groom_id === session.user.id;
+    const moodboard = item.moodboards as any;
+    const wedding = moodboard?.weddings as any;
+    const isOwner = wedding?.bride_id === session.user.id ||
+                    wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

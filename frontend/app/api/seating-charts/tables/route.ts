@@ -175,10 +175,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = const chart = table.seating_charts as any;
-      const wedding = chart?.weddings as any;
-      const isOwner = wedding?.bride_id === session.user.id ||
-                      wedding?.groom_id === session.user.id;
+    const chart = table.seating_charts as any;
+    const wedding = chart?.weddings as any;
+    const isOwner = wedding?.bride_id === session.user.id ||
+                    wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -255,10 +255,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = const chart = table.seating_charts as any;
-      const wedding = chart?.weddings as any;
-      const isOwner = wedding?.bride_id === session.user.id ||
-                      wedding?.groom_id === session.user.id;
+    const chart = table.seating_charts as any;
+    const wedding = chart?.weddings as any;
+    const isOwner = wedding?.bride_id === session.user.id ||
+                    wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
