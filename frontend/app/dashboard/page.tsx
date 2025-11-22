@@ -185,6 +185,17 @@ const DASHBOARD_CARDS = [
     status: 'premium',
     tier: 'Premium'
   },
+  {
+    id: 'recommendations',
+    title: 'AI Recommendations',
+    description: 'Personalized vendor matches',
+    icon: Sparkles,
+    color: 'bg-fuchsia-50',
+    iconColor: 'text-fuchsia-600',
+    href: '/recommendations',
+    status: 'premium',
+    tier: 'Premium'
+  },
 
   // FUTURE FEATURES
   {
