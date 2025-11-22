@@ -59,9 +59,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    const supabaseServer = createClient(supabaseUrl, supabaseServiceKey);
     const body = await request.json();
     const { businessName, email, password, phone, categories, city, state, description, tier } = body;
 
@@ -103,7 +100,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: Create vendor profile in database using auth user ID
-    const { data, error } = await supabaseServer
+    const { data, error } = await supabaseAdmin
       .from('vendors')
       .insert({
         id: authData.user.id, // Use Supabase auth ID, not custom ID
