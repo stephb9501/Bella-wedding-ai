@@ -139,6 +139,17 @@ const DASHBOARD_CARDS = [
     status: 'standard',
     tier: 'Standard'
   },
+  {
+    id: 'analytics',
+    title: 'Analytics & Insights',
+    description: 'Track your progress',
+    icon: BarChart3,
+    color: 'bg-cyan-50',
+    iconColor: 'text-cyan-600',
+    href: '/analytics',
+    status: 'standard',
+    tier: 'Standard'
+  },
 
   // PREMIUM PLAN FEATURES ($29.99/mo) - Everything in Standard PLUS:
   {
