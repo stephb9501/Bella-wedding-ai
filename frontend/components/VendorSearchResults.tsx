@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Heart, MapPin, Star, Grid, List, ChevronDown, MessageCircle, Phone, Mail } from 'lucide-react';
 import Image from 'next/image';
 import StarRating from './StarRating';
+import BadgeGrid from './badges/BadgeGrid';
+import VerificationBadge from './badges/VerificationBadge';
 
 export interface Vendor {
   id: string;
@@ -22,6 +24,9 @@ export interface Vendor {
   email?: string;
   phone?: string;
   is_featured?: boolean;
+  is_verified?: boolean;
+  verified_at?: string | null;
+  badges?: any[];
 }
 
 export interface Pagination {
@@ -299,12 +304,22 @@ function VendorCard({
           <div className="flex-1 p-6">
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h3
-                  className="text-xl font-bold text-gray-900 mb-1 cursor-pointer hover:text-champagne-600"
-                  onClick={() => onVendorClick?.(vendor)}
-                >
-                  {vendor.business_name}
-                </h3>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3
+                    className="text-xl font-bold text-gray-900 cursor-pointer hover:text-champagne-600"
+                    onClick={() => onVendorClick?.(vendor)}
+                  >
+                    {vendor.business_name}
+                  </h3>
+                  {vendor.is_verified && (
+                    <VerificationBadge
+                      isVerified={vendor.is_verified}
+                      verifiedAt={vendor.verified_at}
+                      size="sm"
+                      variant="checkmark"
+                    />
+                  )}
+                </div>
                 <p className="text-sm text-gray-600">{vendor.category}</p>
               </div>
               <button
@@ -318,6 +333,13 @@ function VendorCard({
                 <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
               </button>
             </div>
+
+            {/* Badges */}
+            {vendor.badges && vendor.badges.length > 0 && (
+              <div className="mb-3">
+                <BadgeGrid badges={vendor.badges} size="sm" maxDisplay={4} />
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center gap-4 mb-3">
               <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -412,14 +434,31 @@ function VendorCard({
       {/* Content */}
       <div className="p-6">
         <div className="mb-3">
-          <h3
-            className="text-xl font-bold text-gray-900 mb-1 cursor-pointer hover:text-champagne-600"
-            onClick={() => onVendorClick?.(vendor)}
-          >
-            {vendor.business_name}
-          </h3>
+          <div className="flex items-center gap-2 mb-1">
+            <h3
+              className="text-xl font-bold text-gray-900 cursor-pointer hover:text-champagne-600 flex-1"
+              onClick={() => onVendorClick?.(vendor)}
+            >
+              {vendor.business_name}
+            </h3>
+            {vendor.is_verified && (
+              <VerificationBadge
+                isVerified={vendor.is_verified}
+                verifiedAt={vendor.verified_at}
+                size="sm"
+                variant="checkmark"
+              />
+            )}
+          </div>
           <p className="text-sm text-gray-600">{vendor.category}</p>
         </div>
+
+        {/* Badges */}
+        {vendor.badges && vendor.badges.length > 0 && (
+          <div className="mb-3">
+            <BadgeGrid badges={vendor.badges} size="sm" maxDisplay={3} />
+          </div>
+        )}
 
         <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
           <MapPin className="w-4 h-4" />

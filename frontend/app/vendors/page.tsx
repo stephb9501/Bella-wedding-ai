@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Heart, Search, Star, Crown, Zap, MapPin, MessageCircle, Phone, Mail, X, ClipboardList } from 'lucide-react';
 import Image from 'next/image';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import BadgeGrid from '@/components/badges/BadgeGrid';
+import VerificationBadge from '@/components/badges/VerificationBadge';
 
 interface Vendor {
   id: string;
@@ -19,6 +21,9 @@ interface Vendor {
   is_featured: boolean;
   email: string;
   phone: string;
+  is_verified?: boolean;
+  verified_at?: string | null;
+  badges?: any[];
 }
 
 const CATEGORIES = [
@@ -297,13 +302,30 @@ function VendorCard({ vendor, featured = false, onMessage }: { vendor: Vendor; f
 
       <div className="p-6">
         <div className="flex items-start justify-between mb-3">
-          <h4 className="text-xl font-bold text-gray-900">{vendor.business_name}</h4>
+          <div className="flex items-center gap-2 flex-1">
+            <h4 className="text-xl font-bold text-gray-900">{vendor.business_name}</h4>
+            {vendor.is_verified && (
+              <VerificationBadge
+                isVerified={vendor.is_verified}
+                verifiedAt={vendor.verified_at}
+                size="sm"
+                variant="checkmark"
+              />
+            )}
+          </div>
           <div className={`flex items-center gap-1 px-2 py-1 ${tierInfo.bg} rounded`}>
             <TierIcon className={`w-4 h-4 ${tierInfo.color}`} />
           </div>
         </div>
 
         <p className="text-sm text-gray-600 mb-2">{vendor.category}</p>
+
+        {/* Badges */}
+        {vendor.badges && vendor.badges.length > 0 && (
+          <div className="mb-3">
+            <BadgeGrid badges={vendor.badges} size="sm" maxDisplay={3} />
+          </div>
+        )}
 
         <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
           <MapPin className="w-4 h-4" />
