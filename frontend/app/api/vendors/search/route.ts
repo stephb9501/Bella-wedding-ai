@@ -3,84 +3,222 @@ import { supabaseServer } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
+interface SearchParams {
+  query?: string;
+  categories?: string;
+  minPriceRange?: string;
+  maxPriceRange?: string;
+  city?: string;
+  state?: string;
+  radius?: string;
+  latitude?: string;
+  longitude?: string;
+  minRating?: string;
+  availabilityDate?: string;
+  sort?: string;
+  page?: string;
+  limit?: string;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const category = searchParams.get('category');
-    const minPrice = searchParams.get('min_price');
-    const maxPrice = searchParams.get('max_price');
-    const minRating = searchParams.get('min_rating');
-    const location = searchParams.get('location');
-    const sort = searchParams.get('sort') || 'rating';
+    // Parse search parameters
+    const params: SearchParams = {
+      query: searchParams.get('query') || '',
+      categories: searchParams.get('categories') || '',
+      minPriceRange: searchParams.get('minPriceRange') || '',
+      maxPriceRange: searchParams.get('maxPriceRange') || '',
+      city: searchParams.get('city') || '',
+      state: searchParams.get('state') || '',
+      radius: searchParams.get('radius') || '',
+      latitude: searchParams.get('latitude') || '',
+      longitude: searchParams.get('longitude') || '',
+      minRating: searchParams.get('minRating') || '',
+      availabilityDate: searchParams.get('availabilityDate') || '',
+      sort: searchParams.get('sort') || 'rating',
+      page: searchParams.get('page') || '1',
+      limit: searchParams.get('limit') || '20',
+    };
 
+    // Parse pagination
+    const page = parseInt(params.page);
+    const limit = parseInt(params.limit);
+    const offset = (page - 1) * limit;
+
+    // Start building the query
     let query = supabaseServer
       .from('vendors')
-      .select('*');
+      .select('*', { count: 'exact' });
 
-    // Apply filters
-    if (category && category !== 'All Categories') {
-      query = query.eq('category', category);
+    // Full-text search on business_name and description
+    if (params.query && params.query.trim()) {
+      const searchTerm = params.query.trim().replace(/\s+/g, ' & ');
+      query = query.textSearch('search_vector', searchTerm, {
+        type: 'websearch',
+        config: 'english',
+      });
     }
 
-    if (location) {
-      query = query.or(`city.ilike.%${location}%,state.ilike.%${location}%,zip.eq.${location}`);
+    // Multiple category filtering
+    if (params.categories && params.categories !== 'All') {
+      const categoryList = params.categories.split(',').map(c => c.trim()).filter(Boolean);
+      if (categoryList.length === 1) {
+        // Single category - use exact match or LIKE for partial match
+        query = query.or(`category.eq.${categoryList[0]},category.ilike.%${categoryList[0]}%`);
+      } else if (categoryList.length > 1) {
+        // Multiple categories - use IN operator
+        const categoryFilters = categoryList.map(cat => `category.ilike.%${cat}%`).join(',');
+        query = query.or(categoryFilters);
+      }
     }
 
-    // Fetch all and filter by price/rating in memory (since these might not be in DB yet)
-    const { data, error } = await query;
+    // Price range filtering
+    if (params.minPriceRange) {
+      query = query.gte('price_range', parseInt(params.minPriceRange));
+    }
+    if (params.maxPriceRange) {
+      query = query.lte('price_range', parseInt(params.maxPriceRange));
+    }
+
+    // Location filtering
+    if (params.city) {
+      query = query.ilike('city', `%${params.city}%`);
+    }
+    if (params.state) {
+      query = query.ilike('state', `%${params.state}%`);
+    }
+
+    // Rating filter
+    if (params.minRating) {
+      query = query.gte('average_rating', parseFloat(params.minRating));
+    }
+
+    // Execute the query to get count and data
+    const { data, error, count } = await query;
 
     if (error) throw error;
 
     let vendors = data || [];
 
-    // Mock data enhancement for demo
-    vendors = vendors.map(v => ({
-      ...v,
-      starting_price: Math.floor(Math.random() * 5000) + 500,
-      average_rating: (Math.random() * 1.5 + 3.5).toFixed(1),
-      review_count: Math.floor(Math.random() * 50) + 5,
-      years_in_business: Math.floor(Math.random() * 15) + 2,
-      weddings_completed: Math.floor(Math.random() * 100) + 10,
-      photo_urls: v.photo_count > 0 ? ['/wedding-photos/deltalow-131.jpg'] : [],
-    }));
+    // Distance filtering (if coordinates provided)
+    if (params.latitude && params.longitude && params.radius) {
+      const userLat = parseFloat(params.latitude);
+      const userLon = parseFloat(params.longitude);
+      const radiusMiles = parseFloat(params.radius);
 
-    // Filter by price
-    if (minPrice) {
-      vendors = vendors.filter(v => v.starting_price >= parseInt(minPrice));
-    }
-    if (maxPrice) {
-      vendors = vendors.filter(v => v.starting_price <= parseInt(maxPrice));
-    }
-
-    // Filter by rating
-    if (minRating) {
-      vendors = vendors.filter(v => parseFloat(v.average_rating) >= parseFloat(minRating));
+      // Filter vendors with coordinates and calculate distance
+      vendors = vendors
+        .filter(v => v.latitude && v.longitude)
+        .map(v => ({
+          ...v,
+          distance: calculateDistance(
+            userLat,
+            userLon,
+            parseFloat(v.latitude),
+            parseFloat(v.longitude)
+          ),
+        }))
+        .filter(v => v.distance <= radiusMiles);
     }
 
-    // Sort
-    switch (sort) {
+    // Availability filtering (check against bookings table)
+    if (params.availabilityDate) {
+      const availabilityDate = params.availabilityDate;
+
+      // Query bookings for the specified date
+      const { data: bookedVendors } = await supabaseServer
+        .from('bookings')
+        .select('vendor_id')
+        .eq('booking_date', availabilityDate)
+        .eq('status', 'confirmed');
+
+      const bookedVendorIds = new Set(bookedVendors?.map(b => b.vendor_id) || []);
+
+      // Filter out booked vendors
+      vendors = vendors.filter(v => !bookedVendorIds.has(v.id));
+    }
+
+    // Sorting
+    switch (params.sort) {
       case 'price_low':
-        vendors.sort((a, b) => a.starting_price - b.starting_price);
+        vendors.sort((a, b) => (a.price_range || 0) - (b.price_range || 0));
         break;
       case 'price_high':
-        vendors.sort((a, b) => b.starting_price - a.starting_price);
+        vendors.sort((a, b) => (b.price_range || 0) - (a.price_range || 0));
         break;
       case 'rating':
-        vendors.sort((a, b) => parseFloat(b.average_rating) - parseFloat(a.average_rating));
+        vendors.sort((a, b) => (parseFloat(b.average_rating) || 0) - (parseFloat(a.average_rating) || 0));
+        break;
+      case 'distance':
+        if (params.latitude && params.longitude) {
+          vendors.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+        }
         break;
       case 'newest':
         vendors.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         break;
+      default:
+        // Default: prioritize featured/elite vendors, then by rating
+        const tierOrder: Record<string, number> = { elite: 4, featured: 3, premium: 2, free: 1 };
+        vendors.sort((a, b) => {
+          const tierDiff = (tierOrder[b.tier as string] || 0) - (tierOrder[a.tier as string] || 0);
+          if (tierDiff !== 0) return tierDiff;
+          return (parseFloat(b.average_rating) || 0) - (parseFloat(a.average_rating) || 0);
+        });
     }
 
-    // Prioritize featured/elite vendors
-    const tierOrder: Record<string, number> = { elite: 4, featured: 3, premium: 2, free: 1 };
-    vendors.sort((a, b) => (tierOrder[b.tier as string] || 0) - (tierOrder[a.tier as string] || 0));
+    // Apply pagination
+    const totalCount = count || vendors.length;
+    const paginatedVendors = vendors.slice(offset, offset + limit);
 
-    return NextResponse.json(vendors);
+    // Enhance vendor data with photo URLs
+    const enhancedVendors = paginatedVendors.map(v => ({
+      ...v,
+      photo_urls: v.photo_count > 0 ? ['/wedding-photos/deltalow-131.jpg'] : [],
+    }));
+
+    return NextResponse.json({
+      vendors: enhancedVendors,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasMore: offset + limit < totalCount,
+      },
+    });
   } catch (error: any) {
     console.error('Vendor search error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+// Haversine formula to calculate distance between two coordinates in miles
+function calculateDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 3959; // Earth's radius in miles
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+
+  return Math.round(distance * 10) / 10; // Round to 1 decimal place
+}
+
+function toRadians(degrees: number): number {
+  return degrees * (Math.PI / 180);
 }
