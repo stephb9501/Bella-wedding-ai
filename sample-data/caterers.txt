@@ -1,0 +1,58 @@
+# Wedding Caterers - Sample Data
+# Format: Name, Address, Contact, Website, Specialties, Menu Options
+
+1. Savory Celebrations Catering
+890 Culinary Court, Huntsville, AL 35802
+(256) 555-2468 • events@savorycelebrations.com
+www.savorycelebrations.com
+Specializes in: Southern cuisine, Farm-to-table, Dietary accommodations
+Menu Options: Plated dinners, Buffet style, Cocktail reception, Dessert bar
+Service Area: Madison County, North Alabama
+Minimum: 50 guests, Average cost: $45-75 per person
+Licensed: Food Service License #AL-12345, Insured
+Social Media: Instagram @savorycelebrations, Facebook /savorycateringAL
+
+2. Elegant Eats Catering & Events
+123 Gourmet Drive, Birmingham, AL 35205
+(205) 555-8024 • info@eleganteats.com
+eleganteats.com
+Specializes in: Upscale dining, International cuisine, Custom menus
+Menu Options: 5-course meals, Carving stations, Hors d'oeuvres, Late-night snacks
+Service Area: Birmingham metro, Central Alabama
+Minimum: 75 guests, Average cost: $65-95 per person
+Certifications: ServSafe Certified, Award-winning chef
+Hours: Office hours Mon-Fri 9am-5pm, tastings by appointment
+
+3. Southern Comfort Catering
+456 Food Street, Mobile, AL 36603
+(251) 555-1357 • hello@southerncomfortcatering.com
+www.southerncomfortcatering.com
+Specializes in: BBQ, Gulf seafood, Traditional Southern fare
+Menu Options: BBQ buffet, Seafood boil, Fried chicken dinners, Sheet cake
+Service Area: Mobile, Baldwin County
+Minimum: 40 guests, Average cost: $30-55 per person
+Licensed: Health Department Approved, Catering License
+Social Media: Instagram @southerncomfortcatering
+
+4. Gourmet Affairs
+789 Chef's Lane, Tuscaloosa, AL 35403
+(205) 555-9753 • bookings@gourmetaffairs.net
+gourmetaffairsalabama.com
+Specializes in: Contemporary American, Vegetarian/Vegan options, Wine pairings
+Menu Options: Plated service, Family style, Grazing tables, Coffee bar
+Service Area: West Alabama, Statewide for large events
+Minimum: 60 guests, Average cost: $50-80 per person
+Certifications: Certified Executive Chef (CEC)
+Social Media: Instagram @gourmetaffairs, Pinterest /gourmetaffairsAL
+
+5. Bella's Kitchen Catering
+234 Banquet Blvd, Montgomery, AL 36106
+(334) 555-4680 • info@bellaskitchen.com
+www.bellaskitchencatering.com
+Specializes in: Italian cuisine, Mediterranean dishes, Pasta stations
+Menu Options: Italian buffet, Build-your-own pasta bar, Antipasto, Tiramisu
+Service Area: Montgomery County, Central Alabama
+Minimum: 50 guests, Average cost: $40-70 per person
+Licensed: Full service catering license, Liquor service available
+Hours: Mon-Sat 10am-7pm, Sunday consultations available
+Social Media: Facebook /bellaskitchenAL

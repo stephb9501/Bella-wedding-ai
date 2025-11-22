@@ -1,0 +1,64 @@
+# Wedding Florists - Sample Data
+# Format: Name, Address, Contact, Website, Specialties, Services
+
+1. Bloom & Petal Wedding Florals
+789 Garden Way, Huntsville, AL 35803
+(256) 555-4791 • weddings@bloomandpetal.com
+www.bloomandpetalflorals.com
+Specializes in: Romantic garden style, Wildflower arrangements, Sustainable florals
+Services: Bridal bouquets, Centerpieces, Ceremony arch, Boutonnieres, Corsages
+Popular Flowers: Roses, Peonies, Hydrangeas, Eucalyptus, Garden roses
+Service Area: North Alabama
+Packages: Luxury ($3,500+), Standard ($2,000-3,500), Petite ($1,000-2,000)
+Consultations: Free initial consultation, design fee $150 (applied to order)
+Social Media: Instagram @bloomandpetalAL, Pinterest /bloomandpetal
+
+2. Southern Stems Floral Design
+123 Blossom Boulevard, Birmingham, AL 35210
+(205) 555-6824 • hello@southernstems.com
+southernstemsfloraldesign.com
+Specializes in: Classic elegance, Monochromatic designs, Seasonal blooms
+Services: Full-service florals, Venue setup, Floral installations, Rental vases
+Popular Flowers: Calla lilies, Orchids, Tulips, Ranunculus, Dahlias
+Service Area: Birmingham metro, Central Alabama
+Packages: Premium ($4,000+), Classic ($2,500-4,000), Simple ($1,500-2,500)
+Certifications: AIFD Certified (American Institute of Floral Designers)
+Hours: Tues-Sat 10am-6pm, Sundays by appointment
+Social Media: Instagram @southernstemsAL, Facebook /southernstemsflorals
+
+3. Coastal Blooms
+456 Flower Street, Mobile, AL 36605
+(251) 555-1593 • info@coastalblooms.com
+www.coastalbloomsflorals.com
+Specializes in: Beach wedding florals, Tropical arrangements, Organic style
+Services: Bridal flowers, Ceremony flowers, Reception decor, Toss bouquet
+Popular Flowers: Beach grass, Tropical flowers, Succulents, Air plants, Shells
+Service Area: Mobile, Gulf Shores, Orange Beach, Fairhope
+Packages: Beachside Luxury ($3,200+), Coastal Classic ($2,000-3,200), Simple & Sweet ($1,200-2,000)
+Licensed: Business licensed, Fresh flower guarantee
+Social Media: Instagram @coastalbloomsmobile
+
+4. Enchanted Garden Florist
+890 Vine Avenue, Montgomery, AL 36108
+(334) 555-7036 • weddings@enchantedgarden.net
+enchantedgardenflorist.com
+Specializes in: Whimsical designs, Vintage style, Lush greenery
+Services: Custom bouquets, Table arrangements, Hanging installations, Flower crowns
+Popular Flowers: Garden roses, Sweet peas, Dusty miller, Ferns, Ivy
+Service Area: Central Alabama, Statewide delivery available
+Packages: Enchanted ($3,800+), Garden ($2,300-3,800), Petite ($1,400-2,300)
+Consultations: Complimentary consultation with mood board
+Hours: Mon-Fri 9am-5pm, Sat 10am-3pm
+Social Media: Instagram @enchantedgardenAL, Pinterest /enchantedgardenfloral
+
+5. Modern Botanicals
+234 Contemporary Court, Tuscaloosa, AL 35406
+(205) 555-8259 • bookings@modernbotanicals.com
+www.modernbotanicalsweddings.com
+Specializes in: Minimalist design, Architectural arrangements, Bold colors
+Services: Bridal party flowers, Statement installations, Greenery walls, Floral chandelier
+Popular Flowers: Anthuriums, Protea, King protea, Monstera leaves, Modern roses
+Service Area: West Alabama, Southeast region for luxury weddings
+Packages: Avant-Garde ($5,000+), Contemporary ($3,000-5,000), Minimalist ($1,800-3,000)
+Certifications: Featured in Martha Stewart Weddings, Southern Bride Magazine
+Social Media: Instagram @modernbotanicalsAL, Facebook /modernbotanicals

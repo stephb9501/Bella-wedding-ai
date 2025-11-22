@@ -1,0 +1,49 @@
+# Wedding Photographers - Sample Data
+# Format: Name, Address, Contact, Website, Specialties, Packages
+
+1. Captured Moments Photography
+123 Main Street, Huntsville, AL 35801
+(256) 555-1234 • info@capturedmoments.com
+www.capturedmomentsphoto.com
+Specializes in: Outdoor weddings, Engagement shoots, Drone photography
+Packages: Full Day ($2,500), Half Day ($1,500), Engagement Session ($400)
+Service Area: North Alabama, Tennessee Valley
+Social Media: Instagram @capturedmoments, Facebook /capturedmomentsphoto
+
+2. Elegant Lens Studio
+456 Oak Avenue, Birmingham, AL 35203
+(205) 555-5678 • bookings@elegantlens.com
+elegantlensstudio.com
+Specializes in: Fine art photography, Destination weddings, Same-day edits
+Packages: Platinum ($3,500), Gold ($2,800), Silver ($2,000)
+Service Area: Birmingham metro, Statewide travel available
+Certifications: Professional Photographers of America (PPA) Certified
+Social Media: Instagram @elegantlens, Pinterest /elegantlensstudio
+
+3. Southern Charm Photography
+789 Wedding Way, Mobile, AL 36602
+(251) 555-9012 • hello@southerncharm.photo
+www.southerncharmphotography.com
+Specializes in: Beach weddings, Traditional Southern weddings, Candid moments
+Packages: Complete Package ($3,200), Classic ($2,400), Mini ($1,800)
+Service Area: Mobile, Gulf Shores, Orange Beach
+Hours: Available for consultations Mon-Fri 10am-6pm, Sat by appointment
+
+4. Timeless Memories Photography
+234 Park Place, Montgomery, AL 36104
+(334) 555-3456 • contact@timelessmemories.net
+timelessmemoriesphotography.net
+Specializes in: Vintage style, Black and white artistry, Photo booth services
+Packages: Premium ($2,900), Standard ($2,100), Elopement ($1,200)
+Service Area: Central Alabama
+Social Media: Instagram @timelessmemoriesal
+
+5. Modern Romance Photography
+567 Studio Lane, Tuscaloosa, AL 35401
+(205) 555-7890 • info@modernromance.photo
+www.modernromancephoto.com
+Specializes in: Contemporary style, Second shooter included, Album design
+Packages: Ultimate ($4,000), Deluxe ($3,000), Essential ($2,200)
+Service Area: West Alabama, Mississippi border
+Certifications: Featured in Southern Weddings Magazine
+Social Media: Instagram @modernromancephoto, Facebook /modernromanceweddings

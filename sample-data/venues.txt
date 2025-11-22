@@ -1,0 +1,60 @@
+# Wedding Venues - Sample Data
+# Format: Name, Address, Contact, Website, Specialties, Capacity
+
+1. Hampton Cove Wedding Venue
+823 Cherry Tree Rd, Huntsville, AL 35748
+(256) 603-7585 • hamptoncovewedding@gmail.com
+www.hamptoncoveweddingvenue.com
+Specializes in: Outdoor ceremonies, Garden receptions, Mountain views
+Capacity: 200 guests, Indoor backup available
+Amenities: Bridal suite, Groom's quarters, On-site parking (150 cars)
+Service Area: Huntsville, Madison County
+Pricing: Starting at $3,500, All-inclusive packages available
+Hours: Tours available Sat-Sun 12pm-4pm, weekdays by appointment
+
+2. The Sonnet House
+456 Historic Avenue, Birmingham, AL 35213
+(205) 555-1234 • events@sonnethouse.com
+sonnethouse.com
+Specializes in: Historic elegance, Grand ballroom, Formal events
+Capacity: 300 guests, Multiple ceremony locations
+Amenities: Crystal chandeliers, Marble floors, Catering kitchen, Bar service
+Service Area: Birmingham metro
+Pricing: Starting at $5,000, Premium weekend dates higher
+Licensed: Historic venue, Alcohol permit
+Social Media: Instagram @sonnethouse, Facebook /sonnethouse
+
+3. Coastal Oaks Estate
+789 Magnolia Drive, Fairhope, AL 36532
+(251) 555-9876 • info@coastaloaksestate.com
+www.coastaloaksestate.com
+Specializes in: Southern charm, Live oak trees, Waterfront views
+Capacity: 250 guests, Outdoor and indoor options
+Amenities: Oak tree ceremony site, Pavilion reception, Golf cart shuttles
+Service Area: Eastern Shore, Mobile Bay
+Pricing: Starting at $4,200, Includes tables and chairs
+Certifications: Featured in Southern Living Magazine
+Hours: Tours Fridays 2pm-6pm, Saturdays by appointment
+
+4. The Arbor Venue
+234 Countryside Lane, Auburn, AL 36830
+(334) 555-7890 • bookings@arborvenue.com
+arborvenue.com
+Specializes in: Rustic elegance, Barn weddings, String light ambiance
+Capacity: 175 guests, Climate-controlled barn
+Amenities: Getting ready rooms, Farm tables, Outdoor ceremony area, Fire pit
+Service Area: East Alabama
+Pricing: Starting at $2,800, Weekend premium applies
+Social Media: Instagram @arborvenue, Pinterest /arborvenue
+
+5. Riverfront Gardens
+567 River Road, Tuscaloosa, AL 35401
+(205) 555-4567 • weddings@riverfrontgardens.com
+www.riverfrontgardensweddings.com
+Specializes in: Riverside ceremonies, Botanical gardens, Tent receptions
+Capacity: 225 guests, Additional lawn space available
+Amenities: Garden paths, Gazebo, Riverside dock, Fountains, Photography spots
+Service Area: West Alabama
+Pricing: Starting at $3,200, Includes garden access and setup
+Hours: Open for tours Saturdays 10am-3pm
+Social Media: Instagram @riverfrontgardensAL

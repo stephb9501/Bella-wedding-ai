@@ -1,0 +1,62 @@
+# Wedding DJs and Bands - Sample Data
+# Format: Name, Address, Contact, Website, Specialties, Services
+
+1. Rhythm & Beats DJ Service
+345 Music Avenue, Huntsville, AL 35801
+(256) 555-7531 • bookings@rhythmbeats.com
+www.rhythmbeatsdjservice.com
+Specializes in: Top 40, Country, Classic rock, Custom playlists
+Services: MC services, Ceremony sound, Uplighting, Photo booth
+Equipment: Professional sound system, Wireless mics, LED dance floor lighting
+Service Area: North Alabama, Tennessee
+Packages: Ultimate ($1,800), Premium ($1,400), Basic ($1,000)
+Social Media: Instagram @rhythmbeatsAL, YouTube /rhythmbeatsdj
+
+2. The Wedding Band Company
+678 Harmony Street, Birmingham, AL 35209
+(205) 555-8642 • info@weddingbandco.com
+weddingbandcompany.com
+Specializes in: Live band (6-8 pieces), Motown, Soul, Jazz, Big band
+Services: Full band, Ceremony musicians, Cocktail hour jazz trio
+Equipment: Full PA system, Stage lighting, Backup DJ service
+Service Area: Statewide, Southeast region
+Packages: Full Band ($4,500), Trio ($2,200), Solo/DJ combo ($1,800)
+Certifications: Professional musicians, 15+ years experience
+Hours: Available 7 days a week
+Social Media: Instagram @weddingbandco, Facebook /weddingbandcompanyAL
+
+3. Spin Masters DJ Entertainment
+912 Party Place, Mobile, AL 36604
+(251) 555-3698 • hello@spinmastersdj.com
+www.spinmastersentertainment.com
+Specializes in: EDM, Hip-hop, Latin music, Beach party vibes
+Services: DJ and MC, Karaoke, Sound and lighting, Projection screens
+Equipment: State-of-the-art sound, Moving head lights, Fog machine, Lasers
+Service Area: Mobile, Gulf Coast
+Packages: Platinum ($2,000), Gold ($1,500), Silver ($1,100)
+Social Media: Instagram @spinmastersmobile, TikTok @spinmastersdj
+
+4. Classic Sounds DJ & Lighting
+234 Melody Lane, Montgomery, AL 36107
+(334) 555-2580 • bookings@classicsounds.net
+classicsoundsalabama.com
+Specializes in: All genres, Bilingual services (English/Spanish), Crowd reading
+Services: Professional DJ, Monogram projection, Dance floor lighting, Ceremony audio
+Equipment: Bose sound systems, Intelligent lighting, Wireless equipment
+Service Area: Central Alabama
+Packages: Complete ($1,700), Standard ($1,300), Ceremony Only ($400)
+Licensed: Business licensed, Insured
+Social Media: Facebook /classicsoundsAL
+
+5. Elevation Entertainment
+567 Beat Street, Tuscaloosa, AL 35405
+(205) 555-9147 • info@elevationent.com
+www.elevationentertainment.com
+Specializes in: College town parties, Country music, Dance music, Acoustic sets
+Services: DJ services, Live musicians, Karaoke host, Video mixing
+Equipment: Premium sound, Intelligent lighting, Video screens, DJ booth
+Service Area: West Alabama, Mississippi
+Packages: VIP ($2,200), Deluxe ($1,650), Essential ($1,200)
+Certifications: Featured DJ for University of Alabama events
+Hours: Consultations available evenings and weekends
+Social Media: Instagram @elevationentAL, Spotify playlists available
