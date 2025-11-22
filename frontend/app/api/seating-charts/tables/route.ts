@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check
-      const isOwner = const chart = table.seating_charts as any;
+      const chart = table.seating_charts as any;
       const wedding = chart?.weddings as any;
       const isOwner = wedding?.bride_id === session.user.id ||
                       wedding?.groom_id === session.user.id;
