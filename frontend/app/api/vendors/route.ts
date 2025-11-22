@@ -59,6 +59,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if public signups are disabled
+    if (process.env.DISABLE_PUBLIC_SIGNUP === 'true') {
+      return NextResponse.json(
+        { error: 'New vendor signups are temporarily disabled. Please check back later.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { businessName, email, password, phone, categories, city, state, description, tier } = body;
 
