@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       // Fetch response and verify ownership through form
       const { data: response, error } = await supabase
         .from('form_responses')
-        .select('*, custom_forms!inner(vendor_id)')
+        .select('*, custom_forms(vendor_id)')
         .eq('id', id)
         .single();
 
@@ -42,7 +42,8 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check - vendor must own the form
-      if (response.custom_forms.vendor_id !== session.user.id) {
+      const customForm = response.custom_forms as any;
+      if (!customForm || customForm.vendor_id !== session.user.id) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
@@ -154,7 +155,7 @@ export async function DELETE(request: NextRequest) {
     // Verify ownership through form
     const { data: response, error: fetchError } = await supabase
       .from('form_responses')
-      .select('form_id, custom_forms!inner(vendor_id)')
+      .select('form_id, custom_forms(vendor_id)')
       .eq('id', id)
       .single();
 
@@ -163,7 +164,8 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check - vendor must own the form
-    if (response.custom_forms.vendor_id !== session.user.id) {
+    const customForm = response.custom_forms as any;
+    if (!customForm || customForm.vendor_id !== session.user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
