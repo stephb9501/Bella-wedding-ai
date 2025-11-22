@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import * as path from 'path';
 
+export const dynamic = 'force-dynamic';
+
 const gmail = google.gmail('v1');
 
 export async function POST(req: NextRequest) {

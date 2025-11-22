@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 // Helper to verify form ownership
 async function verifyFormOwnership(supabase: any, formId: string, userId: string): Promise<boolean> {
   const { data, error } = await supabase

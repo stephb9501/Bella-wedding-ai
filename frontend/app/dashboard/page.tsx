@@ -600,7 +600,7 @@ export default function Dashboard() {
 
           {activeTab === 'website' && user && (
             <div className="mt-4">
-              <PremiumWebsiteBuilder weddingId={user.id} userRole="bride" />
+              <PremiumWebsiteBuilder weddingId={user.id} />
             </div>
           )}
           {activeTab === 'registry' && (

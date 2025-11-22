@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 // Helper to verify seating chart ownership
 async function verifySeatingChartOwnership(supabase: any, seatingChartId: string, userId: string): Promise<boolean> {
   const { data, error } = await supabase
@@ -42,7 +44,7 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check
-      const isOwner = const chart = table.seating_charts as any;
+      const chart = table.seating_charts as any;
       const wedding = chart?.weddings as any;
       const isOwner = wedding?.bride_id === session.user.id ||
                       wedding?.groom_id === session.user.id;
@@ -175,10 +177,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = const chart = table.seating_charts as any;
-      const wedding = chart?.weddings as any;
-      const isOwner = wedding?.bride_id === session.user.id ||
-                      wedding?.groom_id === session.user.id;
+    const chart = table.seating_charts as any;
+    const wedding = chart?.weddings as any;
+    const isOwner = wedding?.bride_id === session.user.id ||
+                    wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -255,10 +257,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = const chart = table.seating_charts as any;
-      const wedding = chart?.weddings as any;
-      const isOwner = wedding?.bride_id === session.user.id ||
-                      wedding?.groom_id === session.user.id;
+    const chart = table.seating_charts as any;
+    const wedding = chart?.weddings as any;
+    const isOwner = wedding?.bride_id === session.user.id ||
+                    wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

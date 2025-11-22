@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth-helpers';
 
+export const dynamic = 'force-dynamic';
+
 // OpenAI GPT-4 Wedding Assistant
 export async function POST(request: NextRequest) {
   const authError = await requireAuth(request);

@@ -5,6 +5,8 @@ import { Resend } from 'resend';
 // Regular server client for database operations
 import { supabaseServer } from '@/lib/supabase-server';
 
+export const dynamic = 'force-dynamic';
+
 // Helper function to get tier pricing
 function getTierPricing(tier: string): string {
   const pricing: { [key: string]: string } = {
