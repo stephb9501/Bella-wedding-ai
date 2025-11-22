@@ -250,7 +250,7 @@ export async function GET(request: NextRequest) {
             </div>
 
             <div style="text-align: center; margin-top: 32px;">
-              <a href="https://bellaweddingai.com/admin/dashboard" style="background: #E11D48; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">View Admin Dashboard</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://bella-wedding-a492ijfj1-stephanie-breedings-projects.vercel.app'}/admin/dashboard" style="background: #E11D48; color: white; padding: 12px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">View Admin Dashboard</a>
             </div>
 
             <p style="color: #999; font-size: 11px; text-align: center; margin-top: 24px;">
