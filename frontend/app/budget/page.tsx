@@ -116,10 +116,10 @@ export default function Budget() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Hero */}
         <div className="text-center mb-8">
-          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
             Wedding Budget
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600">
             Track your spending and stay on budget
           </p>
         </div>

@@ -270,16 +270,16 @@ export default function Checklist() {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Hero */}
         <div className="text-center mb-8">
-          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
             Professional Wedding Checklist
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600">
             Complete planner-grade checklist with vendor questions
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <div className="text-3xl font-bold text-champagne-600 mb-1">{progress}%</div>
             <div className="text-sm text-gray-600">Complete</div>

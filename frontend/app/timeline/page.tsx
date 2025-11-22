@@ -268,10 +268,10 @@ export default function Timeline() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Hero */}
         <div className="text-center mb-8">
-          <h2 className="text-5xl font-serif font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
             Professional Day-Of Timeline
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600">
             Minute-by-minute coordinator-grade schedule
           </p>
         </div>

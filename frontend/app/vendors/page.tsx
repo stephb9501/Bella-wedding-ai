@@ -94,26 +94,28 @@ export default function Vendors() {
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
       {/* Header */}
       <header className="bg-white border-b border-champagne-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-serif font-bold text-gray-900">Bella Wedding</h1>
+            <h1 className="text-lg sm:text-xl font-serif font-bold text-gray-900">Bella Wedding</h1>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button
               onClick={() => router.push('/dashboard')}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-600 hover:text-gray-900 px-2 sm:px-3 py-2 min-h-[44px] text-sm sm:text-base"
             >
-              Dashboard
+              <span className="hidden sm:inline">Dashboard</span>
+              <span className="sm:hidden">Home</span>
             </button>
             <button
               onClick={() => router.push('/vendor-register')}
-              className="px-4 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-medium rounded-lg transition"
+              className="px-3 sm:px-4 py-2 bg-gradient-to-r from-champagne-400 to-rose-400 hover:from-champagne-500 hover:to-rose-500 text-white font-medium rounded-lg transition min-h-[44px] text-sm sm:text-base"
             >
-              I'm a Vendor
+              <span className="hidden sm:inline">I'm a Vendor</span>
+              <span className="sm:hidden">Vendor</span>
             </button>
           </div>
         </div>
@@ -131,17 +133,17 @@ export default function Vendors() {
           <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/85 to-white/90"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-16 text-center">
-          <h2 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 mb-4">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-gray-900 mb-4">
             Find Your Perfect Vendors
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-lg sm:text-xl text-gray-600 mb-8">
             Browse verified wedding professionals in your area
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Search and Filters */}
         <div className="text-center mb-12">
 

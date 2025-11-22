@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Calendar, Users, DollarSign, Heart, MapPin, Camera,
-  Sparkles, MessageCircle, Settings, LogOut, Menu, X,
+  Sparkles, MessageCircle, Settings, LogOut,
   ChevronRight, Clock, CheckCircle, AlertCircle, TrendingUp,
   Zap, Gift, Share2, Music, Home, BarChart3, Smile, ClipboardList
 } from 'lucide-react';
@@ -17,6 +17,7 @@ import { InvitationDesigner } from '@/components/InvitationDesigner';
 import { WeddingDayBinder } from '@/components/WeddingDayBinder';
 import { useAuth } from '@/lib/useAuth';
 import AuthWall from '@/components/AuthWall';
+import MobileNav from '@/components/MobileNav';
 
 interface DashboardStats {
   totalGuests: number;
@@ -243,7 +244,6 @@ export default function Dashboard() {
   const { user, isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('website');
   const router = useRouter();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalGuests: 0,
     rsvpYes: 0,
@@ -377,53 +377,32 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-champagne-50 to-rose-50">
       {/* Header */}
       <header className="bg-white border-b border-champagne-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-champagne-400 to-rose-400 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-serif font-bold text-gray-900">Bella Wedding</h1>
+            <h1 className="text-lg sm:text-xl font-serif font-bold text-gray-900">Bella Wedding</h1>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={() => router.push('/settings')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition"
+              className="p-2 hover:bg-gray-100 rounded-lg transition min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               <Settings className="w-5 h-5 text-gray-600" />
             </button>
             <button
               onClick={() => router.push('/')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition"
+              className="p-2 hover:bg-gray-100 rounded-lg transition min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               <LogOut className="w-5 h-5 text-gray-600" />
             </button>
           </div>
 
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+          <MobileNav user={user} />
         </div>
       </header>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-champagne-200 p-4">
-          <button className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2">
-            <Settings className="w-5 h-5" /> Settings
-          </button>
-          <button className="w-full text-left py-2 px-3 hover:bg-gray-100 rounded flex items-center gap-2">
-            <LogOut className="w-5 h-5" /> Logout
-          </button>
-        </div>
-      )}
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
