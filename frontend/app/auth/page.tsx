@@ -14,6 +14,9 @@ export default function AuthPage() {
   const [message, setMessage] = useState({ text: '', type: 'success', show: false });
   const [loading, setLoading] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [showPasswordSignIn, setShowPasswordSignIn] = useState(false);
+  const [showPasswordSignUp, setShowPasswordSignUp] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const showMessage = (text: string, type: string) => {
     setMessage({ text, type, show: true });
@@ -272,6 +275,39 @@ export default function AuthPage() {
             text-align: left;
           }
 
+          .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+          }
+
+          .password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            transition: color 0.2s ease;
+          }
+
+          .password-toggle:hover {
+            color: #a64c74;
+            background: transparent;
+            box-shadow: none;
+            transform: none;
+          }
+
+          .password-toggle svg {
+            width: 20px;
+            height: 20px;
+          }
+
           input {
             padding: 8px 12px;
             border-radius: 6px;
@@ -281,6 +317,12 @@ export default function AuthPage() {
             color: #666;
             background: rgba(255, 255, 255, 0.85);
             transition: all 0.3s ease;
+            width: 100%;
+          }
+
+          input[type="password"],
+          input[type="text"].password-input {
+            padding-right: 40px;
           }
 
           input::placeholder {
@@ -436,14 +478,34 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Enter your password"
-                    value={passwordSignIn}
-                    onChange={(e) => setPasswordSignIn(e.target.value)}
-                    disabled={loading}
-                    required 
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      type={showPasswordSignIn ? "text" : "password"}
+                      className={showPasswordSignIn ? "password-input" : ""}
+                      placeholder="Enter your password"
+                      value={passwordSignIn}
+                      onChange={(e) => setPasswordSignIn(e.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPasswordSignIn(!showPasswordSignIn)}
+                      aria-label={showPasswordSignIn ? "Hide password" : "Show password"}
+                    >
+                      {showPasswordSignIn ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <button type="submit" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
@@ -469,14 +531,34 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Password</label>
-                  <input
-                    type="password"
-                    placeholder="Create a password"
-                    value={passwordSignUp}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    disabled={loading}
-                    required
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      type={showPasswordSignUp ? "text" : "password"}
+                      className={showPasswordSignUp ? "password-input" : ""}
+                      placeholder="Create a password"
+                      value={passwordSignUp}
+                      onChange={(e) => handlePasswordChange(e.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPasswordSignUp(!showPasswordSignUp)}
+                      aria-label={showPasswordSignUp ? "Hide password" : "Show password"}
+                    >
+                      {showPasswordSignUp ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                   {passwordSignUp && (
                     <div style={{
                       fontSize: '0.75rem',
@@ -511,14 +593,34 @@ export default function AuthPage() {
                 </div>
                 <div className="form-group">
                   <label>Confirm Password</label>
-                  <input 
-                    type="password" 
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    disabled={loading}
-                    required 
-                  />
+                  <div className="password-wrapper">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      className={showConfirmPassword ? "password-input" : ""}
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      disabled={loading}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    >
+                      {showConfirmPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <button type="submit" disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}
