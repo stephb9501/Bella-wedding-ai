@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       // Fetch seating chart and verify ownership
       const { data: chart, error } = await supabase
         .from('seating_charts')
-        .select('*, weddings!inner(bride_id, groom_id)')
+        .select('*, weddings(bride_id, groom_id)')
         .eq('id', id)
         .single();
 
@@ -42,8 +42,9 @@ export async function GET(request: NextRequest) {
       }
 
       // Authorization check
-      const isOwner = chart.weddings.bride_id === session.user.id ||
-                      chart.weddings.groom_id === session.user.id;
+      const isOwner = const wedding = chart.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
       if (!isOwner) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -156,7 +157,7 @@ export async function PUT(request: NextRequest) {
     // Verify ownership
     const { data: chart, error: fetchError } = await supabase
       .from('seating_charts')
-      .select('wedding_id, weddings!inner(bride_id, groom_id)')
+      .select('wedding_id, weddings(bride_id, groom_id)')
       .eq('id', id)
       .single();
 
@@ -165,8 +166,9 @@ export async function PUT(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = chart.weddings.bride_id === session.user.id ||
-                    chart.weddings.groom_id === session.user.id;
+    const isOwner = const wedding = chart.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -225,7 +227,7 @@ export async function DELETE(request: NextRequest) {
     // Verify ownership
     const { data: chart, error: fetchError } = await supabase
       .from('seating_charts')
-      .select('wedding_id, weddings!inner(bride_id, groom_id)')
+      .select('wedding_id, weddings(bride_id, groom_id)')
       .eq('id', id)
       .single();
 
@@ -234,8 +236,9 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Authorization check
-    const isOwner = chart.weddings.bride_id === session.user.id ||
-                    chart.weddings.groom_id === session.user.id;
+    const isOwner = const wedding = chart.weddings as any;
+      const isOwner = wedding?.bride_id === session.user.id ||
+                      wedding?.groom_id === session.user.id;
 
     if (!isOwner) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
